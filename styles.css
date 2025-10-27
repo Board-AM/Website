@@ -134,7 +134,7 @@ body {
   font-size: 4.5rem;
   font-weight: 700;
   margin-bottom: 1rem;
-  background: linear-gradient(135deg, #49403D, #958783);
+  background: linear-gradient(135deg, #958783, #49403D);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -162,7 +162,7 @@ body {
 
 section {
   min-height: 100vh;
-  padding: 2rem 2rem;
+  padding: 1rem 2rem;
   display: flex;
   align-items: center;
   opacity: 0;
@@ -437,7 +437,7 @@ footer p {
   }
 
   section {
-    padding: 2rem 1.5rem;
+    padding: 1rem 1.5rem;
   }
 
   .content-box,
@@ -455,7 +455,7 @@ footer p {
   
   body {
     background-image: url('./static/background-mobile.jpeg');
-    background-size: cover;
+    background-size: 100% auto;
     background-position: center;
     background-attachment: scroll;
   }
