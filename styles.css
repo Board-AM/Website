@@ -54,7 +54,7 @@ body {
   }
   
   body {
-    background-image: url('./static/background.jpeg');
+    background-image: url('./static/background-mobile.jpeg');
     background-size: cover;
     background-position: center;
     background-attachment: scroll;
