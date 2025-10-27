@@ -20,7 +20,7 @@ html {
 
 body {
   margin: 0;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: "URWClassico-Regular", Inter, system-ui, sans-serif;;
   color: var(--text-primary);
   background-color: var(--bg-dark);
   line-height: 1.6;
@@ -36,8 +36,17 @@ body {
   z-index: -1;
   background:
     linear-gradient(to bottom, rgba(10, 10, 15, 0.3) 0%, rgba(10, 10, 15, 0.7) 100%),
-    url('https://images.pexels.com/photos/1434608/pexels-photo-1434608.jpeg?auto=compress&cs=tinysrgb&w=1920') center/cover no-repeat;
+    url('./background.jpeg') center/cover no-repeat;
   background-attachment: fixed;
+}
+
+@font-face {
+  font-family: "URWClassico-Regular";
+  src:
+    url("./fonts/URWClassico-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap; /* shows system font first, swaps when loaded */
 }
 
 .space-background::before {
