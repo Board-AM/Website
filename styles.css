@@ -457,7 +457,7 @@ footer p {
     background-image: url('./static/background-mobile.jpeg');
     background-size: 100% auto;
     background-position: center;
-    background-attachment: scroll;
+    background-attachment: fixed;
   }
 }
 
