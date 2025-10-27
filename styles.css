@@ -50,15 +50,6 @@ body {
   object-fit: cover;
 }
 
-@keyframes stars {
-  0% {
-    background-position: 0% 0%, 20% 20%, 40% 40%, 60% 60%, 80% 80%, 50% 50%, 70% 70%;
-  }
-  100% {
-    background-position: 100% 100%, 120% 120%, 140% 140%, 160% 160%, 180% 180%, 150% 150%, 170% 170%;
-  }
-}
-
 #navbar {
   position: fixed;
   top: 0;
@@ -143,7 +134,7 @@ body {
   font-size: 4.5rem;
   font-weight: 700;
   margin-bottom: 1rem;
-  background: linear-gradient(135deg, var(--text-primary), var(--accent-cyan));
+  background: linear-gradient(135deg, var(--text-primary), var(--accent-gray));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -171,7 +162,7 @@ body {
 
 section {
   min-height: 100vh;
-  padding: 5rem 2rem;
+  padding: 2rem 2rem;
   display: flex;
   align-items: center;
   opacity: 0;
@@ -199,6 +190,19 @@ h2 {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+.linkedin-link {
+  display: inline-block;
+  color: #0077b5;
+  font-size: 32px;
+  margin: 0.5rem 0;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.linkedin-link:hover {
+  color: #005582;
+  transform: scale(1.1);
 }
 
 .content-box {
