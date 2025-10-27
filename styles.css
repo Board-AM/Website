@@ -36,12 +36,35 @@ body {
   overflow-x: hidden;
 }
 
+#background-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  z-index: -1;
+  object-fit: cover;
+}
+
 @media (max-width: 768px) {
-  body {
-    background-size: auto; 
-    background-position: top center;
-    background-attachment: scroll; 
+  #background-video {
+    display: none;
   }
+  
+  body {
+    background-image: url('./static/background.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: scroll;
+  }
+}
+
+body {
+  margin: 0;
+  position: relative;
+  z-index: 1;
 }
 
 .space-background {
