@@ -1,4 +1,3 @@
-import './style.css'
 
 const navbar = document.getElementById('navbar');
 const contactForm = document.getElementById('contactForm');
