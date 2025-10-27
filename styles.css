@@ -453,17 +453,29 @@ footer p {
     display: none;
   }
   
-  body {
-    background-image: url('./static/background-mobile.jpeg');
-    background-size: 100% auto;
-    background-position: center top;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
+  .fixed-mobile-bg {
+    /* CRITICAL: This is what locks it to the viewport on all mobile browsers */
+    position: fixed; 
+    
+    /* Ensure it covers the entire viewport */
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: -1;
+    
+    /* Place it behind all content */
+    z-index: -1; 
+    
+    /* Apply your background styles here */
+    background-image: url('./static/background-mobile.jpeg');
+    background-size: 100% auto;
+    background-position: center top;
+    background-repeat: no-repeat;
+    
+    /* Optional: Ensure body and html are full height for proper scrolling */
+    html, body {
+        height: 100%;
+    }
   }
 }
 
