@@ -193,7 +193,7 @@ h2 {
 }
 
 .linkedin-link {
-  display: inline-block;
+  display: none;
   color: #0077b5;
   font-size: 32px;
   margin: 0.5rem 0;
