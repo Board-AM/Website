@@ -413,6 +413,12 @@ footer p {
 }
 
 @media (max-width: 768px) {
+  html, body {
+      height: 100%;
+      margin: 0;  
+      overflow-x: hidden; 
+    }
+  
   .nav-container {
     flex-direction: column;
     gap: 1rem;
