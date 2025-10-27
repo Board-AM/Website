@@ -21,7 +21,7 @@ html {
 @font-face {
   font-family: "URWClassico-Regular";
   src:
-    url("./URWClassico-Regular.ttf") format("truetype");
+    url("./static/fonts/URWClassico-Regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -29,11 +29,13 @@ html {
 
 body {
   margin: 0;
-  font-family: "URWClassico-Regular", Inter, system-ui, sans-serif;;
+  font-family: "URWClassico-Regular", Inter, system-ui, sans-serif;
   color: var(--text-primary);
   background-color: var(--bg-dark);
   line-height: 1.6;
   overflow-x: hidden;
+  position: relative;
+  z-index: 1;
 }
 
 #background-video {
@@ -46,59 +48,6 @@ body {
   height: auto;
   z-index: -1;
   object-fit: cover;
-}
-
-@media (max-width: 768px) {
-  #background-video {
-    display: none;
-  }
-  
-  body {
-    background-image: url('./static/background-mobile.jpeg');
-    background-size: cover;
-    background-position: center;
-    background-attachment: scroll;
-  }
-}
-
-body {
-  margin: 0;
-  position: relative;
-  z-index: 1;
-}
-
-.space-background {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-  background:
-    linear-gradient(to bottom, rgba(10, 10, 15, 0.3) 0%, rgba(10, 10, 15, 0.7) 100%),
-    url('./static/background.jpeg') center/cover no-repeat;
-  background-attachment: fixed;
-}
-
-.space-background::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image:
-    radial-gradient(2px 2px at 20% 30%, white, transparent),
-    radial-gradient(2px 2px at 60% 70%, white, transparent),
-    radial-gradient(1px 1px at 50% 50%, white, transparent),
-    radial-gradient(1px 1px at 80% 10%, white, transparent),
-    radial-gradient(2px 2px at 90% 60%, white, transparent),
-    radial-gradient(1px 1px at 33% 50%, white, transparent),
-    radial-gradient(1px 1px at 66% 30%, white, transparent);
-  background-size: 200% 200%, 200% 200%, 300% 300%, 400% 400%, 250% 250%, 350% 350%, 300% 300%;
-  background-position: 0% 0%, 20% 20%, 40% 40%, 60% 60%, 80% 80%, 50% 50%, 70% 70%;
-  animation: stars 120s linear infinite;
-  opacity: 0.8;
 }
 
 @keyframes stars {
@@ -222,9 +171,17 @@ body {
 
 section {
   min-height: 100vh;
-  padding: 8rem 2rem;
+  padding: 5rem 2rem;
   display: flex;
   align-items: center;
+  opacity: 0;
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
 }
 
 .container {
@@ -264,6 +221,7 @@ h2 {
   line-height: 1.8;
   color: var(--text-secondary);
   margin-bottom: 1.5rem;
+  will-change: transform;
 }
 
 .content-box p:last-child {
@@ -333,6 +291,26 @@ h2 {
   color: var(--text-secondary);
 }
 
+.menu-toggle {
+  display: none;
+  /* Add hamburger icon styles */
+}
+
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: block;
+  }
+  
+  .nav-links {
+    display: none; 
+    flex-direction: column;
+  }
+  
+  .nav-links.active {
+    display: flex;
+  }
+}
+
 .contact-content {
   max-width: 700px;
   margin: 0 auto;
@@ -366,7 +344,7 @@ h2 {
   border-radius: 10px;
   color: var(--text-primary);
   font-size: 1rem;
-  font-family: 'Inter', sans-serif;
+  font-family: 'URWClassico-Regular', Inter, system-ui, sans-serif;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -466,6 +444,17 @@ footer p {
 
   .team-grid {
     grid-template-columns: 1fr;
+  }
+
+  #background-video {
+    display: none;
+  }
+  
+  body {
+    background-image: url('./static/background-mobile.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: scroll;
   }
 }
 
