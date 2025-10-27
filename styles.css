@@ -36,6 +36,14 @@ body {
   overflow-x: hidden;
 }
 
+@media (max-width: 768px) {
+  body {
+    background-size: auto; 
+    background-position: top center;
+    background-attachment: scroll; 
+  }
+}
+
 .space-background {
   position: fixed;
   top: 0;
