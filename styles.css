@@ -18,6 +18,12 @@ html {
   scroll-behavior: smooth;
 }
 
+p {
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto; 
+}
+
 @font-face {
   font-family: "URWClassico-Regular";
   src:
@@ -118,7 +124,7 @@ body {
 }
 
 .nav-links a:hover::after {
-  width: 100%;
+  width: 80%;
 }
 
 #hero {
@@ -134,7 +140,7 @@ body {
   font-size: 4.5rem;
   font-weight: 700;
   margin-bottom: 1rem;
-  background: linear-gradient(135deg, #958783, #49403D);
+  color: #958783;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -178,7 +184,7 @@ section {
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  width: 100%;
+  width: 80%
 }
 
 h2 {
@@ -220,10 +226,13 @@ h2 {
 }
 
 .content-box p {
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto; 
   font-size: 1.1rem;
   line-height: 1.8;
   color: var(--text-secondary);
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   will-change: transform;
 }
 
@@ -340,7 +349,7 @@ h2 {
 
 .form-group input,
 .form-group textarea {
-  width: 100%;
+  width: 80%;
   padding: 1rem 1.25rem;
   background: rgba(10, 10, 15, 0.6);
   border: 1px solid var(--card-border);
