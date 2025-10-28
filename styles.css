@@ -141,18 +141,18 @@ body {
   font-weight: 700;
   margin-bottom: 1rem;
   color: #958783;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
   background-clip: text;
   letter-spacing: -2px;
   animation: fadeInUp 1s ease-out;
 }
 
 .tagline {
-  font-size: 1.5rem;
+  font-size: 3rem;
   color: var(--text-secondary);
   font-weight: 300;
   animation: fadeInUp 1s ease-out 0.2s both;
+  width: 600px;
+  margin: 0 auto;
 }
 
 @keyframes fadeInUp {
@@ -242,8 +242,10 @@ h2 {
 
 .team-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: 1fr;
   gap: 2.5rem;
+  max-width: 300px; 
+  margin: 0 auto; 
 }
 
 .team-member {
@@ -276,14 +278,14 @@ h2 {
 }
 
 .team-member h3 {
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
   color: var(--text-primary);
 }
 
 .member-title {
-  font-size: 1rem;
+  font-size: 3rem;
   color: var(--accent-cyan);
   font-weight: 500;
   margin-bottom: 0.25rem;
@@ -305,7 +307,6 @@ h2 {
 
 .menu-toggle {
   display: none;
-  /* Add hamburger icon styles */
 }
 
 @media (max-width: 768px) {
