@@ -124,7 +124,7 @@ body {
 }
 
 .nav-links a:hover::after {
-  width: 80%;
+  width: 90%;
 }
 
 #hero {
@@ -152,7 +152,7 @@ body {
   color: var(--text-secondary);
   font-weight: 300;
   animation: fadeInUp 1s ease-out 0.2s both;
-  width: 80%;
+  width: 90%;
   margin: 0 auto;
 }
 
@@ -183,9 +183,9 @@ section {
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 90%;
   margin: 0 auto;
-  width: 80%
+  width: 90%
 }
 
 h2 {
@@ -219,6 +219,7 @@ h2 {
   backdrop-filter: blur(10px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: 90%;
 }
 
 .content-box:hover {
@@ -245,7 +246,6 @@ h2 {
   display: grid;
   grid-template-columns: 1fr;
   gap: 2.5rem;
-  max-width: 100%; 
   margin: 0 auto; 
 }
 
@@ -257,7 +257,7 @@ h2 {
   text-align: center;
   backdrop-filter: blur(10px);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  max-width: 80%;
+  max-width: 90%;
   margin: 0 auto;
 }
 
@@ -292,6 +292,7 @@ h2 {
   color: var(--accent-cyan);
   font-weight: 500;
   margin-bottom: 0.25rem;
+  text-align: center;
   margin: 0 auto;
 }
 
