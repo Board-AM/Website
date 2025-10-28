@@ -244,7 +244,7 @@ h2 {
   display: grid;
   grid-template-columns: 1fr;
   gap: 2.5rem;
-  max-width: 300px; 
+  max-width: 80%; 
   margin: 0 auto; 
 }
 
@@ -342,6 +342,7 @@ h2 {
   border-radius: 20px;
   padding: 2rem;
   backdrop-filter: blur(10px);
+  margin: 0 auto;
 }
 
 .form-group {
@@ -350,7 +351,7 @@ h2 {
 
 .form-group input,
 .form-group textarea {
-  width: 80%;
+  width: 100%;
   padding: 1rem 1.25rem;
   background: rgba(10, 10, 15, 0.6);
   border: 1px solid var(--card-border);
