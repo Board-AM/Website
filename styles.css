@@ -151,7 +151,7 @@ body {
   color: var(--text-secondary);
   font-weight: 300;
   animation: fadeInUp 1s ease-out 0.2s both;
-  width: 600px;
+  width: 80%;
   margin: 0 auto;
 }
 
@@ -256,6 +256,7 @@ h2 {
   text-align: center;
   backdrop-filter: blur(10px);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  max-width: 80%;
 }
 
 .team-member:hover {
@@ -278,7 +279,7 @@ h2 {
 }
 
 .team-member h3 {
-  font-size: 2rem;
+  font-size: 4rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
   color: var(--text-primary);
