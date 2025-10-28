@@ -144,6 +144,7 @@ body {
   background-clip: text;
   letter-spacing: -2px;
   animation: fadeInUp 1s ease-out;
+  margin: 0 auto;
 }
 
 .tagline {
@@ -244,7 +245,7 @@ h2 {
   display: grid;
   grid-template-columns: 1fr;
   gap: 2.5rem;
-  max-width: 80%; 
+  max-width: 100%; 
   margin: 0 auto; 
 }
 
@@ -257,6 +258,7 @@ h2 {
   backdrop-filter: blur(10px);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   max-width: 80%;
+  margin: 0 auto;
 }
 
 .team-member:hover {
@@ -290,6 +292,7 @@ h2 {
   color: var(--accent-cyan);
   font-weight: 500;
   margin-bottom: 0.25rem;
+  margin: 0 auto;
 }
 
 .member-credentials {
@@ -301,8 +304,9 @@ h2 {
 }
 
 .member-bio {
-  font-size: 0.95rem;
+  font-size: 1rem;
   line-height: 1.6;
+  font-weight: 600;
   color: var(--text-secondary);
 }
 
