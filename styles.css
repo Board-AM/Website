@@ -227,6 +227,29 @@ h2 {
   box-shadow: 0 12px 48px rgba(74, 158, 255, 0.2);
 }
 
+.team-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+  margin: 0 auto;
+  max-width: 600px; 
+}
+
+.team-member {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  padding: 2rem;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.content-box {
+  max-width: 600px; 
+  margin: 0 auto; 
+}
+
 .content-box p {
   text-align: justify;
   text-justify: inter-word;
@@ -240,25 +263,6 @@ h2 {
 
 .content-box p:last-child {
   margin-bottom: 0;
-}
-
-.team-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2.5rem;
-  margin: 0 auto; 
-}
-
-.team-member {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 20px;
-  padding: 2rem;
-  text-align: center;
-  backdrop-filter: blur(10px);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  max-width: 90%;
-  margin: 0 auto;
 }
 
 .team-member:hover {
