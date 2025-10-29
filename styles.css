@@ -482,8 +482,9 @@ footer p {
   }
   
   .team-member {
-    max-width: 600px;
-    width: 100%;
+    max-width: 90%;
+    width: 90%;
+    padding: 1rem;
   }
 
   .team-grid {
