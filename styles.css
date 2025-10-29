@@ -291,14 +291,14 @@ h2 {
 }
 
 .team-member h3 {
-  font-size: 4rem;
+  font-size: 2.5rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
   color: var(--text-primary);
 }
 
 .member-title {
-  font-size: 3rem;
+  font-size: 2rem;
   color: var(--accent-cyan);
   font-weight: 500;
   margin-bottom: 0.25rem;
