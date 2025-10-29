@@ -500,6 +500,21 @@ footer p {
     box-sizing: border-box !important;
     margin: 0 auto !important;
   }
+  .team-member h3 {
+    font-size: 1.8rem !important; 
+  }
+
+  .member-title {
+    font-size: 1.2rem !important; 
+  }
+
+  .member-credentials {
+    font-size: 0.85rem !important;
+  }
+
+  .member-bio {
+    font-size: 0.95rem !important;
+  }
 
   #background-video {
     display: none;
