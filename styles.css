@@ -481,16 +481,23 @@ footer p {
     padding: 2rem;
   }
   
-  .team-member {
-    max-width: 540px;
-    width: 90%;
-    padding: 1rem;
+  #team .container {
+    max-width: 90% !important;
+    padding: 0 !important;
   }
 
   .team-grid {
-  grid-template-columns: 1fr;
-  max-width: 100%;
-  padding: 0 1rem; 
+    grid-template-columns: 1fr;
+    max-width: 100% !important;
+    padding: 0 !important;
+    width: 100% !important;
+  }
+
+  .team-member {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 1rem !important;
+    box-sizing: border-box !important;
   }
 
   #background-video {
