@@ -38,6 +38,7 @@ contactForm.addEventListener('submit', async (e) => {
 
   formStatus.textContent = 'Sending message...';
   formStatus.className = '';
+  
 
   try {
     const mailtoLink = `mailto:johan@anomalycapital.co.za?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`)}`;
