@@ -422,16 +422,210 @@
     .section-rule { width: 100%; height: 1px; background: linear-gradient(to right, transparent, var(--border), transparent); }
 
     /* ── ABOUT ── */
-    .about-box {
+    .about-manifesto {
+      text-align: center;
+      padding: 3.5rem 0 4rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 0;
+    }
+    .about-manifesto-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.4rem;
+    }
+    .about-manifesto-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 300;
+      color: var(--bright);
+      line-height: 1.25;
+      letter-spacing: 0.01em;
+      margin: 0 auto 1.5rem;
+      max-width: 640px;
+    }
+    .about-manifesto-sub {
+      font-size: 0.93rem;
+      color: var(--text);
+      line-height: 1.85;
+      max-width: 560px;
+      margin: 0 auto;
+      font-weight: 300;
+    }
+
+    /* pillars */
+    .about-pillars { margin: 0; }
+    .about-pillar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 440px;
+      border-top: 1px solid var(--border);
+      opacity: 0;
+      transform: translateY(36px);
+      transition: opacity 0.75s ease, transform 0.75s ease;
+    }
+    .about-pillar.visible { opacity: 1; transform: translateY(0); }
+    .about-pillar:nth-child(even) { direction: rtl; }
+    .about-pillar:nth-child(even) > * { direction: ltr; }
+
+    .about-pillar-visual {
       background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 9px;
+      border-right: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       padding: 2.5rem;
+      min-height: 380px;
+    }
+    .about-pillar:nth-child(even) .about-pillar-visual { border-right: none; border-left: 1px solid var(--border); }
+    .about-pillar-svg { width: 100%; max-width: 380px; }
+
+    .about-pillar-content {
+      padding: 3rem 3.5rem;
       display: flex;
       flex-direction: column;
-      gap: 1.2rem;
+      justify-content: center;
+      gap: 1rem;
     }
-    .about-box p { font-size: 0.95rem; line-height: 1.9; color: var(--text); font-weight: 300; }
+    .ab-number {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      color: var(--gold);
+      text-transform: uppercase;
+    }
+    .ab-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.5rem, 2.5vw, 2.1rem);
+      font-weight: 300;
+      color: var(--bright);
+      line-height: 1.2;
+    }
+    .ab-text {
+      font-size: 0.91rem;
+      line-height: 1.85;
+      color: var(--text);
+      font-weight: 300;
+      max-width: 380px;
+    }
+    .ab-accent {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.9rem;
+      margin-top: 0.5rem;
+    }
+    .ab-accent-line {
+      width: 2px;
+      min-height: 3rem;
+      background: var(--gold);
+      flex-shrink: 0;
+      margin-top: 3px;
+      opacity: 0.7;
+    }
+    .ab-accent-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem;
+      font-weight: 400;
+      color: var(--blue);
+      line-height: 1.55;
+      font-style: italic;
+    }
+
+    /* dimensions grid */
+    .about-dims {
+      border-top: 1px solid var(--border);
+      padding: 3.5rem 0 2rem;
+    }
+    .about-dims-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 2rem;
+    }
+    .about-dims-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .dim-card {
+      background: var(--card);
+      padding: 1.6rem 1.4rem;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .dim-card.visible { opacity: 1; transform: translateY(0); }
+    .dim-card:nth-child(2) { transition-delay: 0.07s; }
+    .dim-card:nth-child(3) { transition-delay: 0.14s; }
+    .dim-card:nth-child(4) { transition-delay: 0.21s; }
+    .dim-card:nth-child(5) { transition-delay: 0.28s; }
+    .dim-card:nth-child(6) { transition-delay: 0.35s; }
+    .dim-card:nth-child(7) { transition-delay: 0.42s; }
+    .dim-card:nth-child(8) { transition-delay: 0.49s; }
+    .dim-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      color: var(--gold);
+      margin-bottom: 0.5rem;
+      opacity: 0.8;
+    }
+    .dim-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--bright);
+      margin-bottom: 0.45rem;
+      line-height: 1.2;
+    }
+    .dim-desc {
+      font-size: 0.8rem;
+      color: var(--text);
+      line-height: 1.65;
+      font-weight: 300;
+    }
+
+    /* closing quote */
+    .about-closing {
+      border-top: 1px solid var(--border);
+      padding: 4rem 0 2rem;
+      text-align: center;
+    }
+    .about-closing-quote {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.3rem, 2.5vw, 1.9rem);
+      font-weight: 300;
+      color: var(--bright);
+      line-height: 1.4;
+      max-width: 640px;
+      margin: 0 auto 1.2rem;
+      font-style: italic;
+    }
+    .about-closing-sub {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0.7;
+    }
+
+    /* about responsive */
+    @media (max-width: 768px) {
+      .about-pillar { grid-template-columns: 1fr; direction: ltr; min-height: auto; }
+      .about-pillar:nth-child(even) { direction: ltr; }
+      .about-pillar-visual { border-right: none !important; border-left: none !important; border-bottom: 1px solid var(--border); min-height: 240px; }
+      .about-pillar-content { padding: 2rem 1.5rem; }
+      .about-dims-grid { grid-template-columns: repeat(2, 1fr); }
+    }
 
     /* ── TEAM ── */
     .team-leader {
@@ -596,8 +790,20 @@
     }
 
     @media (max-width: 480px) {
-      .hero-logo { width: 200px; }
+      .hero-logo { width: clamp(170px, 50vw, 230px); }
       .section-wrap { padding: 4rem 1.2rem; }
+      .process-inner { padding: 16px 12px 14px; }
+      .step-name { font-size: 13px; }
+      .step-desc { font-size: 10px; }
+    }
+
+    /* ── HERO NEURAL-NET CANVAS ── */
+    #heroCanvas {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      display: block;
+      pointer-events: none;
     }
   </style>
 </head>
@@ -631,6 +837,7 @@
 <section id="hero">
   <div class="hero-grid"></div>
   <div class="hero-radial"></div>
+  <canvas id="heroCanvas" aria-hidden="true" role="presentation"></canvas>
   <div class="hero-logo-wrap">
     <svg class="hero-logo" viewBox="0 0 340 88" xmlns="http://www.w3.org/2000/svg">
       <circle cx="52" cy="44" r="5.5" fill="#7aa8d0"/>
@@ -674,8 +881,8 @@
       <div class="title-rule"></div>
 
       <div class="step-label">
-        <div class="step-name" id="stepName">Company Filings</div>
-        <div class="step-desc" id="stepDesc">Sourcing raw data from SEC filings, earnings calls &amp; proxy statements</div>
+        <div class="step-name" id="stepName">Executive Data</div>
+        <div class="step-desc" id="stepDesc">DEF 14A proxy statements reveal the people, incentives, ownership and governance structures behind the enterprise</div>
       </div>
 
       <div class="pipeline">
@@ -692,7 +899,7 @@
             <rect x="15" y="2"  width="38" height="48" rx="3" fill="#162335" stroke="#2e5070" stroke-width="1" opacity="0.6"/>
             <rect x="12" y="4"  width="38" height="48" rx="3" fill="#111e2f" stroke="#2e5070" stroke-width="1" opacity="0.8"/>
           </svg>
-          <div class="stage-title">Company<br>Filings</div>
+          <div class="stage-title">Executive<br>Data</div>
           <div class="stage-content">
             <div class="filing-lines">
               <div class="filing-line"></div>
@@ -725,7 +932,7 @@
             <line x1="32" y1="32" x2="17" y2="42" stroke="#7aa8d0" stroke-width="1.2" opacity="0.6"/>
             <line x1="32" y1="32" x2="47" y2="42" stroke="#7aa8d0" stroke-width="1.2" opacity="0.6"/>
           </svg>
-          <div class="stage-title">Proprietary<br>Model</div>
+          <div class="stage-title">AI<br>Model</div>
           <div class="stage-content">
             <div class="model-nodes">
               <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -766,7 +973,7 @@
             <rect x="10" y="51" width="20" height="2" rx="1" fill="#2e5070"/>
             <rect x="32" y="51" width="6"  rx="1" height="2" fill="#7aa8d0" opacity="0.7"/>
           </svg>
-          <div class="stage-title">Scorecards</div>
+          <div class="stage-title">Management<br>Scorecards</div>
           <div class="stage-content">
             <div class="scorecard">
               <div class="scorecard-header">
@@ -852,11 +1059,226 @@
 <section id="about" class="section-wrap">
   <div class="section-container">
     <div class="section-eyebrow">About</div>
-    <div class="about-box">
-      <p>At Board Assessment Management, our investment philosophy is grounded in first principles: management drives outcomes. The decisions of boards and executive teams determine products, shape profitability, and ultimately define valuation. All company fundamentals and market behaviour are derivatives of these management actions.</p>
-      <p>Our research process is data-driven and anchored in a proprietary scoring framework that quantifies management quality with the same analytical discipline found in banking and insurance risk models. By converting qualitative leadership attributes into quantitative scorecards, we enable objective comparison across companies and sectors.</p>
-      <p>This rigorous, technology-enabled approach forms the foundation of a systematic, repeatable, and alpha-generating investment process.</p>
+
+    <!-- Manifesto -->
+    <div class="about-manifesto">
+      <div class="about-manifesto-label">Board Assessment Management</div>
+      <h2 class="about-manifesto-heading">We measure the people behind performance.</h2>
+      <p class="about-manifesto-sub">Every great company is a reflection of its leadership. We built a system to prove it — and to invest accordingly.</p>
     </div>
+
+    <!-- Pillars -->
+    <div class="about-pillars">
+
+      <!-- Pillar 1: Philosophy -->
+      <div class="about-pillar">
+        <div class="about-pillar-visual">
+          <svg class="about-pillar-svg" viewBox="0 0 400 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="ap1" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L8,3 z" fill="#7aa8d0" opacity="0.7"/>
+              </marker>
+            </defs>
+            <!-- nodes -->
+            <rect x="10" y="90" width="76" height="60" rx="6" fill="#111e2f" stroke="#1e3450"/>
+            <text x="48" y="116" fill="#c8dff0" font-family="DM Sans,sans-serif" font-size="9" text-anchor="middle" font-weight="500">MANAGEMENT</text>
+            <text x="48" y="130" fill="#7aa8d0" font-family="DM Sans,sans-serif" font-size="8" text-anchor="middle">DECISIONS</text>
+
+            <rect x="112" y="90" width="76" height="60" rx="6" fill="#111e2f" stroke="#1e3450"/>
+            <text x="150" y="116" fill="#c8dff0" font-family="DM Sans,sans-serif" font-size="9" text-anchor="middle" font-weight="500">PRODUCT</text>
+            <text x="150" y="130" fill="#7aa8d0" font-family="DM Sans,sans-serif" font-size="8" text-anchor="middle">STRATEGY</text>
+
+            <rect x="214" y="90" width="76" height="60" rx="6" fill="#111e2f" stroke="#1e3450"/>
+            <text x="252" y="116" fill="#c8dff0" font-family="DM Sans,sans-serif" font-size="9" text-anchor="middle" font-weight="500">PROFITABILITY</text>
+            <text x="252" y="130" fill="#7aa8d0" font-family="DM Sans,sans-serif" font-size="8" text-anchor="middle">METRICS</text>
+
+            <rect x="316" y="90" width="76" height="60" rx="6" fill="#111e2f" stroke="#c9a84c" stroke-opacity="0.5"/>
+            <text x="354" y="116" fill="#c8dff0" font-family="DM Sans,sans-serif" font-size="9" text-anchor="middle" font-weight="500">SHAREHOLDER</text>
+            <text x="354" y="130" fill="#c9a84c" font-family="DM Sans,sans-serif" font-size="8" text-anchor="middle">VALUE</text>
+
+            <!-- arrows -->
+            <line x1="86" y1="120" x2="110" y2="120" stroke="#7aa8d0" stroke-opacity="0.7" stroke-width="1.5" marker-end="url(#ap1)"/>
+            <line x1="188" y1="120" x2="212" y2="120" stroke="#7aa8d0" stroke-opacity="0.7" stroke-width="1.5" marker-end="url(#ap1)"/>
+            <line x1="290" y1="120" x2="314" y2="120" stroke="#7aa8d0" stroke-opacity="0.7" stroke-width="1.5" marker-end="url(#ap1)"/>
+
+            <!-- label -->
+            <text x="200" y="200" fill="#3a6080" font-family="DM Mono,monospace" font-size="8" text-anchor="middle" letter-spacing="2">CAUSAL CHAIN · FIRST PRINCIPLES</text>
+          </svg>
+        </div>
+        <div class="about-pillar-content">
+          <div class="ab-number">01 · Philosophy</div>
+          <h3 class="ab-title">Management drives outcomes.</h3>
+          <p class="ab-text">Every fundamental you can measure — revenue growth, margin expansion, capital efficiency — originates in a decision made by a person in a boardroom. We invest at the source, not the symptom.</p>
+          <div class="ab-accent">
+            <div class="ab-accent-line"></div>
+            <div class="ab-accent-text">The S&amp;P 500 is not 500 companies. It is 500 leadership teams with 500 distinct decision-making cultures.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pillar 2: Methodology -->
+      <div class="about-pillar">
+        <div class="about-pillar-visual">
+          <svg class="about-pillar-svg" viewBox="0 0 400 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- scorecard table -->
+            <rect x="40" y="20" width="320" height="36" rx="5" fill="#0f1e30"/>
+            <text x="60" y="43" fill="#c9a84c" font-family="DM Mono,monospace" font-size="9" letter-spacing="1">DIMENSION</text>
+            <text x="290" y="43" fill="#c9a84c" font-family="DM Mono,monospace" font-size="9" letter-spacing="1" text-anchor="middle">SCORE</text>
+
+            <!-- rows -->
+            <rect x="40" y="56" width="320" height="28" rx="0" fill="#111e2f"/>
+            <text x="60" y="74" fill="#c8dff0" font-family="DM Sans,sans-serif" font-size="10">Track Record</text>
+            <text x="290" y="74" fill="#7aa8d0" font-family="DM Mono,monospace" font-size="11" text-anchor="middle" font-weight="500">88</text>
+            <rect x="300" y="64" width="40" height="8" rx="4" fill="#1e3450"/>
+            <rect x="300" y="64" width="35" height="8" rx="4" fill="#7aa8d0" opacity="0.5"/>
+
+            <rect x="40" y="84" width="320" height="28" rx="0" fill="#0d1928"/>
+            <text x="60" y="102" fill="#c8dff0" font-family="DM Sans,sans-serif" font-size="10">Shareholding</text>
+            <text x="290" y="102" fill="#7aa8d0" font-family="DM Mono,monospace" font-size="11" text-anchor="middle" font-weight="500">82</text>
+            <rect x="300" y="92" width="40" height="8" rx="4" fill="#1e3450"/>
+            <rect x="300" y="92" width="33" height="8" rx="4" fill="#7aa8d0" opacity="0.5"/>
+
+            <rect x="40" y="112" width="320" height="28" rx="0" fill="#111e2f"/>
+            <text x="60" y="130" fill="#c8dff0" font-family="DM Sans,sans-serif" font-size="10">Incentives</text>
+            <text x="290" y="130" fill="#7aa8d0" font-family="DM Mono,monospace" font-size="11" text-anchor="middle" font-weight="500">79</text>
+            <rect x="300" y="120" width="40" height="8" rx="4" fill="#1e3450"/>
+            <rect x="300" y="120" width="32" height="8" rx="4" fill="#7aa8d0" opacity="0.5"/>
+
+            <rect x="40" y="140" width="320" height="28" rx="0" fill="#0d1928"/>
+            <text x="60" y="158" fill="#c8dff0" font-family="DM Sans,sans-serif" font-size="10">Experience</text>
+            <text x="290" y="158" fill="#7aa8d0" font-family="DM Mono,monospace" font-size="11" text-anchor="middle" font-weight="500">74</text>
+            <rect x="300" y="148" width="40" height="8" rx="4" fill="#1e3450"/>
+            <rect x="300" y="148" width="30" height="8" rx="4" fill="#7aa8d0" opacity="0.4"/>
+
+            <rect x="40" y="168" width="320" height="28" rx="0" fill="#111e2f"/>
+            <text x="60" y="186" fill="#c8dff0" font-family="DM Sans,sans-serif" font-size="10">Qualifications</text>
+            <text x="290" y="186" fill="#7aa8d0" font-family="DM Mono,monospace" font-size="11" text-anchor="middle" font-weight="500">68</text>
+            <rect x="300" y="176" width="40" height="8" rx="4" fill="#1e3450"/>
+            <rect x="300" y="176" width="27" height="8" rx="4" fill="#7aa8d0" opacity="0.4"/>
+
+            <!-- composite -->
+            <rect x="40" y="196" width="320" height="36" rx="0" fill="#0f1e30" stroke="#c9a84c" stroke-opacity="0.3" stroke-width="1"/>
+            <text x="60" y="218" fill="#c9a84c" font-family="DM Sans,sans-serif" font-size="10" font-weight="500">Composite Score</text>
+            <text x="290" y="220" fill="#c9a84c" font-family="DM Mono,monospace" font-size="14" text-anchor="middle" font-weight="500">78.2</text>
+          </svg>
+        </div>
+        <div class="about-pillar-content">
+          <div class="ab-number">02 · Methodology</div>
+          <h3 class="ab-title">Qualitative leadership, made quantitative.</h3>
+          <p class="ab-text">We read every DEF 14A proxy filing in the S&amp;P 500. We score boards across eight dimensions — from track record and shareholding to incentive alignment and governance quality — producing a composite 0–10 leadership score for each company.</p>
+          <div class="ab-accent">
+            <div class="ab-accent-line"></div>
+            <div class="ab-accent-text">The same analytical rigour applied to credit risk in banking — now applied to the people running public companies.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pillar 3: Outcome -->
+      <div class="about-pillar">
+        <div class="about-pillar-visual">
+          <svg class="about-pillar-svg" viewBox="0 0 400 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="bamLine" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#c9a84c" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#c9a84c"/>
+              </linearGradient>
+              <linearGradient id="bmkLine" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#3a6080" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#3a6080"/>
+              </linearGradient>
+            </defs>
+            <!-- axes -->
+            <line x1="50" y1="20" x2="50" y2="185" stroke="#1e3450" stroke-width="1"/>
+            <line x1="50" y1="185" x2="370" y2="185" stroke="#1e3450" stroke-width="1"/>
+
+            <!-- benchmark line -->
+            <polyline points="50,175 110,162 170,148 230,132 290,116 370,95" stroke="url(#bmkLine)" stroke-width="1.5" fill="none" stroke-dasharray="4 3"/>
+
+            <!-- BAM line -->
+            <polyline points="50,175 110,155 170,128 230,100 290,72 370,38" stroke="url(#bamLine)" stroke-width="2.5" fill="none"/>
+
+            <!-- area under BAM -->
+            <polygon points="50,175 50,175 110,155 170,128 230,100 290,72 370,38 370,185" fill="#c9a84c" fill-opacity="0.06"/>
+
+            <!-- labels -->
+            <text x="375" y="42" fill="#c9a84c" font-family="DM Mono,monospace" font-size="8" font-weight="500">BAM</text>
+            <text x="375" y="99" fill="#3a6080" font-family="DM Mono,monospace" font-size="8">BMK</text>
+
+            <!-- y-axis ticks -->
+            <text x="44" y="188" fill="#3a6080" font-family="DM Mono,monospace" font-size="7" text-anchor="end">2005</text>
+            <text x="374" y="196" fill="#3a6080" font-family="DM Mono,monospace" font-size="7" text-anchor="end">2025</text>
+
+            <!-- CAGR callouts -->
+            <text x="200" y="218" fill="#c9a84c" font-family="DM Mono,monospace" font-size="8.5" text-anchor="middle" font-weight="500">BAM CAGR 14.7%</text>
+            <text x="200" y="230" fill="#3a6080" font-family="DM Mono,monospace" font-size="8" text-anchor="middle">Benchmark 10.6%</text>
+          </svg>
+        </div>
+        <div class="about-pillar-content">
+          <div class="ab-number">03 · Outcome</div>
+          <h3 class="ab-title">Systematic. Repeatable. Alpha-generating.</h3>
+          <p class="ab-text">When you buy great leadership and short poor leadership, the spread compounds. Our process converts a structural edge — access to information the market consistently misprices — into sustained outperformance across market cycles.</p>
+          <div class="ab-accent">
+            <div class="ab-accent-line"></div>
+            <div class="ab-accent-text">Leadership quality is persistent. Markets underprice it. That gap is our alpha.</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /about-pillars -->
+
+    <!-- Leadership Dimensions -->
+    <div class="about-dims">
+      <div class="about-dims-label">Eight Leadership Dimensions</div>
+      <div class="about-dims-grid">
+        <div class="dim-card">
+          <div class="dim-num">01</div>
+          <div class="dim-name">Executive Competence</div>
+          <div class="dim-desc">Track record of delivering measurable results across economic cycles.</div>
+        </div>
+        <div class="dim-card">
+          <div class="dim-num">02</div>
+          <div class="dim-name">Incentive Alignment</div>
+          <div class="dim-desc">Compensation structures that reward long-term shareholder value creation.</div>
+        </div>
+        <div class="dim-card">
+          <div class="dim-num">03</div>
+          <div class="dim-name">Ownership Alignment</div>
+          <div class="dim-desc">Meaningful insider shareholding that creates shared stakes with investors.</div>
+        </div>
+        <div class="dim-card">
+          <div class="dim-num">04</div>
+          <div class="dim-name">Governance Quality</div>
+          <div class="dim-desc">Board independence, diversity of expertise, and oversight effectiveness.</div>
+        </div>
+        <div class="dim-card">
+          <div class="dim-num">05</div>
+          <div class="dim-name">Capital Allocation</div>
+          <div class="dim-desc">Disciplined deployment of capital towards highest-return opportunities.</div>
+        </div>
+        <div class="dim-card">
+          <div class="dim-num">06</div>
+          <div class="dim-name">Succession Planning</div>
+          <div class="dim-desc">Depth of leadership pipeline and clarity of long-term continuity.</div>
+        </div>
+        <div class="dim-card">
+          <div class="dim-num">07</div>
+          <div class="dim-name">Technology Orientation</div>
+          <div class="dim-desc">Board capacity to guide and challenge digital transformation strategies.</div>
+        </div>
+        <div class="dim-card">
+          <div class="dim-num">08</div>
+          <div class="dim-name">Execution History</div>
+          <div class="dim-desc">Consistent delivery against stated strategic goals and guidance.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Closing -->
+    <div class="about-closing">
+      <p class="about-closing-quote">"The boardroom is not separate from performance. It is where performance begins."</p>
+      <div class="about-closing-sub">Board Assessment Management · First Principles Investing</div>
+    </div>
+
   </div>
 </section>
 
@@ -1136,10 +1558,10 @@
 <script>
 /* ── PIPELINE ── */
 const steps = [
-  { name: 'Company Filings',        desc: 'Sourcing raw data from SEC filings, earnings calls & proxy statements' },
-  { name: 'Proprietary Model',      desc: 'AI scoring engine processes leadership data through a multi-factor risk framework' },
-  { name: 'Scorecards',             desc: 'Each CEO ranked on Experience, Track Record, Shareholding & BAM Rating' },
-  { name: 'Portfolio Construction', desc: 'Top 20% of management teams selected; diversification parameters applied' }
+  { name: 'Executive Data',         desc: 'DEF 14A proxy statements reveal the people, incentives, ownership and governance structures behind the enterprise' },
+  { name: 'Proprietary AI Model',   desc: 'A systematic model extracts leadership signals from structured and semi-structured disclosure' },
+  { name: 'Management Scorecards',  desc: 'Qualitative evidence is compressed into quantitative leadership scores built for cross-company comparison' },
+  { name: 'Portfolio Construction', desc: 'Capital tilted toward companies where management quality is expected to compound over multi-year horizons' }
 ];
 const C = 106.8;
 const pieData = [
@@ -1232,7 +1654,7 @@ const revealObserver = new IntersectionObserver((entries) => {
     }
   });
 }, { threshold: 0.1 });
-document.querySelectorAll('.team-leader, .team-card').forEach(c => revealObserver.observe(c));
+document.querySelectorAll('.team-leader, .team-card, .about-pillar, .dim-card').forEach(c => revealObserver.observe(c));
 
 /* ── CONTACT FORM ── */
 document.getElementById('contactForm').addEventListener('submit', function(e) {
@@ -1247,6 +1669,265 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
   window.location.href = mailto;
   document.getElementById('formStatus').textContent = 'Opening your email client…';
 });
+
+/* ── HERO NEURAL-NETWORK ANIMATION ── */
+(function () {
+  var REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var CV = document.getElementById('heroCanvas');
+  if (!CV) return;
+  var cx = CV.getContext('2d');
+
+  /* Mulberry32 seeded PRNG — same deterministic layout every load */
+  function mRng(seed) {
+    var s = seed >>> 0;
+    return function () {
+      s |= 0; s = (s + 0x6D2B79F5) | 0;
+      var t = Math.imul(s ^ (s >>> 15), 1 | s);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  var W = 0, H = 0, nodes = [], edges = [], pulsePath = [];
+  var vigGrad = null, raf = 0, resT = 0, pulsePos = 0, prevTs = 0;
+  var TRAVERSE_MS = 15000; /* 15 s for one full left-to-right sweep */
+
+  function build() {
+    var R   = mRng(0xF00DC0DE);
+    var mob = window.innerWidth < 768;
+    W = CV.width  = CV.parentElement.offsetWidth  || window.innerWidth;
+    H = CV.height = CV.parentElement.offsetHeight || window.innerHeight;
+
+    /* Vignette: transparent centre → darkened edges */
+    vigGrad = cx.createRadialGradient(W * .5, H * .5, Math.min(W, H) * .07,
+                                      W * .5, H * .5, Math.max(W, H) * .80);
+    vigGrad.addColorStop(0,    'rgba(10,18,32,0)');
+    vigGrad.addColorStop(0.44, 'rgba(10,18,32,0)');
+    vigGrad.addColorStop(1,    'rgba(10,18,32,0.84)');
+
+    /* Logo exclusion zone */
+    var EX0 = mob ? 0.20 : 0.26, EX1 = mob ? 0.80 : 0.74;
+    var EY0 = mob ? 0.34 : 0.29, EY1 = mob ? 0.70 : 0.68;
+
+    /* Art-directed zones
+       0: Upper canopy  — primary visible constellation band (62 %)
+       1: Left tendril  — descends along left edge, frames logo (13 %)
+       2: Right tendril — descends along right edge (13 %)
+       3: Lower anchors — faint presence at the base (12 %)           */
+    var N = mob ? 30 : 55;
+    var zoneDefs = [
+      { id: 0, share: 0.62, x0: 0.01, x1: 0.99, y0: 0.02, y1: 0.36 },
+      { id: 1, share: 0.13, x0: 0.01, x1: 0.22, y0: 0.22, y1: 0.86 },
+      { id: 2, share: 0.13, x0: 0.78, x1: 0.99, y0: 0.22, y1: 0.86 },
+      { id: 3, share: 0.12, x0: 0.08, x1: 0.92, y0: 0.78, y1: 0.97 }
+    ];
+
+    nodes = [];
+    zoneDefs.forEach(function (z) {
+      var cnt = Math.round(N * z.share), added = 0, tries = 0;
+      while (added < cnt && tries < cnt * 25) {
+        tries++;
+        var rx = z.x0 + R() * (z.x1 - z.x0);
+        var ry = z.y0 + R() * (z.y1 - z.y0);
+        if (rx > EX0 && rx < EX1 && ry > EY0 && ry < EY1) continue;
+        nodes.push({ x: rx * W, y: ry * H, r: 1.4 + R() * 1.4, zone: z.id, edges: [] });
+        added++;
+      }
+    });
+
+    /* Sparse adjacency — nearest-neighbour, capped degree
+       Edge tuple: [nodeA, nodeB, distance] for proximity-based opacity */
+    var MAX_CD = mob ? 145 : 205, MAX_CD2 = MAX_CD * MAX_CD;
+    edges = [];
+    var edgeSet = {};
+
+    for (var i = 0; i < nodes.length; i++) {
+      var ni = nodes[i];
+      var cands = [];
+      for (var j = 0; j < nodes.length; j++) {
+        if (i === j) continue;
+        var dx = ni.x - nodes[j].x, dy = ni.y - nodes[j].y;
+        var d2 = dx * dx + dy * dy;
+        if (d2 < MAX_CD2) cands.push({ j: j, d: Math.sqrt(d2) });
+      }
+      cands.sort(function (a, b) { return a.d - b.d; });
+      var tgt = (ni.zone === 0 && R() < 0.30) ? 3 : 2;
+      var cnt2 = 0;
+      for (var k = 0; k < cands.length && cnt2 < tgt; k++) {
+        var j2 = cands[k].j;
+        if (ni.edges.length >= 3 || nodes[j2].edges.length >= 3) continue;
+        var key = Math.min(i, j2) + '_' + Math.max(i, j2);
+        if (edgeSet[key]) continue;
+        edgeSet[key] = true;
+        edges.push([i, j2, cands[k].d]);
+        ni.edges.push(j2);
+        nodes[j2].edges.push(i);
+        cnt2++;
+      }
+    }
+
+    /* Pulse path — BFS from leftmost to rightmost canopy node.
+       Gives a shortest left-to-right route through the visible band,
+       reading as a signal sweeping across the hero.                  */
+    var canopy = [];
+    nodes.forEach(function (n, idx) { if (n.zone === 0) canopy.push(idx); });
+    var si = canopy[0], eiNode = canopy[0];
+    canopy.forEach(function (idx) {
+      if (nodes[idx].x < nodes[si].x)     si = idx;
+      if (nodes[idx].x > nodes[eiNode].x) eiNode = idx;
+    });
+
+    var par = {}, bQ = [si], bDone = false;
+    par[si] = -1;
+    while (bQ.length && !bDone) {
+      var bc = bQ.shift();
+      if (bc === eiNode) { bDone = true; break; }
+      nodes[bc].edges.forEach(function (nb) {
+        if (!(nb in par)) { par[nb] = bc; bQ.push(nb); }
+      });
+    }
+
+    pulsePath = [];
+    if (eiNode in par) {
+      /* Reconstruct left-to-right node chain from parent map */
+      var chain = [], cur2 = eiNode;
+      while (cur2 !== si) { chain.unshift(cur2); cur2 = par[cur2]; }
+      chain.unshift(si);
+      for (var p = 0; p < chain.length - 1; p++) pulsePath.push([chain[p], chain[p + 1]]);
+    } else {
+      /* Fallback DFS if graph is disconnected */
+      var vis = {};
+      var dfs = function (cur) {
+        vis[cur] = true;
+        nodes[cur].edges.slice().sort(function (a, b) {
+          return nodes[b].x - nodes[a].x;
+        }).forEach(function (nb) {
+          if (!vis[nb]) { pulsePath.push([cur, nb]); dfs(nb); }
+        });
+      };
+      dfs(si);
+    }
+
+    pulsePos = 0;
+  }
+
+  /* drawEdges / drawNodes split so pulse trail layers between
+     base edges (bottom) and nodes (top) for correct visual depth. */
+  function drawEdges() {
+    for (var i = 0; i < edges.length; i++) {
+      var e = edges[i];
+      var ea = nodes[e[0]], eb = nodes[e[1]];
+      var prox = Math.max(0, 1 - e[2] / 160) * 0.06;
+      var base = (ea.zone === 0 && eb.zone === 0) ? 0.12 : 0.07;
+      cx.strokeStyle = 'rgba(112,138,168,' + (base + prox) + ')';
+      cx.lineWidth   = (ea.zone === 0 && eb.zone === 0) ? 0.75 : 0.55;
+      cx.beginPath(); cx.moveTo(ea.x, ea.y); cx.lineTo(eb.x, eb.y); cx.stroke();
+    }
+  }
+
+  function drawNodes() {
+    for (var i = 0; i < nodes.length; i++) {
+      var n = nodes[i];
+      cx.beginPath(); cx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+      cx.fillStyle = n.zone === 0 ? 'rgba(135,162,195,0.36)' : 'rgba(135,162,195,0.22)';
+      cx.fill();
+    }
+  }
+
+  build();
+
+  /* Reduced motion: draw an elegant static network, no animation */
+  if (REDUCED) {
+    var drawStatic = function () {
+      build();
+      cx.clearRect(0, 0, W, H);
+      drawEdges(); drawNodes();
+      if (vigGrad) { cx.fillStyle = vigGrad; cx.fillRect(0, 0, W, H); }
+    };
+    drawStatic();
+    window.addEventListener('resize', function () {
+      clearTimeout(resT); resT = setTimeout(drawStatic, 250);
+    });
+    return;
+  }
+
+  window.addEventListener('resize', function () { clearTimeout(resT); resT = setTimeout(build, 250); });
+
+  function frame(ts) {
+    if (document.hidden) { prevTs = 0; raf = requestAnimationFrame(frame); return; }
+    var dt = prevTs ? Math.min(ts - prevTs, 50) : 0;
+    prevTs = ts;
+    var P = pulsePath.length;
+    if (P > 0) pulsePos = (pulsePos + P / TRAVERSE_MS * dt) % P;
+
+    cx.clearRect(0, 0, W, H);
+    var ci = Math.floor(pulsePos);
+    var cf = pulsePos - ci;
+
+    /* Layer 1: base edges */
+    drawEdges();
+
+    /* Layer 2: pulse trail — gold, above edges but below nodes */
+    if (P > 0) {
+      var trail = [
+        { back: 3, a: 0.09, lw: 0.65, f: 1.0 },
+        { back: 2, a: 0.20, lw: 0.80, f: 1.0 },
+        { back: 1, a: 0.36, lw: 0.95, f: 1.0 },
+        { back: 0, a: 0.54, lw: 1.15, f: cf  }
+      ];
+      for (var ti = 0; ti < trail.length; ti++) {
+        var tr  = trail[ti];
+        var tei = (ci - tr.back + P) % P;
+        var tep = pulsePath[tei];
+        var ta  = nodes[tep[0]], tb = nodes[tep[1]];
+        cx.strokeStyle = 'rgba(201,168,76,' + tr.a + ')';
+        cx.lineWidth   = tr.lw;
+        cx.beginPath(); cx.moveTo(ta.x, ta.y);
+        cx.lineTo(ta.x + (tb.x - ta.x) * tr.f, ta.y + (tb.y - ta.y) * tr.f);
+        cx.stroke();
+      }
+    }
+
+    /* Layer 3: base nodes (sit above all edge layers) */
+    drawNodes();
+
+    /* Layer 4: pulse head glow and node highlights */
+    if (P > 0) {
+      var ce  = pulsePath[ci];
+      var pna = nodes[ce[0]], pnb = nodes[ce[1]];
+
+      /* Arrival node: outer halo (anticipation) + brightening core */
+      cx.beginPath(); cx.arc(pnb.x, pnb.y, pnb.r + 6, 0, Math.PI * 2);
+      cx.fillStyle = 'rgba(201,168,76,' + (0.05 + cf * 0.09) + ')'; cx.fill();
+      cx.beginPath(); cx.arc(pnb.x, pnb.y, pnb.r + 1.2, 0, Math.PI * 2);
+      cx.fillStyle = 'rgba(201,168,76,' + (0.26 + cf * 0.50) + ')'; cx.fill();
+
+      /* Departure node fades behind the signal */
+      cx.beginPath(); cx.arc(pna.x, pna.y, pna.r + 0.5, 0, Math.PI * 2);
+      cx.fillStyle = 'rgba(201,168,76,' + (0.28 * (1 - cf)) + ')'; cx.fill();
+
+      /* Travelling pulse head: outer halo + bright core */
+      var hx = pna.x + (pnb.x - pna.x) * cf;
+      var hy = pna.y + (pnb.y - pna.y) * cf;
+      cx.beginPath(); cx.arc(hx, hy, 5.5, 0, Math.PI * 2);
+      cx.fillStyle = 'rgba(201,168,76,0.13)'; cx.fill();
+      cx.beginPath(); cx.arc(hx, hy, 3.2, 0, Math.PI * 2);
+      cx.fillStyle = 'rgba(201,168,76,0.84)'; cx.fill();
+    }
+
+    /* Layer 5: vignette — softens edges, keeps logo zone open */
+    if (vigGrad) { cx.fillStyle = vigGrad; cx.fillRect(0, 0, W, H); }
+
+    raf = requestAnimationFrame(frame);
+  }
+
+  raf = requestAnimationFrame(frame);
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) cancelAnimationFrame(raf);
+    else { prevTs = 0; raf = requestAnimationFrame(frame); }
+  });
+}());
+
 
 /* Init */
 goTo(0);
