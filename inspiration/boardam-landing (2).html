@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BoardAM — Board Assessment Management</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0a0f1e;
+    --navy-mid: #0f1729;
+    --navy-light: #162040;
+    --gold: #c9a84c;
+    --gold-light: #e2c97e;
+    --gold-dim: rgba(201,168,76,0.15);
+    --text: #d4cfc6;
+    --text-dim: #8a8578;
+    --white: #f5f1ea;
+    --border: rgba(201,168,76,0.2);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--navy);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  /* ─── GRAIN OVERLAY ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem 4rem;
+    border-bottom: 1px solid var(--border);
+    background: rgba(10,15,30,0.85);
+    backdrop-filter: blur(20px);
+  }
+
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 300;
+    letter-spacing: 0.25em;
+    color: var(--white);
+    text-transform: uppercase;
+  }
+
+  .nav-logo span { color: var(--gold); }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .nav-links a:hover { color: var(--gold); }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    position: relative;
+    overflow: hidden;
+    padding: 8rem 4rem 4rem;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 70% 40%, rgba(201,168,76,0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 10% 80%, rgba(201,168,76,0.04) 0%, transparent 60%);
+  }
+
+  /* Animated grid lines */
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px);
+    background-size: 80px 80px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 100%);
+    animation: gridDrift 20s linear infinite;
+  }
+
+  @keyframes gridDrift {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(80px); }
+  }
+
+  .hero-content {
+    position: relative;
+    text-align: center;
+    max-width: 900px;
+    animation: heroFade 1.2s ease both;
+  }
+
+  @keyframes heroFade {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .hero-eyebrow::before,
+  .hero-eyebrow::after {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 1px;
+    background: var(--gold);
+    opacity: 0.5;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3rem, 7vw, 6rem);
+    font-weight: 300;
+    line-height: 1.05;
+    color: var(--white);
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.01em;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .hero-subtitle {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: var(--text-dim);
+    max-width: 620px;
+    margin: 0 auto 3rem;
+    font-weight: 300;
+  }
+
+  .hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.9rem 2.5rem;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-cta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gold);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: -1;
+  }
+
+  .hero-cta:hover {
+    color: var(--navy);
+  }
+
+  .hero-cta:hover::before {
+    transform: translateX(0);
+  }
+
+  /* Scroll indicator */
+  .scroll-indicator {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0.4;
+    animation: heroFade 1.2s 0.6s ease both;
+  }
+
+  .scroll-indicator span {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(0.8); }
+    50% { opacity: 1; transform: scaleY(1); }
+  }
+
+  /* ─── DIVIDER ─── */
+  .section-divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+    opacity: 0.3;
+    margin: 0 auto;
+  }
+
+  /* ─── PHILOSOPHY SECTION ─── */
+  .philosophy {
+    padding: 6rem 4rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .section-label::after {
+    content: '';
+    display: block;
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+    max-width: 200px;
+  }
+
+  /* ─── PILLARS ─── */
+  .pillars {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .pillar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 420px;
+    border-top: 1px solid var(--border);
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .pillar.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .pillar:last-child { border-bottom: 1px solid var(--border); }
+
+  .pillar:nth-child(even) { direction: rtl; }
+  .pillar:nth-child(even) > * { direction: ltr; }
+
+  .pillar-visual {
+    position: relative;
+    overflow: hidden;
+    min-height: 380px;
+  }
+
+  /* SVG Illustrations */
+  .pillar-svg {
+    width: 100%;
+    height: 100%;
+    min-height: 380px;
+  }
+
+  .pillar-content {
+    padding: 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+
+  .pillar-number {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    opacity: 0.7;
+  }
+
+  .pillar-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.2rem;
+    font-weight: 300;
+    line-height: 1.2;
+    color: var(--white);
+  }
+
+  .pillar-title em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .pillar-text {
+    font-size: 0.95rem;
+    line-height: 1.85;
+    color: var(--text-dim);
+    max-width: 480px;
+  }
+
+  .pillar-accent {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.5rem;
+  }
+
+  .pillar-accent-line {
+    width: 32px;
+    height: 1px;
+    background: var(--gold);
+    opacity: 0.6;
+  }
+
+  .pillar-accent-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.7;
+  }
+
+  /* ─── BOTTOM STATEMENT ─── */
+  .statement {
+    padding: 8rem 4rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .statement::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(201,168,76,0.05) 0%, transparent 70%);
+  }
+
+  .statement-inner {
+    position: relative;
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  .statement-quote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.8rem, 3.5vw, 3rem);
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.4;
+    color: var(--white);
+    margin-bottom: 2.5rem;
+  }
+
+  .statement-quote strong {
+    font-style: normal;
+    font-weight: 600;
+    color: var(--gold);
+  }
+
+  .statement-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    font-weight: 300;
+    letter-spacing: 0.2em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  .footer-logo span { color: var(--gold); }
+
+  .footer-copy {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+    opacity: 0.5;
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    nav { padding: 1.5rem 2rem; }
+    .nav-links { display: none; }
+    .hero { padding: 8rem 2rem 4rem; }
+    .philosophy { padding: 4rem 2rem; }
+    .pillar { grid-template-columns: 1fr; }
+    .pillar:nth-child(even) { direction: ltr; }
+    .pillar-visual { min-height: 260px; }
+    .pillar-content { padding: 2.5rem 2rem; }
+    .statement { padding: 5rem 2rem; }
+    footer { padding: 2rem; flex-direction: column; gap: 1rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Board<span>AM</span></div>
+  <ul class="nav-links">
+    <li><a href="#philosophy">Philosophy</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#approach">Approach</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Board Assessment Management</div>
+    <h1 class="hero-title">Management<br><em>drives outcomes.</em></h1>
+    <p class="hero-subtitle">An investment philosophy grounded in first principles — the decisions of boards and executive teams define valuation, profitability, and the future of every enterprise.</p>
+    <a href="#philosophy" class="hero-cta">Discover Our Approach →</a>
+  </div>
+  <div class="scroll-indicator">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- MAIN CONTENT -->
+<section class="philosophy" id="philosophy">
+  <div class="section-label">Investment Philosophy</div>
+
+  <div class="pillars">
+
+    <!-- PILLAR 1: Management Drives Outcomes -->
+    <div class="pillar" id="p1">
+      <div class="pillar-visual">
+        <svg class="pillar-svg" viewBox="0 0 600 420" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="g1" cx="50%" cy="50%" r="65%">
+              <stop offset="0%" stop-color="#c9a84c" stop-opacity="0.07"/>
+              <stop offset="100%" stop-color="#0b1020" stop-opacity="0"/>
+            </radialGradient>
+            <filter id="glow1a" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="5" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <marker id="flowArr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill="rgba(201,168,76,0.55)"/>
+            </marker>
+          </defs>
+
+          <rect width="600" height="420" fill="#0b1020"/>
+          <ellipse cx="300" cy="215" rx="290" ry="185" fill="url(#g1)"/>
+
+          <!-- ═══ HORIZONTAL FLOW: 4 nodes across centre line y=200 ═══ -->
+          <!-- Connector lines between nodes -->
+          <line x1="118" y1="200" x2="168" y2="200" stroke="rgba(201,168,76,0.4)" stroke-width="1.5" marker-end="url(#flowArr)"/>
+          <line x1="268" y1="200" x2="318" y2="200" stroke="rgba(201,168,76,0.4)" stroke-width="1.5" marker-end="url(#flowArr)"/>
+          <line x1="418" y1="200" x2="468" y2="200" stroke="rgba(201,168,76,0.4)" stroke-width="1.5" marker-end="url(#flowArr)"/>
+
+          <!-- ══ NODE 1: MANAGEMENT — concentric rings + central dot ══ -->
+          <!-- Outer glow -->
+          <circle cx="80" cy="200" r="54" fill="rgba(201,168,76,0.04)" filter="url(#glow1a)"/>
+          <!-- Rings -->
+          <circle cx="80" cy="200" r="48" fill="#0d1428" stroke="rgba(201,168,76,0.18)" stroke-width="1"/>
+          <circle cx="80" cy="200" r="36" fill="rgba(201,168,76,0.04)" stroke="rgba(201,168,76,0.3)" stroke-width="1"/>
+          <circle cx="80" cy="200" r="24" fill="rgba(201,168,76,0.07)" stroke="rgba(201,168,76,0.5)" stroke-width="1.2"/>
+          <!-- Central filled dot -->
+          <circle cx="80" cy="200" r="8" fill="#c9a84c" opacity="0.85"/>
+          <!-- 3 small satellite dots on middle ring — suggesting a team -->
+          <circle cx="80" cy="164" r="4" fill="rgba(201,168,76,0.6)" stroke="rgba(201,168,76,0.8)" stroke-width="0.75"/>
+          <circle cx="111" cy="218" r="3.5" fill="rgba(201,168,76,0.5)" stroke="rgba(201,168,76,0.7)" stroke-width="0.75"/>
+          <circle cx="49"  cy="218" r="3.5" fill="rgba(201,168,76,0.5)" stroke="rgba(201,168,76,0.7)" stroke-width="0.75"/>
+          <!-- Tick marks on outer ring (like a compass/instrument) -->
+          <line x1="80" y1="152" x2="80" y2="158" stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
+          <line x1="80" y1="242" x2="80" y2="248" stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
+          <line x1="32"  y1="200" x2="38"  y2="200" stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
+          <line x1="122" y1="200" x2="128" y2="200" stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
+          <!-- Labels -->
+          <text x="80" y="268" text-anchor="middle" fill="rgba(201,168,76,0.7)" font-family="DM Mono" font-size="6.5" letter-spacing="2.5">MANAGEMENT</text>
+          <text x="80" y="281" text-anchor="middle" fill="#8a8578" font-family="Cormorant Garamond" font-size="10.5" font-style="italic">Starts the business</text>
+
+          <!-- ══ NODE 2: PRODUCT — hexagon ══ -->
+          <!-- Hexagon points centred at 230,200 r=38 -->
+          <polygon points="230,162 263,181 263,219 230,238 197,219 197,181"
+            fill="rgba(201,168,76,0.06)" stroke="rgba(201,168,76,0.45)" stroke-width="1.2"/>
+          <!-- Inner hexagon -->
+          <polygon points="230,174 253,187 253,213 230,226 207,213 207,187"
+            fill="rgba(201,168,76,0.04)" stroke="rgba(201,168,76,0.2)" stroke-width="0.75"/>
+          <!-- Central mark — 3 horizontal lines (product list / spec sheet) -->
+          <line x1="216" y1="193" x2="244" y2="193" stroke="#c9a84c" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="216" y1="200" x2="244" y2="200" stroke="rgba(201,168,76,0.6)" stroke-width="1.3" stroke-linecap="round"/>
+          <line x1="216" y1="207" x2="236" y2="207" stroke="rgba(201,168,76,0.4)" stroke-width="1.1" stroke-linecap="round"/>
+          <!-- Corner accent dots on hexagon -->
+          <circle cx="230" cy="162" r="2.5" fill="rgba(201,168,76,0.5)"/>
+          <circle cx="263" cy="219" r="2" fill="rgba(201,168,76,0.35)"/>
+          <circle cx="197" cy="181" r="2" fill="rgba(201,168,76,0.35)"/>
+          <!-- Labels -->
+          <text x="230" y="258" text-anchor="middle" fill="rgba(201,168,76,0.7)" font-family="DM Mono" font-size="6.5" letter-spacing="2.5">PRODUCT</text>
+          <text x="230" y="271" text-anchor="middle" fill="#8a8578" font-family="Cormorant Garamond" font-size="10.5" font-style="italic">Generates revenue</text>
+
+          <!-- ══ NODE 3: PROFIT — upward triangle / arrow form ══ -->
+          <!-- Square base -->
+          <rect x="342" y="162" width="76" height="76" rx="4" fill="rgba(201,168,76,0.05)" stroke="rgba(201,168,76,0.4)" stroke-width="1.2"/>
+          <!-- Inner rising bars — 3 vertical bars of increasing height, bottom-aligned -->
+          <rect x="354" y="204" width="12" height="22" rx="1.5" fill="rgba(201,168,76,0.25)" stroke="rgba(201,168,76,0.4)" stroke-width="0.75"/>
+          <rect x="372" y="195" width="12" height="31" rx="1.5" fill="rgba(201,168,76,0.4)" stroke="rgba(201,168,76,0.55)" stroke-width="0.75"/>
+          <rect x="390" y="184" width="12" height="42" rx="1.5" fill="rgba(201,168,76,0.65)" stroke="#c9a84c" stroke-width="1"/>
+          <!-- Baseline -->
+          <line x1="350" y1="226" x2="406" y2="226" stroke="rgba(201,168,76,0.3)" stroke-width="0.75"/>
+          <!-- Trend line over bars -->
+          <polyline points="360,208 378,197 396,182" fill="none" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="396" cy="182" r="3" fill="#c9a84c"/>
+          <!-- Labels -->
+          <text x="380" y="258" text-anchor="middle" fill="rgba(201,168,76,0.7)" font-family="DM Mono" font-size="6.5" letter-spacing="2.5">PROFIT</text>
+          <text x="380" y="271" text-anchor="middle" fill="#8a8578" font-family="Cormorant Garamond" font-size="10.5" font-style="italic">Drives earnings</text>
+
+          <!-- ══ NODE 4: VALUE — diamond, gold glow ══ -->
+          <circle cx="530" cy="200" r="52" fill="rgba(201,168,76,0.05)" filter="url(#glow1a)"/>
+          <!-- Rotated square = diamond -->
+          <rect x="506" y="176" width="48" height="48" rx="3" fill="rgba(201,168,76,0.1)" stroke="#c9a84c" stroke-width="1.5"
+                transform="rotate(45 530 200)"/>
+          <!-- Inner diamond -->
+          <rect x="516" y="186" width="28" height="28" rx="2" fill="rgba(201,168,76,0.08)" stroke="rgba(201,168,76,0.4)" stroke-width="0.75"
+                transform="rotate(45 530 200)"/>
+          <!-- Central currency mark — stylised upward arrow -->
+          <line x1="530" y1="212" x2="530" y2="188" stroke="#c9a84c" stroke-width="2" stroke-linecap="round"/>
+          <polyline points="522,196 530,188 538,196" fill="none" stroke="#c9a84c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- Labels -->
+          <text x="530" y="268" text-anchor="middle" fill="rgba(201,168,76,0.85)" font-family="DM Mono" font-size="6.5" letter-spacing="2.5">VALUE</text>
+          <text x="530" y="281" text-anchor="middle" fill="#8a8578" font-family="Cormorant Garamond" font-size="10.5" font-style="italic">Priced by the market</text>
+
+          <!-- ── BOTTOM CAPTION ── -->
+          <text x="300" y="330" text-anchor="middle" fill="rgba(201,168,76,0.25)" font-family="Cormorant Garamond" font-size="12.5" font-style="italic" letter-spacing="1">All fundamentals derive from management decisions</text>
+
+          <!-- Corner marks -->
+          <line x1="20" y1="20" x2="55" y2="20" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
+          <line x1="20" y1="20" x2="20" y2="55" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
+          <line x1="580" y1="20" x2="545" y2="20" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
+          <line x1="580" y1="20" x2="580" y2="55" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
+          <line x1="20" y1="400" x2="55" y2="400" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
+          <line x1="20" y1="400" x2="20" y2="365" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
+          <line x1="580" y1="400" x2="545" y2="400" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
+          <line x1="580" y1="400" x2="580" y2="365" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
+        </svg>
+      </div>
+      <div class="pillar-content">
+        <div class="pillar-number">01 — Philosophy</div>
+        <h2 class="pillar-title">Management<br><em>drives outcomes</em></h2>
+        <p class="pillar-text">The decisions of boards and executive teams determine products, shape profitability, and ultimately define valuation. All company fundamentals and market behaviour are derivatives of these management actions.</p>
+        <div class="pillar-accent">
+          <div class="pillar-accent-line"></div>
+          <div class="pillar-accent-text">First Principles Investing</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PILLAR 2: Data-Driven Research -->
+    <div class="pillar" id="p2">
+      <div class="pillar-visual">
+        <svg class="pillar-svg" viewBox="0 0 600 420" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="g2" cx="50%" cy="40%" r="55%">
+              <stop offset="0%" stop-color="#c9a84c" stop-opacity="0.1"/>
+              <stop offset="100%" stop-color="#0a0f1e" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <rect width="600" height="420" fill="#0d1428"/>
+          <circle cx="300" cy="180" r="200" fill="url(#g2)"/>
+
+          <!-- Scatter plot / data points -->
+          <!-- Axes -->
+          <line x1="80" y1="320" x2="540" y2="320" stroke="rgba(201,168,76,0.3)" stroke-width="1"/>
+          <line x1="80" y1="70" x2="80" y2="320" stroke="rgba(201,168,76,0.3)" stroke-width="1"/>
+
+          <!-- Axis labels -->
+          <text x="310" y="345" text-anchor="middle" fill="rgba(201,168,76,0.5)" font-family="DM Mono" font-size="7" letter-spacing="2">MANAGEMENT SCORE</text>
+          <text x="40" y="200" text-anchor="middle" fill="rgba(201,168,76,0.5)" font-family="DM Mono" font-size="7" letter-spacing="2" transform="rotate(-90, 40, 200)">TOTAL RETURN</text>
+
+          <!-- Grid lines -->
+          <line x1="80" y1="245" x2="540" y2="245" stroke="rgba(201,168,76,0.08)" stroke-width="1" stroke-dasharray="4,4"/>
+          <line x1="80" y1="170" x2="540" y2="170" stroke="rgba(201,168,76,0.08)" stroke-width="1" stroke-dasharray="4,4"/>
+          <line x1="80" y1="95" x2="540" y2="95" stroke="rgba(201,168,76,0.08)" stroke-width="1" stroke-dasharray="4,4"/>
+          <line x1="195" y1="70" x2="195" y2="320" stroke="rgba(201,168,76,0.08)" stroke-width="1" stroke-dasharray="4,4"/>
+          <line x1="310" y1="70" x2="310" y2="320" stroke="rgba(201,168,76,0.08)" stroke-width="1" stroke-dasharray="4,4"/>
+          <line x1="425" y1="70" x2="425" y2="320" stroke="rgba(201,168,76,0.08)" stroke-width="1" stroke-dasharray="4,4"/>
+
+          <!-- Trend line -->
+          <line x1="100" y1="300" x2="520" y2="80" stroke="rgba(201,168,76,0.35)" stroke-width="1.5" stroke-dasharray="6,3"/>
+
+          <!-- Data points — scattered with positive correlation -->
+          <!-- Low scores, low returns -->
+          <circle cx="115" cy="295" r="5" fill="rgba(201,168,76,0.25)" stroke="rgba(201,168,76,0.5)" stroke-width="1"/>
+          <circle cx="140" cy="280" r="4" fill="rgba(201,168,76,0.2)" stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
+          <circle cx="125" cy="310" r="3.5" fill="rgba(201,168,76,0.15)" stroke="rgba(201,168,76,0.3)" stroke-width="1"/>
+          <circle cx="165" cy="270" r="5" fill="rgba(201,168,76,0.2)" stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
+          <circle cx="155" cy="300" r="3" fill="rgba(201,168,76,0.15)" stroke="rgba(201,168,76,0.3)" stroke-width="1"/>
+          
+          <!-- Mid scores -->
+          <circle cx="210" cy="250" r="5" fill="rgba(201,168,76,0.3)" stroke="rgba(201,168,76,0.6)" stroke-width="1"/>
+          <circle cx="235" cy="230" r="4" fill="rgba(201,168,76,0.25)" stroke="rgba(201,168,76,0.5)" stroke-width="1"/>
+          <circle cx="250" cy="255" r="5.5" fill="rgba(201,168,76,0.3)" stroke="rgba(201,168,76,0.6)" stroke-width="1"/>
+          <circle cx="275" cy="220" r="4" fill="rgba(201,168,76,0.25)" stroke="rgba(201,168,76,0.5)" stroke-width="1"/>
+          <circle cx="290" cy="240" r="3.5" fill="rgba(201,168,76,0.2)" stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
+          <circle cx="220" cy="270" r="4" fill="rgba(201,168,76,0.2)" stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
+          <circle cx="260" cy="200" r="5" fill="rgba(201,168,76,0.3)" stroke="rgba(201,168,76,0.6)" stroke-width="1"/>
+
+          <!-- High scores, high returns -->
+          <circle cx="330" cy="175" r="5" fill="rgba(201,168,76,0.45)" stroke="rgba(201,168,76,0.8)" stroke-width="1.5"/>
+          <circle cx="355" cy="155" r="6" fill="rgba(201,168,76,0.5)" stroke="#c9a84c" stroke-width="1.5"/>
+          <circle cx="380" cy="140" r="5" fill="rgba(201,168,76,0.45)" stroke="rgba(201,168,76,0.8)" stroke-width="1.5"/>
+          <circle cx="400" cy="120" r="5.5" fill="rgba(201,168,76,0.5)" stroke="#c9a84c" stroke-width="1.5"/>
+          <circle cx="350" cy="185" r="4" fill="rgba(201,168,76,0.4)" stroke="rgba(201,168,76,0.7)" stroke-width="1"/>
+          <circle cx="415" cy="105" r="7" fill="rgba(201,168,76,0.6)" stroke="#e2c97e" stroke-width="2"/>
+          <circle cx="440" cy="125" r="5" fill="rgba(201,168,76,0.5)" stroke="#c9a84c" stroke-width="1.5"/>
+          <circle cx="460" cy="95" r="5.5" fill="rgba(201,168,76,0.55)" stroke="#e2c97e" stroke-width="1.5"/>
+          <circle cx="480" cy="108" r="4.5" fill="rgba(201,168,76,0.5)" stroke="#c9a84c" stroke-width="1.5"/>
+          <circle cx="500" cy="88" r="6" fill="rgba(201,168,76,0.65)" stroke="#e2c97e" stroke-width="2"/>
+          <circle cx="430" cy="145" r="4" fill="rgba(201,168,76,0.45)" stroke="rgba(201,168,76,0.8)" stroke-width="1"/>
+
+          <!-- Correlation label -->
+          <text x="450" y="180" fill="rgba(201,168,76,0.6)" font-family="DM Mono" font-size="7" letter-spacing="1">r = 0.84</text>
+          <text x="300" y="375" text-anchor="middle" fill="rgba(201,168,76,0.3)" font-family="Cormorant Garamond" font-size="13" font-style="italic" letter-spacing="1">Quality of management predicts quality of returns</text>
+
+          <!-- Corner decorations -->
+          <line x1="20" y1="20" x2="55" y2="20" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
+          <line x1="20" y1="20" x2="20" y2="55" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
+          <line x1="580" y1="400" x2="545" y2="400" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
+          <line x1="580" y1="400" x2="580" y2="365" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
+        </svg>
+      </div>
+      <div class="pillar-content">
+        <div class="pillar-number">02 — Research</div>
+        <h2 class="pillar-title">Data-driven &<br><em>anchored in evidence</em></h2>
+        <p class="pillar-text">Our research process is anchored in a proprietary scoring framework that quantifies management quality with the same analytical discipline found in banking and insurance risk models.</p>
+        <div class="pillar-accent">
+          <div class="pillar-accent-line"></div>
+          <div class="pillar-accent-text">Proprietary Scoring Framework</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PILLAR 3: Quantitative Scorecards -->
+    <div class="pillar" id="p3">
+      <div class="pillar-visual">
+        <svg class="pillar-svg" viewBox="0 0 600 420" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="g3" cx="50%" cy="50%" r="55%">
+              <stop offset="0%" stop-color="#c9a84c" stop-opacity="0.07"/>
+              <stop offset="100%" stop-color="#0b1020" stop-opacity="0"/>
+            </radialGradient>
+            <filter id="glow3" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="3" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+
+          <rect width="600" height="420" fill="#0b1020"/>
+          <ellipse cx="300" cy="210" rx="270" ry="190" fill="url(#g3)"/>
+
+          <!-- ── CARD ── -->
+          <rect x="46" y="28" width="508" height="364" rx="4" fill="rgba(201,168,76,0.025)" stroke="rgba(201,168,76,0.18)" stroke-width="1"/>
+
+          <!-- ── HEADER ── -->
+          <rect x="46" y="28" width="508" height="44" rx="4" fill="rgba(201,168,76,0.09)"/>
+          <rect x="46" y="58" width="508" height="14" fill="rgba(201,168,76,0.09)"/>
+          <text x="70" y="53" fill="#c9a84c" font-family="DM Mono" font-size="9" letter-spacing="3">MANAGEMENT SCORECARD</text>
+
+          <!-- ── COLUMN LABELS ── -->
+          <line x1="46" y1="72" x2="554" y2="72" stroke="rgba(201,168,76,0.22)" stroke-width="1"/>
+          <text x="70"  y="87" fill="rgba(201,168,76,0.45)" font-family="DM Mono" font-size="6.5" letter-spacing="1.5">FACTOR</text>
+          <text x="262" y="87" fill="rgba(201,168,76,0.45)" font-family="DM Mono" font-size="6.5" letter-spacing="1.5">SCORE</text>
+          <line x1="46" y1="93" x2="554" y2="93" stroke="rgba(201,168,76,0.1)" stroke-width="1"/>
+
+          <!-- Bar chart: left edge x=262, full bar width=240, score /100 -->
+          <!-- Row height 52px, starting y=93 -->
+
+          <!-- ── ROW 1: Track Record — score 88 ── -->
+          <rect x="46" y="93" width="508" height="52" fill="rgba(201,168,76,0.03)"/>
+          <!-- Factor label -->
+          <text x="70" y="115" fill="#e2c97e" font-family="DM Sans" font-size="11" font-weight="500">Track Record</text>
+          <!-- Bar track -->
+          <rect x="262" y="112" width="240" height="11" rx="2" fill="rgba(201,168,76,0.08)"/>
+          <!-- Bar fill: 88% of 240 = 211px -->
+          <rect x="262" y="112" width="211" height="11" rx="2" fill="rgba(201,168,76,0.55)" filter="url(#glow3)"/>
+          <!-- Score label -->
+          <text x="512" y="122" fill="#c9a84c" font-family="DM Mono" font-size="9" font-weight="500">88</text>
+          <line x1="46" y1="145" x2="554" y2="145" stroke="rgba(201,168,76,0.08)" stroke-width="1"/>
+
+          <!-- ── ROW 2: Shareholding — score 82 ── -->
+          <text x="70" y="167" fill="#d4cfc6" font-family="DM Sans" font-size="11" font-weight="400">Shareholding</text>
+          <rect x="262" y="164" width="240" height="11" rx="2" fill="rgba(201,168,76,0.08)"/>
+          <!-- 82% of 240 = 197px -->
+          <rect x="262" y="164" width="197" height="11" rx="2" fill="rgba(201,168,76,0.45)"/>
+          <text x="512" y="174" fill="#c9a84c" font-family="DM Mono" font-size="9">82</text>
+          <line x1="46" y1="197" x2="554" y2="197" stroke="rgba(201,168,76,0.08)" stroke-width="1"/>
+
+          <!-- ── ROW 3: Incentives — score 79 ── -->
+          <rect x="46" y="197" width="508" height="52" fill="rgba(201,168,76,0.03)"/>
+          <text x="70" y="219" fill="#d4cfc6" font-family="DM Sans" font-size="11" font-weight="400">Incentives</text>
+          <rect x="262" y="216" width="240" height="11" rx="2" fill="rgba(201,168,76,0.08)"/>
+          <!-- 79% of 240 = 190px -->
+          <rect x="262" y="216" width="190" height="11" rx="2" fill="rgba(201,168,76,0.38)"/>
+          <text x="512" y="226" fill="#c9a84c" font-family="DM Mono" font-size="9">79</text>
+          <line x1="46" y1="249" x2="554" y2="249" stroke="rgba(201,168,76,0.08)" stroke-width="1"/>
+
+          <!-- ── ROW 4: Experience — score 74 ── -->
+          <text x="70" y="271" fill="#d4cfc6" font-family="DM Sans" font-size="11" font-weight="400">Experience</text>
+          <rect x="262" y="268" width="240" height="11" rx="2" fill="rgba(201,168,76,0.08)"/>
+          <!-- 74% of 240 = 178px -->
+          <rect x="262" y="268" width="178" height="11" rx="2" fill="rgba(201,168,76,0.3)"/>
+          <text x="512" y="278" fill="#c9a84c" font-family="DM Mono" font-size="9">74</text>
+          <line x1="46" y1="301" x2="554" y2="301" stroke="rgba(201,168,76,0.08)" stroke-width="1"/>
+
+          <!-- ── ROW 5: Qualifications — score 68 ── -->
+          <rect x="46" y="301" width="508" height="52" fill="rgba(201,168,76,0.03)"/>
+          <text x="70" y="323" fill="#d4cfc6" font-family="DM Sans" font-size="11" font-weight="400">Qualifications</text>
+          <rect x="262" y="320" width="240" height="11" rx="2" fill="rgba(201,168,76,0.08)"/>
+          <!-- 68% of 240 = 163px -->
+          <rect x="262" y="320" width="163" height="11" rx="2" fill="rgba(201,168,76,0.22)"/>
+          <text x="512" y="330" fill="#c9a84c" font-family="DM Mono" font-size="9">68</text>
+
+          <!-- ── DIVIDER + COMPOSITE ROW ── -->
+          <line x1="46" y1="353" x2="554" y2="353" stroke="rgba(201,168,76,0.22)" stroke-width="1"/>
+          <rect x="46" y="353" width="508" height="39" rx="0" fill="rgba(201,168,76,0.07)"/>
+          <rect x="46" y="378" width="508" height="14" rx="0" fill="rgba(201,168,76,0.07)"/>
+          <text x="70" y="376" fill="rgba(201,168,76,0.55)" font-family="DM Mono" font-size="7.5" letter-spacing="2">COMPOSITE SCORE</text>
+          <!-- composite bar: 78.2 avg → 188px -->
+          <rect x="262" y="362" width="240" height="13" rx="2" fill="rgba(201,168,76,0.1)"/>
+          <rect x="262" y="362" width="188" height="13" rx="2" fill="rgba(201,168,76,0.6)" filter="url(#glow3)"/>
+          <text x="512" y="374" fill="#e2c97e" font-family="DM Mono" font-size="10" font-weight="500">78.2</text>
+
+          <!-- Column divider -->
+          <line x1="252" y1="72" x2="252" y2="392" stroke="rgba(201,168,76,0.08)" stroke-width="1"/>
+
+          <!-- Corner marks -->
+          <line x1="20" y1="20" x2="44" y2="20" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
+          <line x1="20" y1="20" x2="20" y2="44" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
+          <line x1="580" y1="400" x2="556" y2="400" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
+          <line x1="580" y1="400" x2="580" y2="376" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
+        </svg>
+      </div>
+      <div class="pillar-content">
+        <div class="pillar-number">03 — Methodology</div>
+        <h2 class="pillar-title">Qualitative<br><em>made quantitative</em></h2>
+        <p class="pillar-text">By converting qualitative leadership attributes into quantitative scorecards, we enable objective comparison across companies and sectors — with the rigour of banking and insurance risk models applied to equity selection.</p>
+        <div class="pillar-accent">
+          <div class="pillar-accent-line"></div>
+          <div class="pillar-accent-text">Objective Cross-Sector Comparison</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PILLAR 4: Technology-Enabled -->
+    <div class="pillar" id="p4">
+      <div class="pillar-visual">
+        <svg class="pillar-svg" viewBox="0 0 600 420" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="g4" cx="48%" cy="50%" r="52%">
+              <stop offset="0%" stop-color="#c9a84c" stop-opacity="0.09"/>
+              <stop offset="100%" stop-color="#0a0f1e" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="nodeglow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#c9a84c" stop-opacity="0.35"/>
+              <stop offset="100%" stop-color="#c9a84c" stop-opacity="0"/>
+            </radialGradient>
+            <filter id="glow4" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="3.5" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <filter id="softglow" x="-80%" y="-80%" width="260%" height="260%">
+              <feGaussianBlur stdDeviation="6" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+
+          <rect width="600" height="420" fill="#0b1020"/>
+          <ellipse cx="300" cy="210" rx="240" ry="185" fill="url(#g4)"/>
+
+          <!-- ── CONSTELLATION EDGES (drawn first, behind nodes) ── -->
+          <!-- inspired by the interconnected dot-cluster in the BoardAM logo -->
+
+          <!-- Edges from central hub -->
+          <line x1="300" y1="210" x2="175" y2="130" stroke="rgba(201,168,76,0.22)" stroke-width="1"/>
+          <line x1="300" y1="210" x2="300" y2="82"  stroke="rgba(201,168,76,0.18)" stroke-width="1"/>
+          <line x1="300" y1="210" x2="425" y2="130" stroke="rgba(201,168,76,0.22)" stroke-width="1"/>
+          <line x1="300" y1="210" x2="460" y2="220" stroke="rgba(201,168,76,0.18)" stroke-width="1"/>
+          <line x1="300" y1="210" x2="425" y2="300" stroke="rgba(201,168,76,0.22)" stroke-width="1"/>
+          <line x1="300" y1="210" x2="300" y2="340" stroke="rgba(201,168,76,0.18)" stroke-width="1"/>
+          <line x1="300" y1="210" x2="175" y2="300" stroke="rgba(201,168,76,0.22)" stroke-width="1"/>
+          <line x1="300" y1="210" x2="140" y2="220" stroke="rgba(201,168,76,0.18)" stroke-width="1"/>
+
+          <!-- Cross-edges between outer nodes (like the logo cluster) -->
+          <line x1="175" y1="130" x2="300" y2="82"  stroke="rgba(201,168,76,0.1)" stroke-width="0.75"/>
+          <line x1="300" y1="82"  x2="425" y2="130" stroke="rgba(201,168,76,0.1)" stroke-width="0.75"/>
+          <line x1="425" y1="130" x2="460" y2="220" stroke="rgba(201,168,76,0.1)" stroke-width="0.75"/>
+          <line x1="460" y1="220" x2="425" y2="300" stroke="rgba(201,168,76,0.1)" stroke-width="0.75"/>
+          <line x1="425" y1="300" x2="300" y2="340" stroke="rgba(201,168,76,0.1)" stroke-width="0.75"/>
+          <line x1="300" y1="340" x2="175" y2="300" stroke="rgba(201,168,76,0.1)" stroke-width="0.75"/>
+          <line x1="175" y1="300" x2="140" y2="220" stroke="rgba(201,168,76,0.1)" stroke-width="0.75"/>
+          <line x1="140" y1="220" x2="175" y2="130" stroke="rgba(201,168,76,0.1)" stroke-width="0.75"/>
+
+          <!-- Extra diagonal cross-links (denser cluster feel) -->
+          <line x1="175" y1="130" x2="425" y2="300" stroke="rgba(201,168,76,0.06)" stroke-width="0.75"/>
+          <line x1="425" y1="130" x2="175" y2="300" stroke="rgba(201,168,76,0.06)" stroke-width="0.75"/>
+          <line x1="140" y1="220" x2="460" y2="220" stroke="rgba(201,168,76,0.06)" stroke-width="0.75"/>
+          <line x1="300" y1="82"  x2="300" y2="340" stroke="rgba(201,168,76,0.05)" stroke-width="0.75"/>
+          <line x1="175" y1="130" x2="460" y2="220" stroke="rgba(201,168,76,0.05)" stroke-width="0.75"/>
+          <line x1="425" y1="130" x2="140" y2="220" stroke="rgba(201,168,76,0.05)" stroke-width="0.75"/>
+
+          <!-- ── OUTER NODES (satellite data sources) ── -->
+          <!-- Top-left: Mgmt Data -->
+          <circle cx="175" cy="130" r="28" fill="rgba(201,168,76,0.06)" stroke="rgba(201,168,76,0.28)" stroke-width="1"/>
+          <circle cx="175" cy="130" r="4" fill="#c9a84c" opacity="0.7"/>
+          <text x="175" y="119" text-anchor="middle" fill="rgba(201,168,76,0.55)" font-family="DM Mono" font-size="5.5" letter-spacing="1.5">MGMT</text>
+          <text x="175" y="148" text-anchor="middle" fill="#8a8578" font-family="DM Mono" font-size="5" letter-spacing="1">SIGNALS</text>
+
+          <!-- Top-centre: Filings -->
+          <circle cx="300" cy="82" r="24" fill="rgba(201,168,76,0.06)" stroke="rgba(201,168,76,0.28)" stroke-width="1"/>
+          <circle cx="300" cy="82" r="3.5" fill="#c9a84c" opacity="0.65"/>
+          <text x="300" y="73" text-anchor="middle" fill="rgba(201,168,76,0.55)" font-family="DM Mono" font-size="5.5" letter-spacing="1.5">REG</text>
+          <text x="300" y="97" text-anchor="middle" fill="#8a8578" font-family="DM Mono" font-size="5" letter-spacing="1">FILINGS</text>
+
+          <!-- Top-right: Alt Data -->
+          <circle cx="425" cy="130" r="28" fill="rgba(201,168,76,0.06)" stroke="rgba(201,168,76,0.28)" stroke-width="1"/>
+          <circle cx="425" cy="130" r="4" fill="#c9a84c" opacity="0.7"/>
+          <text x="425" y="119" text-anchor="middle" fill="rgba(201,168,76,0.55)" font-family="DM Mono" font-size="5.5" letter-spacing="1.5">ALT</text>
+          <text x="425" y="148" text-anchor="middle" fill="#8a8578" font-family="DM Mono" font-size="5" letter-spacing="1">DATA</text>
+
+          <!-- Right: NLP -->
+          <circle cx="460" cy="220" r="24" fill="rgba(201,168,76,0.06)" stroke="rgba(201,168,76,0.28)" stroke-width="1"/>
+          <circle cx="460" cy="220" r="3.5" fill="#c9a84c" opacity="0.65"/>
+          <text x="460" y="211" text-anchor="middle" fill="rgba(201,168,76,0.55)" font-family="DM Mono" font-size="5.5" letter-spacing="1.5">NLP</text>
+          <text x="460" y="234" text-anchor="middle" fill="#8a8578" font-family="DM Mono" font-size="5" letter-spacing="1">ANALYSIS</text>
+
+          <!-- Bottom-right: Screens -->
+          <circle cx="425" cy="300" r="28" fill="rgba(201,168,76,0.06)" stroke="rgba(201,168,76,0.28)" stroke-width="1"/>
+          <circle cx="425" cy="300" r="4" fill="#c9a84c" opacity="0.7"/>
+          <text x="425" y="289" text-anchor="middle" fill="rgba(201,168,76,0.55)" font-family="DM Mono" font-size="5.5" letter-spacing="1.5">PROP</text>
+          <text x="425" y="318" text-anchor="middle" fill="#8a8578" font-family="DM Mono" font-size="5" letter-spacing="1">SCREENS</text>
+
+          <!-- Bottom-centre: Portfolio -->
+          <circle cx="300" cy="340" r="24" fill="rgba(201,168,76,0.06)" stroke="rgba(201,168,76,0.28)" stroke-width="1"/>
+          <circle cx="300" cy="340" r="3.5" fill="#c9a84c" opacity="0.65"/>
+          <text x="300" y="331" text-anchor="middle" fill="rgba(201,168,76,0.55)" font-family="DM Mono" font-size="5.5" letter-spacing="1.5">PORT</text>
+          <text x="300" y="355" text-anchor="middle" fill="#8a8578" font-family="DM Mono" font-size="5" letter-spacing="1">FOLIO</text>
+
+          <!-- Bottom-left: Scorecards -->
+          <circle cx="175" cy="300" r="28" fill="rgba(201,168,76,0.06)" stroke="rgba(201,168,76,0.28)" stroke-width="1"/>
+          <circle cx="175" cy="300" r="4" fill="#c9a84c" opacity="0.7"/>
+          <text x="175" y="289" text-anchor="middle" fill="rgba(201,168,76,0.55)" font-family="DM Mono" font-size="5.5" letter-spacing="1.5">SCORE</text>
+          <text x="175" y="318" text-anchor="middle" fill="#8a8578" font-family="DM Mono" font-size="5" letter-spacing="1">CARDS</text>
+
+          <!-- Left: Risk Model -->
+          <circle cx="140" cy="220" r="24" fill="rgba(201,168,76,0.06)" stroke="rgba(201,168,76,0.28)" stroke-width="1"/>
+          <circle cx="140" cy="220" r="3.5" fill="#c9a84c" opacity="0.65"/>
+          <text x="140" y="211" text-anchor="middle" fill="rgba(201,168,76,0.55)" font-family="DM Mono" font-size="5.5" letter-spacing="1.5">RISK</text>
+          <text x="140" y="234" text-anchor="middle" fill="#8a8578" font-family="DM Mono" font-size="5" letter-spacing="1">MODELS</text>
+
+          <!-- ── CENTRAL HUB — BoardAM engine ── -->
+          <!-- Soft aura -->
+          <circle cx="300" cy="210" r="52" fill="rgba(201,168,76,0.07)" filter="url(#softglow)"/>
+          <!-- Outer ring -->
+          <circle cx="300" cy="210" r="42" fill="rgba(201,168,76,0.06)" stroke="rgba(201,168,76,0.35)" stroke-width="1" stroke-dasharray="4,3"/>
+          <!-- Inner filled -->
+          <circle cx="300" cy="210" r="30" fill="rgba(11,16,32,0.95)" stroke="#c9a84c" stroke-width="1.5" filter="url(#glow4)"/>
+          <!-- Core dot cluster — echo of the logo mark -->
+          <circle cx="300" cy="210" r="10" fill="rgba(201,168,76,0.18)" stroke="rgba(201,168,76,0.6)" stroke-width="1"/>
+          <!-- Tiny satellite dots around inner core -->
+          <circle cx="300" cy="198" r="2.5" fill="#c9a84c" opacity="0.8"/>
+          <circle cx="310" cy="214" r="2"   fill="#c9a84c" opacity="0.6"/>
+          <circle cx="290" cy="216" r="1.8" fill="#c9a84c" opacity="0.5"/>
+          <circle cx="306" cy="202" r="1.5" fill="#c9a84c" opacity="0.45"/>
+          <!-- Connector micro-lines inside core -->
+          <line x1="300" y1="198" x2="310" y2="214" stroke="rgba(201,168,76,0.4)" stroke-width="0.75"/>
+          <line x1="300" y1="198" x2="290" y2="216" stroke="rgba(201,168,76,0.35)" stroke-width="0.75"/>
+          <line x1="310" y1="214" x2="290" y2="216" stroke="rgba(201,168,76,0.3)" stroke-width="0.75"/>
+          <!-- Label -->
+          <text x="300" y="252" text-anchor="middle" fill="rgba(201,168,76,0.55)" font-family="DM Mono" font-size="6" letter-spacing="2.5">BOARDAM ENGINE</text>
+
+          <!-- Caption -->
+          <text x="300" y="395" text-anchor="middle" fill="rgba(201,168,76,0.28)" font-family="Cormorant Garamond" font-size="12.5" font-style="italic" letter-spacing="1">Technology-enabled, systematically repeatable</text>
+
+          <!-- Corner marks -->
+          <line x1="20" y1="20" x2="55" y2="20" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
+          <line x1="20" y1="20" x2="20" y2="55" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
+          <line x1="580" y1="20" x2="545" y2="20" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
+          <line x1="580" y1="20" x2="580" y2="55" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
+          <line x1="20" y1="400" x2="55" y2="400" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
+          <line x1="20" y1="400" x2="20" y2="365" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
+          <line x1="580" y1="400" x2="545" y2="400" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
+          <line x1="580" y1="400" x2="580" y2="365" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
+        </svg>
+      </div>
+      <div class="pillar-content">
+        <div class="pillar-number">04 — Technology</div>
+        <h2 class="pillar-title">Rigorous &<br><em>technology-enabled</em></h2>
+        <p class="pillar-text">A technology-enabled approach forms the foundation of a systematic, repeatable investment process — combining alternative data, NLP analysis, regulatory filings, and proprietary screens into a single analytical engine.</p>
+        <div class="pillar-accent">
+          <div class="pillar-accent-line"></div>
+          <div class="pillar-accent-text">Systematic & Repeatable</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PILLAR 5: Alpha Generation -->
+    <div class="pillar" id="p5">
+      <div class="pillar-visual">
+        <svg class="pillar-svg" viewBox="0 0 600 420" xmlns="http://www.w3.org/2000/svg">
+          <!--
+            Data: $100 grows to ~$1,600 (BAM 14.7% CAGR) and ~$740 (Benchmark 10.6% CAGR) over 2005-2025.
+            Chart area: x 68–530, y 55–330 (baseline). Y-axis: $0 at y=330, $1600 at y=55.
+            Scale: (330-55)/1600 = 0.172px per dollar. So $100 = y 312.8, $200=295.6, $400=261, $600=227, $800=192, $1000=158, $1200=124, $1400=89, $1600=55
+            X-axis: 2005 at x=68, 2025 at x=530. 20 years, each year = 23.1px.
+            Key inflection points matched from chart:
+            - 2005: $100 both
+            - 2008: BAM drops to ~$85, BMK drops to ~$80 (GFC)
+            - 2009: BAM ~$100, BMK ~$90 (recovery)
+            - 2013: BAM ~$210, BMK ~$160
+            - 2016: BAM ~$280, BMK ~$200
+            - 2018 peak: BAM ~$380, BMK ~$280 — dip end 2018
+            - 2020 covid dip: BAM ~$380, BMK ~$270 then sharp recovery
+            - 2021: BAM ~$700, BMK ~$430
+            - 2022 dip: BAM ~$560, BMK ~$360
+            - 2023: BAM ~$850, BMK ~$480
+            - 2024: BAM ~$1200, BMK ~$620
+            - 2025: BAM ~$1600, BMK ~$740
+          -->
+          <defs>
+            <radialGradient id="g5" cx="55%" cy="60%" r="55%">
+              <stop offset="0%" stop-color="#c9a84c" stop-opacity="0.08"/>
+              <stop offset="100%" stop-color="#0a0f1e" stop-opacity="0"/>
+            </radialGradient>
+            <filter id="glow5" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="2" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <linearGradient id="bamFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#c9a84c" stop-opacity="0.18"/>
+              <stop offset="100%" stop-color="#c9a84c" stop-opacity="0.02"/>
+            </linearGradient>
+            <linearGradient id="bmkFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#4a6080" stop-opacity="0.15"/>
+              <stop offset="100%" stop-color="#4a6080" stop-opacity="0.01"/>
+            </linearGradient>
+            <clipPath id="chartClip">
+              <rect x="68" y="55" width="462" height="275"/>
+            </clipPath>
+          </defs>
+
+          <rect width="600" height="420" fill="#0b1020"/>
+          <rect x="68" y="55" width="462" height="275" fill="rgba(201,168,76,0.015)" rx="2"/>
+
+          <!-- ── GRID ── -->
+          <!-- Horizontal: $400=261, $800=192, $1200=124 -->
+          <line x1="68" y1="261" x2="530" y2="261" stroke="rgba(201,168,76,0.07)" stroke-width="1" stroke-dasharray="3,6"/>
+          <line x1="68" y1="192" x2="530" y2="192" stroke="rgba(201,168,76,0.07)" stroke-width="1" stroke-dasharray="3,6"/>
+          <line x1="68" y1="124" x2="530" y2="124" stroke="rgba(201,168,76,0.07)" stroke-width="1" stroke-dasharray="3,6"/>
+          <!-- Vertical: 2010=184, 2015=299, 2020=415 -->
+          <line x1="184" y1="55" x2="184" y2="330" stroke="rgba(201,168,76,0.07)" stroke-width="1" stroke-dasharray="3,6"/>
+          <line x1="299" y1="55" x2="299" y2="330" stroke="rgba(201,168,76,0.07)" stroke-width="1" stroke-dasharray="3,6"/>
+          <line x1="415" y1="55" x2="415" y2="330" stroke="rgba(201,168,76,0.07)" stroke-width="1" stroke-dasharray="3,6"/>
+
+          <!-- ── Y-AXIS LABELS ── -->
+          <text x="62" y="334" text-anchor="end" fill="#8a8578" font-family="DM Mono" font-size="7">$0</text>
+          <text x="62" y="265" text-anchor="end" fill="#8a8578" font-family="DM Mono" font-size="7">$400</text>
+          <text x="62" y="196" text-anchor="end" fill="#8a8578" font-family="DM Mono" font-size="7">$800</text>
+          <text x="62" y="128" text-anchor="end" fill="#8a8578" font-family="DM Mono" font-size="7">$1200</text>
+          <text x="62" y="59" text-anchor="end" fill="#8a8578" font-family="DM Mono" font-size="7">$1600</text>
+
+          <!-- ── X-AXIS LABELS ── -->
+          <text x="68"  y="348" text-anchor="middle" fill="#8a8578" font-family="DM Mono" font-size="7">2005</text>
+          <text x="184" y="348" text-anchor="middle" fill="#8a8578" font-family="DM Mono" font-size="7">2010</text>
+          <text x="299" y="348" text-anchor="middle" fill="#8a8578" font-family="DM Mono" font-size="7">2015</text>
+          <text x="415" y="348" text-anchor="middle" fill="#8a8578" font-family="DM Mono" font-size="7">2020</text>
+          <text x="530" y="348" text-anchor="middle" fill="#8a8578" font-family="DM Mono" font-size="7">2025</text>
+
+          <!-- ── AXES ── -->
+          <line x1="68" y1="330" x2="530" y2="330" stroke="rgba(201,168,76,0.25)" stroke-width="1"/>
+          <line x1="68" y1="55"  x2="68"  y2="330" stroke="rgba(201,168,76,0.25)" stroke-width="1"/>
+
+          <!-- ── BENCHMARK FILL (under BMK line) ── -->
+          <polygon clip-path="url(#chartClip)"
+            points="68,313
+                    75,314 80,315 88,318
+                    100,323 107,325 115,321 120,318
+                    130,316 138,314 145,313 150,313
+                    160,311 165,311 170,310 176,308 184,304
+                    192,302 200,300 207,299 214,299
+                    222,297 230,296 237,294 242,292 250,292
+                    258,290 265,289 270,287 276,285 284,283
+                    292,282 299,280 306,278 311,278 318,276
+                    325,275 330,274 338,273 345,272 353,271
+                    361,270 368,269 376,266 384,263 392,261
+                    398,260 403,259 410,258 415,258 420,257
+                    428,255 435,252 441,250 445,249 452,247
+                    460,245 465,243 471,241 477,239 484,237
+                    492,234 498,231 503,229 510,227 518,224
+                    523,222 530,220
+                    530,330 68,330"
+            fill="url(#bmkFill)"/>
+
+          <!-- ── BAM FILL (under BAM line) ── -->
+          <polygon clip-path="url(#chartClip)"
+            points="68,313
+                    75,314 80,315 88,318
+                    100,321 107,322 115,317 120,313
+                    130,310 138,307 145,306 150,306
+                    160,302 165,300 170,298 176,295 184,289
+                    192,286 200,283 207,281 214,280
+                    222,276 230,273 237,270 242,268 250,267
+                    258,264 265,261 270,257 276,253 284,250
+                    292,247 299,244 306,241 311,240 318,237
+                    325,235 330,234 338,231 345,228 353,225
+                    361,222 368,218 376,213 384,207 392,203
+                    398,202 403,202 410,202 415,202 420,200
+                    425,196 430,188 435,180 440,174 445,170
+                    452,164 455,163 460,159 465,152 471,143
+                    477,133 484,122 492,110 498,99 503,90
+                    510,80 518,70 523,64 530,55
+                    530,330 68,330"
+            fill="url(#bamFill)"/>
+
+          <!-- ── BENCHMARK LINE (dashed, blue-grey) ── -->
+          <polyline clip-path="url(#chartClip)"
+            points="68,313
+                    75,314 80,315 88,318
+                    100,323 107,325 115,321 120,318
+                    130,316 138,314 145,313 150,313
+                    160,311 165,311 170,310 176,308 184,304
+                    192,302 200,300 207,299 214,299
+                    222,297 230,296 237,294 242,292 250,292
+                    258,290 265,289 270,287 276,285 284,283
+                    292,282 299,280 306,278 311,278 318,276
+                    325,275 330,274 338,273 345,272 353,271
+                    361,270 368,269 376,266 384,263 392,261
+                    398,260 403,259 410,258 415,258 420,257
+                    428,255 435,252 441,250 445,249 452,247
+                    460,245 465,243 471,241 477,239 484,237
+                    492,234 498,231 503,229 510,227 518,224
+                    523,222 530,220"
+            fill="none" stroke="#5a7898" stroke-width="1.5" stroke-dasharray="6,4"/>
+
+          <!-- ── BAM LINE (solid gold) ── -->
+          <polyline clip-path="url(#chartClip)"
+            points="68,313
+                    75,314 80,315 88,318
+                    100,321 107,322 115,317 120,313
+                    130,310 138,307 145,306 150,306
+                    160,302 165,300 170,298 176,295 184,289
+                    192,286 200,283 207,281 214,280
+                    222,276 230,273 237,270 242,268 250,267
+                    258,264 265,261 270,257 276,253 284,250
+                    292,247 299,244 306,241 311,240 318,237
+                    325,235 330,234 338,231 345,228 353,225
+                    361,222 368,218 376,213 384,207 392,203
+                    398,202 403,202 410,202 415,202 420,200
+                    425,196 430,188 435,180 440,174 445,170
+                    452,164 455,163 460,159 465,152 471,143
+                    477,133 484,122 492,110 498,99 503,90
+                    510,80 518,70 523,64 530,55"
+            fill="none" stroke="#c9a84c" stroke-width="2" filter="url(#glow5)"/>
+
+          <!-- ── ENDPOINT DOTS ── -->
+          <circle cx="530" cy="55"  r="4" fill="#c9a84c" filter="url(#glow5)"/>
+          <circle cx="530" cy="220" r="3.5" fill="#5a7898" opacity="0.8"/>
+
+          <!-- ── CAGR LABELS (mirroring the real chart style) ── -->
+          <!-- BAM label -->
+          <line x1="530" y1="55" x2="548" y2="72" stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
+          <rect x="548" y="62" width="38" height="26" rx="2" fill="rgba(11,16,32,0.85)" stroke="rgba(201,168,76,0.3)" stroke-width="0.75"/>
+          <text x="567" y="73" text-anchor="middle" fill="#c9a84c" font-family="DM Mono" font-size="6.5" font-weight="500">CAGR</text>
+          <text x="567" y="83" text-anchor="middle" fill="#e2c97e" font-family="DM Mono" font-size="7.5" font-weight="500">14.7%</text>
+
+          <!-- Benchmark label -->
+          <line x1="530" y1="220" x2="548" y2="232" stroke="rgba(90,120,152,0.4)" stroke-width="1"/>
+          <rect x="548" y="222" width="38" height="26" rx="2" fill="rgba(11,16,32,0.85)" stroke="rgba(90,120,152,0.3)" stroke-width="0.75"/>
+          <text x="567" y="233" text-anchor="middle" fill="#5a7898" font-family="DM Mono" font-size="6.5">CAGR</text>
+          <text x="567" y="243" text-anchor="middle" fill="#7a98b8" font-family="DM Mono" font-size="7.5">10.6%</text>
+
+          <!-- ── ALPHA BRACKET ── -->
+          <line x1="540" y1="55"  x2="544" y2="55"  stroke="rgba(201,168,76,0.5)" stroke-width="1"/>
+          <line x1="544" y1="55"  x2="544" y2="220" stroke="rgba(201,168,76,0.35)" stroke-width="1"/>
+          <line x1="540" y1="220" x2="544" y2="220" stroke="rgba(201,168,76,0.5)" stroke-width="1"/>
+          <text x="542" y="142" text-anchor="middle" fill="#c9a84c" font-family="Cormorant Garamond" font-size="22" font-style="italic" transform="rotate(0)">α</text>
+
+          <!-- ── LEGEND ── -->
+          <rect x="80" y="65" width="130" height="36" rx="3" fill="rgba(11,16,32,0.7)" stroke="rgba(201,168,76,0.12)" stroke-width="1"/>
+          <line x1="90" y1="79" x2="108" y2="79" stroke="#c9a84c" stroke-width="1.5"/>
+          <circle cx="99" cy="79" r="2.5" fill="#c9a84c"/>
+          <text x="113" y="82" fill="#d4cfc6" font-family="DM Mono" font-size="6.5" letter-spacing="1">BAM</text>
+          <line x1="90" y1="93" x2="108" y2="93" stroke="#5a7898" stroke-width="1.5" stroke-dasharray="5,3"/>
+          <text x="113" y="96" fill="#8a8578" font-family="DM Mono" font-size="6.5" letter-spacing="1">BENCHMARK</text>
+
+          <!-- ── TITLE ── -->
+          <text x="300" y="40" text-anchor="middle" fill="rgba(201,168,76,0.6)" font-family="Cormorant Garamond" font-size="13" font-style="italic" letter-spacing="1">Growth of $100 · 2005 – 2025</text>
+
+          <!-- ── DISCLAIMER ── -->
+          <text x="300" y="375" text-anchor="middle" fill="rgba(201,168,76,0.22)" font-family="DM Mono" font-size="5.5" letter-spacing="0.5">Hypothetical backtest. Past performance is not indicative of future results.</text>
+
+          <!-- Corner marks -->
+          <line x1="20" y1="20" x2="55" y2="20" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
+          <line x1="20" y1="20" x2="20" y2="55" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
+          <line x1="580" y1="400" x2="545" y2="400" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
+          <line x1="580" y1="400" x2="580" y2="365" stroke="rgba(201,168,76,0.2)" stroke-width="1"/>
+        </svg>
+      </div>
+      <div class="pillar-content">
+        <div class="pillar-number">05 — Outcome</div>
+        <h2 class="pillar-title">Systematic,<br><em>alpha-generating</em></h2>
+        <p class="pillar-text">This rigorous, technology-enabled approach forms the foundation of a systematic, repeatable investment process — one built to generate consistent alpha by investing where management quality compounds returns over time.</p>
+        <div class="pillar-accent">
+          <div class="pillar-accent-line"></div>
+          <div class="pillar-accent-text">Consistent Outperformance</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Board<span>AM</span></div>
+  <div class="footer-copy">© 2025 Board Assessment Management. All rights reserved.</div>
+</footer>
+
+<script>
+  // Intersection Observer for pillar animations
+  const pillars = document.querySelectorAll('.pillar');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  pillars.forEach(p => observer.observe(p));
+
+  // Smooth nav highlight
+  const navLinks = document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll', () => {
+    const scrollY = window.scrollY;
+    navLinks.forEach(link => {
+      const href = link.getAttribute('href');
+      if (href && href.startsWith('#')) {
+        const section = document.querySelector(href);
+        if (section) {
+          const top = section.offsetTop - 100;
+          const bottom = top + section.offsetHeight;
+          link.style.color = scrollY >= top && scrollY < bottom ? '#c9a84c' : '';
+        }
+      }
+    });
+  });
+</script>
+</body>
+</html>

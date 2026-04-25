@@ -1,142 +1,1255 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="./styles.css" />
-    <title>Board Assessment Management</title>
-    <link rel="icon" type="image/svg+xml" href="./static/BoardAM_Icon.svg">
-    </head>
-  <body>
-    <nav id="navbar">
-      <div class="nav-container">
-        <div class="logo">
-          <img src="./static/BoardAM_Logo.svg" alt="Board Assessment Management">
-        </div>
-        <ul class="nav-links">
-          <li><a href="#about">About</a></li>
-          <li><a href="#team">Team</a></li>
-          <li><a href="#model">Model</a></li>
-          <li><a href="#contact">Contact</a></li>
-        </ul>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Board Assessment Management</title>
+  <link rel="icon" type="image/svg+xml" href="./static/BoardAM_Icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    :root {
+      --navy:    #0a1220;
+      --card:    #111e2f;
+      --border:  #0f1e30;
+      --border2: #1e3450;
+      --blue:    #7aa8d0;
+      --blue2:   #4a7a9a;
+      --blue3:   #2e5070;
+      --dim:     #3a6080;
+      --text:    #6a8aa8;
+      --bright:  #c8dff0;
+      --gold:    #c9a84c;
+    }
+
+    body {
+      background: var(--navy);
+      font-family: 'DM Sans', sans-serif;
+      color: var(--bright);
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      opacity: 0.3;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      height: 60px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(10,18,32,0.92);
+      backdrop-filter: blur(20px);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+    .nav-logo img { height: 22px; width: auto; }
+    .nav-logo-text {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 300;
+      letter-spacing: 0.05em;
+      color: var(--bright);
+    }
+    .nav-logo-text span { color: var(--blue2); }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+    .nav-links a {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--dim);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover { color: var(--blue); }
+
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .nav-hamburger span {
+      display: block;
+      width: 22px;
+      height: 1.5px;
+      background: var(--dim);
+      transition: background 0.3s;
+    }
+    .nav-hamburger:hover span { background: var(--blue); }
+
+    .nav-mobile {
+      display: none;
+      position: fixed;
+      top: 60px; left: 0; right: 0;
+      background: rgba(10,18,32,0.98);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 1.5rem 2rem;
+      z-index: 499;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+    .nav-mobile.open { display: flex; }
+    .nav-mobile a {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--dim);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .nav-mobile a:hover { color: var(--blue); }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      padding-top: 60px;
+    }
+
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(122,168,208,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(122,168,208,0.04) 1px, transparent 1px);
+      background-size: 70px 70px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 100%);
+      animation: gridDrift 24s linear infinite;
+    }
+    @keyframes gridDrift {
+      0%   { transform: translateY(0); }
+      100% { transform: translateY(70px); }
+    }
+
+    .hero-radial {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 70% at 50% 55%, rgba(122,168,208,0.06) 0%, transparent 70%);
+    }
+
+    .hero-logo-wrap {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      animation: heroFadeUp 1s ease both;
+    }
+    @keyframes heroFadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-logo { width: clamp(240px, 38vw, 420px); height: auto; }
+
+    .hero-divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--border2), transparent);
+    }
+
+    .hero-cta {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--dim);
+      animation: heroFadeUp 1s 0.3s ease both;
+    }
+
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      z-index: 1;
+      animation: heroFadeUp 1s 0.6s ease both;
+    }
+    .scroll-indicator span {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--border2);
+    }
+    .scroll-line {
+      width: 1px;
+      height: 36px;
+      background: linear-gradient(to bottom, var(--border2), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.4; }
+      50%       { opacity: 1; }
+    }
+
+    /* ── PROCESS SECTION ── */
+    #process { height: 500vh; position: relative; }
+
+    .process-sticky {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 0 20px;
+    }
+
+    .process-inner {
+      width: 100%;
+      max-width: 900px;
+      background: var(--navy);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 28px 28px 22px;
+    }
+
+    .process-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .process-title {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--blue);
+    }
+    .title-rule { width: 100%; height: 1px; background: var(--border); margin-bottom: 6px; margin-top: 16px; }
+
+    .step-label {
+      text-align: center;
+      margin-bottom: 18px;
+      min-height: 36px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+    }
+    .step-name { font-size: 15px; font-weight: 600; color: var(--bright); letter-spacing: 0.04em; transition: opacity 0.4s; }
+    .step-desc { font-size: 11px; color: var(--dim); font-family: 'DM Mono', monospace; letter-spacing: 0.06em; transition: opacity 0.4s; }
+
+    /* ── PIPELINE ── */
+    .pipeline {
+      display: grid;
+      grid-template-columns: 1fr 36px 1fr 36px 1fr 36px 1fr;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 20px;
+    }
+
+    .arrow-col { display: flex; align-items: center; justify-content: center; }
+    .arrow {
+      width: 28px; height: 2px;
+      background: var(--border2);
+      position: relative;
+      transition: background 0.4s;
+    }
+    .arrow::after {
+      content: '';
+      position: absolute;
+      right: -1px; top: -4px;
+      border: 5px solid transparent;
+      border-left: 7px solid var(--border2);
+      transition: border-left-color 0.4s;
+    }
+    .arrow.active { background: var(--blue); }
+    .arrow.active::after { border-left-color: var(--blue); }
+
+    .stage {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 18px 14px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: border-color 0.4s, box-shadow 0.4s, background 0.4s;
+      min-height: 200px;
+    }
+    .stage.active {
+      border-color: var(--blue2);
+      box-shadow: 0 0 24px rgba(122,168,208,0.12), inset 0 0 20px rgba(122,168,208,0.04);
+      background: #131f32;
+    }
+    .stage-icon { width: 52px; height: 52px; opacity: 0.45; transition: opacity 0.4s; }
+    .stage.active .stage-icon { opacity: 1; }
+    .stage-title {
+      font-family: 'DM Mono', monospace;
+      font-size: 8.5px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--blue3);
+      text-align: center;
+      transition: color 0.4s;
+    }
+    .stage.active .stage-title { color: var(--blue); }
+    .stage-content {
+      width: 100%;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 0.5s 0.2s, transform 0.5s 0.2s;
+    }
+    .stage.active .stage-content { opacity: 1; transform: translateY(0); }
+
+    .filing-lines { display: flex; flex-direction: column; gap: 5px; }
+    .filing-line { height: 5px; border-radius: 2px; background: var(--border2); animation: none; }
+    .stage.active .filing-line { animation: fillLine 0.4s ease forwards; }
+    .filing-line:nth-child(1) { width: 90%; animation-delay: 0.1s; }
+    .filing-line:nth-child(2) { width: 75%; animation-delay: 0.2s; }
+    .filing-line:nth-child(3) { width: 85%; animation-delay: 0.3s; }
+    .filing-line:nth-child(4) { width: 60%; animation-delay: 0.4s; }
+    .filing-line:nth-child(5) { width: 80%; animation-delay: 0.5s; }
+    .filing-line:nth-child(6) { width: 55%; animation-delay: 0.6s; }
+    @keyframes fillLine { from { background: var(--border2); } to { background: var(--blue2); } }
+    .filing-tag {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 8px;
+      color: var(--blue3);
+      letter-spacing: 0.08em;
+      border: 1px solid var(--border2);
+      border-radius: 3px;
+      padding: 2px 6px;
+      margin-top: 4px;
+    }
+    .stage.active .filing-tag { color: var(--blue); border-color: var(--blue2); }
+
+    .model-nodes { position: relative; width: 80px; height: 80px; margin: 0 auto; }
+    .model-nodes svg { width: 100%; height: 100%; }
+    .stage.active .model-nodes svg { animation: spinSlow 4s linear infinite; }
+    @keyframes spinSlow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    .model-badge { text-align: center; font-family: 'DM Mono', monospace; font-size: 8px; color: var(--blue3); letter-spacing: 0.06em; line-height: 1.5; }
+    .stage.active .model-badge { color: var(--blue2); }
+
+    .scorecard { background: #0c1828; border: 1px solid var(--border2); border-radius: 5px; overflow: hidden; width: 100%; }
+    .scorecard-header { background: var(--blue2); padding: 4px 8px; display: flex; justify-content: space-between; align-items: center; }
+    .sc-name { font-family: 'DM Mono', monospace; font-size: 7.5px; font-weight: 600; letter-spacing: 0.06em; color: #fff; }
+    .sc-sector { font-family: 'DM Mono', monospace; font-size: 7px; color: rgba(255,255,255,0.7); letter-spacing: 0.08em; }
+    .scorecard-body { padding: 6px 8px; }
+    .sc-row { display: flex; justify-content: space-between; align-items: center; padding: 2.5px 0; border-bottom: 1px solid rgba(122,168,208,0.08); }
+    .sc-row:last-child { border-bottom: none; }
+    .sc-metric { font-family: 'DM Mono', monospace; font-size: 7.5px; color: var(--dim); letter-spacing: 0.04em; text-transform: uppercase; }
+    .sc-val { font-family: 'DM Mono', monospace; font-size: 8.5px; font-weight: 600; color: var(--blue); min-width: 22px; text-align: right; transition: color 0.3s; }
+    .sc-bar-wrap { width: 40px; height: 3px; background: var(--border); border-radius: 2px; margin-left: 6px; overflow: hidden; }
+    .sc-bar { height: 100%; border-radius: 2px; background: var(--blue2); width: 0; transition: width 0.8s ease; }
+    .stage.active .sc-bar { width: var(--w); }
+
+    .pie-wrap { width: 80px; height: 80px; margin: 0 auto; position: relative; }
+    .pie-wrap svg { width: 100%; height: 100%; }
+    .pie-seg { transition: stroke-dasharray 0.8s ease, opacity 0.5s; opacity: 0; }
+    .stage.active .pie-seg { opacity: 1; }
+    .port-legend { display: flex; flex-direction: column; gap: 3px; width: 100%; }
+    .port-row { display: flex; align-items: center; gap: 5px; font-family: 'DM Mono', monospace; font-size: 7.5px; color: var(--dim); letter-spacing: 0.04em; }
+    .port-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .port-pct { margin-left: auto; color: var(--blue2); font-size: 8px; }
+
+    .progress { display: flex; justify-content: center; gap: 8px; margin-bottom: 10px; }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border2); transition: background 0.3s, transform 0.3s; cursor: pointer; }
+    .dot.active { background: var(--blue); transform: scale(1.25); }
+
+    .process-scroll-hint { text-align: center; font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--border2); margin-bottom: 8px; }
+    .disclaimer { font-size: 9px; color: #2a4a68; font-style: italic; text-align: center; }
+
+    /* ── COMMON SECTIONS ── */
+    .section-wrap { padding: 6rem 2rem; }
+    .section-container { max-width: 900px; margin: 0 auto; }
+    .section-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 2.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .section-eyebrow::after { content: ''; flex: 1; max-width: 200px; height: 1px; background: var(--border); }
+    .section-rule { width: 100%; height: 1px; background: linear-gradient(to right, transparent, var(--border), transparent); }
+
+    /* ── ABOUT ── */
+    .about-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+    .about-box p { font-size: 0.95rem; line-height: 1.9; color: var(--text); font-weight: 300; }
+
+    /* ── TEAM ── */
+    .team-leader {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border: 1px solid rgba(201,168,76,0.2);
+      margin-bottom: 2px;
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s ease, transform 0.7s ease, border-color 0.3s;
+    }
+    .team-leader.visible { opacity: 1; transform: translateY(0); }
+    .team-leader:hover { border-color: rgba(201,168,76,0.45); }
+
+    .card-visual {
+      position: relative;
+      background: #0d1428;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      min-height: 280px;
+    }
+    .card-visual svg { width: 100%; height: 100%; min-height: 280px; }
+
+    .card-content {
+      padding: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0.75rem;
+      border-left: 1px solid rgba(201,168,76,0.2);
+    }
+    .card-number { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.3em; color: var(--gold); opacity: 0.6; }
+    .card-name { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 300; line-height: 1.1; color: #f5f1ea; }
+    .card-role { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); }
+    .card-credentials { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.12em; color: #8a8578; font-style: italic; }
+    .card-divider { width: 40px; height: 1px; background: var(--gold); opacity: 0.4; margin: 0.3rem 0; }
+    .card-bio { font-size: 0.88rem; line-height: 1.85; color: #8a8578; }
+    .card-linkedin {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--blue3);
+      text-decoration: none;
+      margin-top: 0.3rem;
+      transition: color 0.3s;
+    }
+    .card-linkedin:hover { color: var(--blue); }
+    .card-linkedin svg { width: 13px; height: 13px; }
+
+    .team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+    .team-card {
+      border: 1px solid rgba(201,168,76,0.2);
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s ease, transform 0.7s ease, border-color 0.3s;
+    }
+    .team-card.visible { opacity: 1; transform: translateY(0); }
+    .team-card:hover { border-color: rgba(201,168,76,0.45); }
+    .team-card:nth-child(2) { transition-delay: 0.1s; }
+    .team-card:nth-child(3) { transition-delay: 0.2s; }
+    .team-card .card-visual { min-height: 200px; border-bottom: 1px solid rgba(201,168,76,0.2); }
+    .team-card .card-visual svg { min-height: 200px; }
+    .team-card .card-content { border-left: none; padding: 1.8rem; gap: 0.6rem; }
+    .team-card .card-name { font-size: 1.6rem; }
+    .team-card .card-bio { font-size: 0.82rem; }
+
+    /* ── CONTACT ── */
+    .contact-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 2.5rem;
+      max-width: 560px;
+    }
+    .contact-intro { font-size: 0.88rem; color: var(--text); margin-bottom: 1.5rem; font-weight: 300; }
+    .contact-form { display: flex; flex-direction: column; gap: 0.8rem; }
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      background: var(--navy);
+      border: 1px solid var(--border2);
+      border-radius: 5px;
+      padding: 10px 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      color: var(--bright);
+      outline: none;
+      transition: border-color 0.3s;
+    }
+    .form-group input::placeholder,
+    .form-group textarea::placeholder { color: var(--dim); }
+    .form-group input:focus,
+    .form-group textarea:focus { border-color: var(--blue2); }
+    .form-group textarea { resize: vertical; }
+    .submit-btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      background: none;
+      border: 1px solid var(--blue2);
+      color: var(--blue);
+      padding: 10px 22px;
+      border-radius: 5px;
+      cursor: pointer;
+      align-self: flex-start;
+      transition: background 0.3s;
+    }
+    .submit-btn:hover { background: rgba(122,168,208,0.08); }
+    #formStatus { font-size: 0.78rem; color: var(--blue); margin-top: 0.5rem; font-family: 'DM Mono', monospace; letter-spacing: 0.08em; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-wordmark { font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 300; letter-spacing: 0.08em; color: var(--dim); }
+    .footer-wordmark span { color: var(--blue2); }
+    .footer-copy { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.12em; color: var(--dim); opacity: 0.5; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+      .team-leader { grid-template-columns: 1fr; }
+      .team-grid { grid-template-columns: 1fr; }
+      .card-content { border-left: none; border-top: 1px solid rgba(201,168,76,0.15); padding: 1.5rem; }
+      footer { flex-direction: column; gap: 1rem; text-align: center; }
+      .pipeline {
+        grid-template-columns: 1fr;
+      }
+      .arrow-col { padding: 4px 0; }
+      .arrow {
+        width: 2px;
+        height: 22px;
+        margin: 0 auto;
+      }
+      .arrow::after {
+        right: auto;
+        left: 50%;
+        transform: translateX(-50%);
+        top: auto;
+        bottom: -6px;
+        border: 5px solid transparent;
+        border-top: 7px solid var(--border2);
+        border-left: none;
+      }
+      .arrow.active::after { border-top-color: var(--blue); border-left-color: transparent; }
+      .stage { min-height: auto; }
+      .process-inner { padding: 20px 16px 16px; }
+    }
+
+    @media (max-width: 480px) {
+      .hero-logo { width: 200px; }
+      .section-wrap { padding: 4rem 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#hero" class="nav-logo">
+    <img src="./static/BoardAM_Icon.svg" alt="BAM">
+    <span class="nav-logo-text">Board<span>AM</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#team">Team</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="nav-hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="nav-mobile" id="navMobile">
+  <a href="#about" onclick="closeMobileNav()">About</a>
+  <a href="#process" onclick="closeMobileNav()">Process</a>
+  <a href="#team" onclick="closeMobileNav()">Team</a>
+  <a href="#contact" onclick="closeMobileNav()">Contact</a>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-radial"></div>
+  <div class="hero-logo-wrap">
+    <svg class="hero-logo" viewBox="0 0 340 88" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="52" cy="44" r="5.5" fill="#7aa8d0"/>
+      <circle cx="52" cy="22" r="3.5" fill="#7aa8d0" opacity="0.8"/>
+      <circle cx="52" cy="66" r="3.5" fill="#7aa8d0" opacity="0.8"/>
+      <circle cx="30" cy="32" r="3.5" fill="#7aa8d0" opacity="0.8"/>
+      <circle cx="30" cy="56" r="3.5" fill="#7aa8d0" opacity="0.8"/>
+      <circle cx="74" cy="32" r="3"   fill="#7aa8d0" opacity="0.7"/>
+      <circle cx="74" cy="56" r="3"   fill="#7aa8d0" opacity="0.7"/>
+      <circle cx="16" cy="44" r="2.5" fill="#7aa8d0" opacity="0.6"/>
+      <circle cx="52" cy="10" r="2.5" fill="#7aa8d0" opacity="0.5"/>
+      <line x1="52" y1="44" x2="52"   y2="25.5" stroke="#7aa8d0" stroke-width="1.2" opacity="0.5"/>
+      <line x1="52" y1="44" x2="52"   y2="62.5" stroke="#7aa8d0" stroke-width="1.2" opacity="0.5"/>
+      <line x1="52" y1="44" x2="33.5" y2="33"   stroke="#7aa8d0" stroke-width="1.2" opacity="0.5"/>
+      <line x1="52" y1="44" x2="33.5" y2="55"   stroke="#7aa8d0" stroke-width="1.2" opacity="0.5"/>
+      <line x1="52" y1="44" x2="71"   y2="33"   stroke="#7aa8d0" stroke-width="1.2" opacity="0.5"/>
+      <line x1="52" y1="44" x2="71"   y2="55"   stroke="#7aa8d0" stroke-width="1.2" opacity="0.5"/>
+      <line x1="30" y1="32" x2="16"   y2="44"   stroke="#7aa8d0" stroke-width="1"   opacity="0.35"/>
+      <line x1="30" y1="56" x2="16"   y2="44"   stroke="#7aa8d0" stroke-width="1"   opacity="0.35"/>
+      <line x1="52" y1="22" x2="52"   y2="12.5" stroke="#7aa8d0" stroke-width="1"   opacity="0.35"/>
+      <text x="88" y="54" font-family="'DM Sans',sans-serif" font-size="36" font-weight="300" letter-spacing="-0.5" fill="#c8dff0">Board</text>
+      <text x="215" y="54" font-family="'DM Sans',sans-serif" font-size="36" font-weight="300" letter-spacing="-0.5" fill="#4a7a9a">AM</text>
+      <text x="88" y="70" font-family="'DM Mono',monospace" font-size="9" letter-spacing="3" fill="#2e5070">FIRST PRINCIPLES INVESTING</text>
+    </svg>
+    <div class="hero-divider"></div>
+    <div class="hero-cta">Scroll to explore</div>
+  </div>
+  <div class="scroll-indicator">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- INVESTMENT PROCESS (SCROLL-DRIVEN) -->
+<section id="process">
+  <div class="process-sticky">
+    <div class="process-inner">
+      <div class="process-header">
+        <div class="process-title">Investment Process</div>
       </div>
-    </nav>
+      <div class="title-rule"></div>
 
-    <div class="fixed-mobile-bg"></div>
-    
-    <video autoplay muted loop playsinline id="background-video">
-        <source src="./static/background.mp4" type="video/mp4">
-    </video>
-
-    <main>
-      <section id="hero">
-        <div class="hero-content">
-          <h1>Board Assessment Management</h1>
-          <p class="tagline">First Principles Investing</p>
-        </div>
-      </section>
-
-      <section id="about">
-        <div class="container">
-          <h2>About</h2>
-          <div class="content-box">
-            <p>At Board Assessment Management, our investment philosophy is grounded in first principles: management drives outcomes. The decisions of boards and executive teams determine products, shape profitability, and ultimately define valuation. All company fundamentals and market behaviour are derivatives of these management actions.</p>
-            <p>Our research process is data-driven and anchored in a proprietary scoring framework that quantifies management quality with the same analytical discipline found in banking and insurance risk models. By converting qualitative leadership attributes into quantitative scorecards, we enable objective comparison across companies and sectors.</p>
-            <p>This rigorous, technology-enabled approach forms the foundation of a systematic, repeatable, and alpha-generating investment process.</p>
-          </div>
-        </div>
-      </section>
-
-      <section id="team">
-        <div class="container">
-          <h2>Team</h2>
-          <div class="team-grid">
-            <div class="team-member">
-              <h3>Johan Barkhuysen</h3>
-              <a href="https://www.linkedin.com/in/johan-barkhuysen-027922172/"
-                target="_blank" 
-                rel="noopener noreferrer" 
-                aria-label="LinkedIn Profile"
-                class="linkedin-link">
-                <i class="fab fa-linkedin"></i>
-                </a>
-              <p class="member-title">Chief Executive Officer</p>
-              <p class="member-credentials">(Hons BCom, CFA)</p>
-              <p class="member-bio">Founder and CEO of Board Assessment Management and Anomaly Capital. Former Head of Asset Management South Africa at Stonehage Fleming (2023–2025). Previously CEO and Portfolio Manager at Rootstock Investment Management (2008–2023).</p>
-            </div>
-
-            <div class="team-member">
-              <h3>Francois Dercksen</h3>
-              <a href="https://www.linkedin.com/in/francois-dercksen-374828322/"
-                target="_blank" 
-                rel="noopener noreferrer" 
-                aria-label="LinkedIn Profile"
-                class="linkedin-link">
-                <i class="fab fa-linkedin"></i>
-                </a>
-              <p class="member-title">Data Analyst</p>
-              <p class="member-credentials">&nbsp;</p>
-              <p class="member-bio">Co-Founder of Board Assessment Management and Founder of RFX 3D Printing (2025). Currently completing a Bachelor of Commerce in Actuarial Science at Stellenbosch University.</p>
-            </div>
-
-            <div class="team-member">
-              <h3>Rohan van Loggerenberg</h3>
-              <a href="https://www.linkedin.com/in/rohan-van-loggerenberg-a987b0333/" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                aria-label="LinkedIn Profile"
-                class="linkedin-link">
-                <i class="fab fa-linkedin"></i>
-                </a>
-              <p class="member-title">Data Analyst</p>
-              <p class="member-credentials">&nbsp;</p>
-              <p class="member-bio">Data Analyst at Board Assessment Management. Gold Medal Winner at the Beijing Youth Science Creation Competition for "Optimisation of Artificial Neural Network Training." Currently completing a Bachelor of Data Science (BDatSci) at Stellenbosch University.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="model">
-        <div class="container">
-          <h2>BAM Model</h2>
-          <div class="content-box">
-            <p>Our investment model is data-driven and systematic, designed to quantify management capability and value-creation potential. Using company filings, disclosures, and historical performance data, we apply large language models (LLMs) and proprietary quantitative analytics to evaluate leadership behaviour, decision-making, and strategic consistency.</p>
-            <p>These insights are translated into quantitative scorecards that form the foundation of our capital allocation process. By investing where management quality and execution excellence are demonstrably superior, we aim to capture leadership-driven alpha in a disciplined and repeatable framework.</p>
-          </div>
-        </div>
-      </section>
-
-      <section id="contact">
-        <div class="container">
-          <h2>Contact</h2>
-          <div class="contact-content">
-            <p class="contact-intro">Get in touch.</p>
-            <form id="contactForm" class="contact-form">
-              <div class="form-group">
-                <input type="text" id="name" name="name" placeholder="Name" required>
-              </div>
-              <div class="form-group">
-                <input type="email" id="email" name="email" placeholder="Email" required>
-              </div>
-              <div class="form-group">
-                <input type="text" id="subject" name="subject" placeholder="Subject" required>
-              </div>
-              <div class="form-group">
-                <textarea id="message" name="message" placeholder="Message" rows="6" required></textarea>
-              </div>
-              <button type="submit" class="submit-btn">Send Message</button>
-              <div id="formStatus"></div>
-            </form>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <footer>
-      <div class="container">
-        <p>&copy; 2025 Board Assessment Management. All rights reserved.</p>
+      <div class="step-label">
+        <div class="step-name" id="stepName">Company Filings</div>
+        <div class="step-desc" id="stepDesc">Sourcing raw data from SEC filings, earnings calls &amp; proxy statements</div>
       </div>
-    </footer>
-    <script defer src="./main.js"></script>
-  </body>
+
+      <div class="pipeline">
+
+        <!-- STAGE 0 -->
+        <div class="stage active" id="stage-0" onclick="goTo(0)">
+          <svg class="stage-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="10" y="6" width="38" height="48" rx="3" fill="#1e3450" stroke="#7aa8d0" stroke-width="1.5"/>
+            <rect x="14" y="12" width="30" height="4" rx="1.5" fill="#7aa8d0" opacity="0.7"/>
+            <rect x="14" y="20" width="24" height="3" rx="1.5" fill="#7aa8d0" opacity="0.5"/>
+            <rect x="14" y="27" width="28" height="3" rx="1.5" fill="#7aa8d0" opacity="0.5"/>
+            <rect x="14" y="34" width="20" height="3" rx="1.5" fill="#7aa8d0" opacity="0.4"/>
+            <rect x="14" y="41" width="26" height="3" rx="1.5" fill="#7aa8d0" opacity="0.4"/>
+            <rect x="15" y="2"  width="38" height="48" rx="3" fill="#162335" stroke="#2e5070" stroke-width="1" opacity="0.6"/>
+            <rect x="12" y="4"  width="38" height="48" rx="3" fill="#111e2f" stroke="#2e5070" stroke-width="1" opacity="0.8"/>
+          </svg>
+          <div class="stage-title">Company<br>Filings</div>
+          <div class="stage-content">
+            <div class="filing-lines">
+              <div class="filing-line"></div>
+              <div class="filing-line"></div>
+              <div class="filing-line"></div>
+              <div class="filing-line"></div>
+              <div class="filing-line"></div>
+              <div class="filing-line"></div>
+            </div>
+            <span class="filing-tag">SEC · 10-K · Proxy</span>
+          </div>
+        </div>
+
+        <div class="arrow-col"><div class="arrow" id="arrow-0"></div></div>
+
+        <!-- STAGE 1 -->
+        <div class="stage" id="stage-1" onclick="goTo(1)">
+          <svg class="stage-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="32" cy="32" r="8"  fill="#1e3450" stroke="#7aa8d0" stroke-width="1.5"/>
+            <circle cx="32" cy="12" r="5"  fill="#162335" stroke="#7aa8d0" stroke-width="1.2"/>
+            <circle cx="32" cy="52" r="5"  fill="#162335" stroke="#7aa8d0" stroke-width="1.2"/>
+            <circle cx="12" cy="22" r="5"  fill="#162335" stroke="#7aa8d0" stroke-width="1.2"/>
+            <circle cx="52" cy="22" r="5"  fill="#162335" stroke="#7aa8d0" stroke-width="1.2"/>
+            <circle cx="12" cy="42" r="5"  fill="#162335" stroke="#7aa8d0" stroke-width="1.2"/>
+            <circle cx="52" cy="42" r="5"  fill="#162335" stroke="#7aa8d0" stroke-width="1.2"/>
+            <line x1="32" y1="32" x2="32" y2="17" stroke="#7aa8d0" stroke-width="1.2" opacity="0.6"/>
+            <line x1="32" y1="32" x2="32" y2="47" stroke="#7aa8d0" stroke-width="1.2" opacity="0.6"/>
+            <line x1="32" y1="32" x2="17" y2="22" stroke="#7aa8d0" stroke-width="1.2" opacity="0.6"/>
+            <line x1="32" y1="32" x2="47" y2="22" stroke="#7aa8d0" stroke-width="1.2" opacity="0.6"/>
+            <line x1="32" y1="32" x2="17" y2="42" stroke="#7aa8d0" stroke-width="1.2" opacity="0.6"/>
+            <line x1="32" y1="32" x2="47" y2="42" stroke="#7aa8d0" stroke-width="1.2" opacity="0.6"/>
+          </svg>
+          <div class="stage-title">Proprietary<br>Model</div>
+          <div class="stage-content">
+            <div class="model-nodes">
+              <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="40" cy="40" r="8" fill="#1e3450" stroke="#7aa8d0" stroke-width="1.5"/>
+                <circle cx="40" cy="14" r="5" fill="#162335" stroke="#7aa8d0" stroke-width="1"/>
+                <circle cx="40" cy="66" r="5" fill="#162335" stroke="#7aa8d0" stroke-width="1"/>
+                <circle cx="14" cy="27" r="5" fill="#162335" stroke="#7aa8d0" stroke-width="1"/>
+                <circle cx="66" cy="27" r="5" fill="#162335" stroke="#7aa8d0" stroke-width="1"/>
+                <circle cx="14" cy="53" r="5" fill="#162335" stroke="#7aa8d0" stroke-width="1"/>
+                <circle cx="66" cy="53" r="5" fill="#162335" stroke="#7aa8d0" stroke-width="1"/>
+                <line x1="40" y1="40" x2="40" y2="19" stroke="#7aa8d0" stroke-width="1" opacity="0.5"/>
+                <line x1="40" y1="40" x2="40" y2="61" stroke="#7aa8d0" stroke-width="1" opacity="0.5"/>
+                <line x1="40" y1="40" x2="19" y2="27" stroke="#7aa8d0" stroke-width="1" opacity="0.5"/>
+                <line x1="40" y1="40" x2="61" y2="27" stroke="#7aa8d0" stroke-width="1" opacity="0.5"/>
+                <line x1="40" y1="40" x2="19" y2="53" stroke="#7aa8d0" stroke-width="1" opacity="0.5"/>
+                <line x1="40" y1="40" x2="61" y2="53" stroke="#7aa8d0" stroke-width="1" opacity="0.5"/>
+              </svg>
+            </div>
+            <div class="model-badge">AI Scoring Engine<br>Insurance &amp; Banking<br>Risk Framework</div>
+          </div>
+        </div>
+
+        <div class="arrow-col"><div class="arrow" id="arrow-1"></div></div>
+
+        <!-- STAGE 2 -->
+        <div class="stage" id="stage-2" onclick="goTo(2)">
+          <svg class="stage-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="16" y="8"  width="32" height="42" rx="3" fill="#162335" stroke="#2e5070" stroke-width="1" opacity="0.6"/>
+            <rect x="12" y="12" width="32" height="42" rx="3" fill="#1a2d44" stroke="#2e5070" stroke-width="1" opacity="0.8"/>
+            <rect x="8"  y="16" width="32" height="42" rx="3" fill="#1e3450" stroke="#7aa8d0" stroke-width="1.5"/>
+            <rect x="10" y="18" width="28" height="18" rx="2" fill="#0f1e30" opacity="0.6"/>
+            <circle cx="24" cy="27" r="7" fill="#162335" stroke="#7aa8d0" stroke-width="1" opacity="0.5"/>
+            <rect x="10" y="38" width="28" height="3" rx="1" fill="#7aa8d0" opacity="0.8"/>
+            <rect x="10" y="43" width="20" height="2" rx="1" fill="#2e5070"/>
+            <rect x="32" y="43" width="6"  rx="1" height="2" fill="#7aa8d0" opacity="0.7"/>
+            <rect x="10" y="47" width="20" height="2" rx="1" fill="#2e5070"/>
+            <rect x="32" y="47" width="6"  rx="1" height="2" fill="#7aa8d0" opacity="0.7"/>
+            <rect x="10" y="51" width="20" height="2" rx="1" fill="#2e5070"/>
+            <rect x="32" y="51" width="6"  rx="1" height="2" fill="#7aa8d0" opacity="0.7"/>
+          </svg>
+          <div class="stage-title">Scorecards</div>
+          <div class="stage-content">
+            <div class="scorecard">
+              <div class="scorecard-header">
+                <div class="sc-name">M. K. WIRTH</div>
+                <div class="sc-sector">ENERGY · CVX</div>
+              </div>
+              <div class="scorecard-body">
+                <div class="sc-row">
+                  <div class="sc-metric">Experience</div>
+                  <div class="sc-bar-wrap"><div class="sc-bar" style="--w:95%"></div></div>
+                  <div class="sc-val" data-target="95">0</div>
+                </div>
+                <div class="sc-row">
+                  <div class="sc-metric">Track Record</div>
+                  <div class="sc-bar-wrap"><div class="sc-bar" style="--w:85%"></div></div>
+                  <div class="sc-val" data-target="85">0</div>
+                </div>
+                <div class="sc-row">
+                  <div class="sc-metric">Shareholding</div>
+                  <div class="sc-bar-wrap"><div class="sc-bar" style="--w:10%"></div></div>
+                  <div class="sc-val" data-target="10">0</div>
+                </div>
+                <div class="sc-row">
+                  <div class="sc-metric">BAM Rating</div>
+                  <div class="sc-bar-wrap"><div class="sc-bar" style="--w:71%"></div></div>
+                  <div class="sc-val" data-target="71">0</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="arrow-col"><div class="arrow" id="arrow-2"></div></div>
+
+        <!-- STAGE 3 -->
+        <div class="stage" id="stage-3" onclick="goTo(3)">
+          <svg class="stage-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="32" cy="32" r="22" fill="#0f1e30" stroke="#2e5070" stroke-width="1"/>
+            <path d="M32 32 L32 10 A22 22 0 0 1 51 43 Z" fill="#7aa8d0" opacity="0.8"/>
+            <path d="M32 32 L51 43 A22 22 0 0 1 18 52 Z" fill="#4a7a9a" opacity="0.7"/>
+            <path d="M32 32 L18 52 A22 22 0 0 1 14 22 Z" fill="#2e5070" opacity="0.6"/>
+            <path d="M32 32 L14 22 A22 22 0 0 1 32 10 Z" fill="#1e3450" opacity="0.8"/>
+            <circle cx="32" cy="32" r="8" fill="#0a1220"/>
+          </svg>
+          <div class="stage-title">Portfolio<br>Construction</div>
+          <div class="stage-content">
+            <div class="pie-wrap">
+              <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="40" cy="40" r="28" fill="#0f1e30" stroke="#0f1e30" stroke-width="1"/>
+                <circle id="seg1" cx="40" cy="40" r="17" fill="none" stroke="#7aa8d0" stroke-width="12" stroke-dasharray="0 107" stroke-dashoffset="27"  transform="rotate(-90 40 40)"/>
+                <circle id="seg2" cx="40" cy="40" r="17" fill="none" stroke="#4a7a9a" stroke-width="12" stroke-dasharray="0 107" stroke-dashoffset="-8"   transform="rotate(-90 40 40)"/>
+                <circle id="seg3" cx="40" cy="40" r="17" fill="none" stroke="#2e5070" stroke-width="12" stroke-dasharray="0 107" stroke-dashoffset="-21"  transform="rotate(-90 40 40)"/>
+                <circle id="seg4" cx="40" cy="40" r="17" fill="none" stroke="#1e3450" stroke-width="12" stroke-dasharray="0 107" stroke-dashoffset="-35"  transform="rotate(-90 40 40)"/>
+                <circle cx="40" cy="40" r="10" fill="#0a1220"/>
+              </svg>
+            </div>
+            <div class="port-legend">
+              <div class="port-row"><span class="port-dot" style="background:#7aa8d0"></span>Technology<span class="port-pct">33%</span></div>
+              <div class="port-row"><span class="port-dot" style="background:#4a7a9a"></span>Financials<span class="port-pct">13%</span></div>
+              <div class="port-row"><span class="port-dot" style="background:#2e5070"></span>Cons. Disc.<span class="port-pct">10%</span></div>
+              <div class="port-row"><span class="port-dot" style="background:#1e3450"></span>Other<span class="port-pct">44%</span></div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /pipeline -->
+
+      <div class="progress">
+        <div class="dot active" onclick="goTo(0)"></div>
+        <div class="dot" onclick="goTo(1)"></div>
+        <div class="dot" onclick="goTo(2)"></div>
+        <div class="dot" onclick="goTo(3)"></div>
+      </div>
+      <div class="process-scroll-hint">↓ Scroll to advance through the process</div>
+      <div class="disclaimer">For illustration purposes only. Not real investment advice.</div>
+    </div>
+  </div>
+</section>
+
+<div class="section-rule"></div>
+
+<!-- ABOUT -->
+<section id="about" class="section-wrap">
+  <div class="section-container">
+    <div class="section-eyebrow">About</div>
+    <div class="about-box">
+      <p>At Board Assessment Management, our investment philosophy is grounded in first principles: management drives outcomes. The decisions of boards and executive teams determine products, shape profitability, and ultimately define valuation. All company fundamentals and market behaviour are derivatives of these management actions.</p>
+      <p>Our research process is data-driven and anchored in a proprietary scoring framework that quantifies management quality with the same analytical discipline found in banking and insurance risk models. By converting qualitative leadership attributes into quantitative scorecards, we enable objective comparison across companies and sectors.</p>
+      <p>This rigorous, technology-enabled approach forms the foundation of a systematic, repeatable, and alpha-generating investment process.</p>
+    </div>
+  </div>
+</section>
+
+<div class="section-rule"></div>
+
+<!-- TEAM -->
+<section id="team" class="section-wrap">
+  <div class="section-container" style="max-width:1200px">
+    <div class="section-eyebrow">Team</div>
+
+    <!-- Johan (CEO leader card) -->
+    <div class="team-leader" id="t1">
+      <div class="card-visual">
+        <svg viewBox="0 0 500 320" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="vg1" cx="50%" cy="50%" r="55%">
+              <stop offset="0%" stop-color="#c9a84c" stop-opacity="0.1"/>
+              <stop offset="100%" stop-color="#0f1729" stop-opacity="0"/>
+            </radialGradient>
+            <filter id="vglow1">
+              <feGaussianBlur stdDeviation="4" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          <rect width="500" height="320" fill="#0d1428"/>
+          <ellipse cx="250" cy="160" rx="220" ry="150" fill="url(#vg1)"/>
+          <circle cx="250" cy="160" r="22" fill="rgba(201,168,76,0.08)" stroke="#c9a84c" stroke-width="1.5" filter="url(#vglow1)"/>
+          <circle cx="250" cy="160" r="12" fill="rgba(201,168,76,0.12)" stroke="rgba(201,168,76,0.5)" stroke-width="1"/>
+          <circle cx="250" cy="160" r="5" fill="#c9a84c" opacity="0.85"/>
+          <line x1="250" y1="138" x2="250" y2="96"  stroke="rgba(201,168,76,0.3)" stroke-width="1"/>
+          <line x1="269" y1="149" x2="305" y2="122" stroke="rgba(201,168,76,0.25)" stroke-width="1"/>
+          <line x1="269" y1="171" x2="308" y2="198" stroke="rgba(201,168,76,0.25)" stroke-width="1"/>
+          <line x1="250" y1="182" x2="250" y2="224" stroke="rgba(201,168,76,0.3)" stroke-width="1"/>
+          <line x1="231" y1="171" x2="192" y2="198" stroke="rgba(201,168,76,0.25)" stroke-width="1"/>
+          <line x1="231" y1="149" x2="195" y2="122" stroke="rgba(201,168,76,0.25)" stroke-width="1"/>
+          <line x1="250" y1="138" x2="305" y2="122" stroke="rgba(201,168,76,0.1)" stroke-width="0.75"/>
+          <line x1="308" y1="198" x2="250" y2="224" stroke="rgba(201,168,76,0.1)" stroke-width="0.75"/>
+          <line x1="192" y1="198" x2="195" y2="122" stroke="rgba(201,168,76,0.1)" stroke-width="0.75"/>
+          <circle cx="250" cy="94"  r="10" fill="rgba(201,168,76,0.07)" stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
+          <circle cx="250" cy="94"  r="3" fill="rgba(201,168,76,0.6)"/>
+          <circle cx="307" cy="120" r="9" fill="rgba(201,168,76,0.06)" stroke="rgba(201,168,76,0.35)" stroke-width="1"/>
+          <circle cx="307" cy="120" r="2.5" fill="rgba(201,168,76,0.5)"/>
+          <circle cx="310" cy="198" r="9" fill="rgba(201,168,76,0.06)" stroke="rgba(201,168,76,0.35)" stroke-width="1"/>
+          <circle cx="310" cy="198" r="2.5" fill="rgba(201,168,76,0.5)"/>
+          <circle cx="250" cy="226" r="10" fill="rgba(201,168,76,0.07)" stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
+          <circle cx="250" cy="226" r="3" fill="rgba(201,168,76,0.6)"/>
+          <circle cx="190" cy="198" r="9" fill="rgba(201,168,76,0.06)" stroke="rgba(201,168,76,0.35)" stroke-width="1"/>
+          <circle cx="190" cy="198" r="2.5" fill="rgba(201,168,76,0.5)"/>
+          <circle cx="193" cy="120" r="9" fill="rgba(201,168,76,0.06)" stroke="rgba(201,168,76,0.35)" stroke-width="1"/>
+          <circle cx="193" cy="120" r="2.5" fill="rgba(201,168,76,0.5)"/>
+          <circle cx="250" cy="160" r="60"  fill="none" stroke="rgba(201,168,76,0.07)" stroke-width="1" stroke-dasharray="3,6"/>
+          <circle cx="250" cy="160" r="110" fill="none" stroke="rgba(201,168,76,0.04)" stroke-width="1" stroke-dasharray="2,9"/>
+          <circle cx="140" cy="80"  r="2"   fill="rgba(201,168,76,0.25)"/>
+          <circle cx="380" cy="75"  r="1.5" fill="rgba(201,168,76,0.2)"/>
+          <circle cx="400" cy="250" r="2"   fill="rgba(201,168,76,0.2)"/>
+          <circle cx="100" cy="240" r="1.5" fill="rgba(201,168,76,0.18)"/>
+          <circle cx="420" cy="160" r="2.5" fill="rgba(201,168,76,0.15)"/>
+          <circle cx="70"  cy="155" r="2"   fill="rgba(201,168,76,0.15)"/>
+          <line x1="140" y1="80" x2="193" y2="120" stroke="rgba(201,168,76,0.08)" stroke-width="0.75"/>
+          <line x1="380" y1="75" x2="307" y2="120" stroke="rgba(201,168,76,0.08)" stroke-width="0.75"/>
+          <text x="250" y="172" text-anchor="middle" fill="rgba(201,168,76,0.08)" font-family="Cormorant Garamond" font-size="72" font-weight="300">JB</text>
+        </svg>
+      </div>
+      <div class="card-content">
+        <div class="card-number">01 — Founder</div>
+        <div class="card-name">Johan<br>Barkhuysen</div>
+        <div class="card-role">Chief Executive Officer</div>
+        <div class="card-credentials">Hons BCom · CFA</div>
+        <div class="card-divider"></div>
+        <p class="card-bio">Founder and CEO of Board Assessment Management and Anomaly Capital. Former Head of Asset Management South Africa at Stonehage Fleming (2023–2025). Previously CEO and Portfolio Manager at Rootstock Investment Management (2008–2023).</p>
+        <a href="https://www.linkedin.com/in/johan-barkhuysen-027922172/" target="_blank" rel="noopener noreferrer" class="card-linkedin">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          LinkedIn
+        </a>
+      </div>
+    </div>
+
+    <!-- Analysts grid -->
+    <div class="team-grid">
+
+      <!-- Francois -->
+      <div class="team-card" id="t2">
+        <div class="card-visual">
+          <svg viewBox="0 0 400 220" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="vg2" cx="50%" cy="50%" r="55%">
+                <stop offset="0%" stop-color="#c9a84c" stop-opacity="0.09"/>
+                <stop offset="100%" stop-color="#0f1729" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+            <rect width="400" height="220" fill="#0d1428"/>
+            <ellipse cx="200" cy="110" rx="180" ry="100" fill="url(#vg2)"/>
+            <circle cx="200" cy="110" r="14" fill="rgba(201,168,76,0.1)" stroke="rgba(201,168,76,0.5)" stroke-width="1.2"/>
+            <circle cx="200" cy="110" r="5" fill="#c9a84c" opacity="0.75"/>
+            <line x1="200" y1="96"  x2="200" y2="72"  stroke="rgba(201,168,76,0.3)"  stroke-width="1"/>
+            <line x1="214" y1="103" x2="235" y2="78"  stroke="rgba(201,168,76,0.25)" stroke-width="1"/>
+            <line x1="214" y1="117" x2="238" y2="140" stroke="rgba(201,168,76,0.25)" stroke-width="1"/>
+            <line x1="200" y1="124" x2="200" y2="148" stroke="rgba(201,168,76,0.3)"  stroke-width="1"/>
+            <line x1="186" y1="117" x2="162" y2="140" stroke="rgba(201,168,76,0.25)" stroke-width="1"/>
+            <line x1="186" y1="103" x2="165" y2="78"  stroke="rgba(201,168,76,0.25)" stroke-width="1"/>
+            <circle cx="200" cy="70"  r="7" fill="rgba(201,168,76,0.07)" stroke="rgba(201,168,76,0.4)"  stroke-width="1"/>
+            <circle cx="200" cy="70"  r="2.5" fill="rgba(201,168,76,0.55)"/>
+            <circle cx="237" cy="76"  r="6" fill="rgba(201,168,76,0.06)" stroke="rgba(201,168,76,0.35)" stroke-width="1"/>
+            <circle cx="237" cy="76"  r="2" fill="rgba(201,168,76,0.5)"/>
+            <circle cx="240" cy="142" r="6" fill="rgba(201,168,76,0.06)" stroke="rgba(201,168,76,0.35)" stroke-width="1"/>
+            <circle cx="240" cy="142" r="2" fill="rgba(201,168,76,0.5)"/>
+            <circle cx="200" cy="150" r="7" fill="rgba(201,168,76,0.07)" stroke="rgba(201,168,76,0.4)"  stroke-width="1"/>
+            <circle cx="200" cy="150" r="2.5" fill="rgba(201,168,76,0.55)"/>
+            <circle cx="160" cy="142" r="6" fill="rgba(201,168,76,0.06)" stroke="rgba(201,168,76,0.35)" stroke-width="1"/>
+            <circle cx="160" cy="142" r="2" fill="rgba(201,168,76,0.5)"/>
+            <circle cx="163" cy="76"  r="6" fill="rgba(201,168,76,0.06)" stroke="rgba(201,168,76,0.35)" stroke-width="1"/>
+            <circle cx="163" cy="76"  r="2" fill="rgba(201,168,76,0.5)"/>
+            <circle cx="200" cy="110" r="42" fill="none" stroke="rgba(201,168,76,0.06)" stroke-width="1" stroke-dasharray="3,5"/>
+            <circle cx="60"  cy="50"  r="1.5" fill="rgba(201,168,76,0.2)"/>
+            <circle cx="340" cy="55"  r="1.5" fill="rgba(201,168,76,0.18)"/>
+            <circle cx="345" cy="175" r="1.5" fill="rgba(201,168,76,0.15)"/>
+            <circle cx="55"  cy="170" r="1.5" fill="rgba(201,168,76,0.15)"/>
+            <text x="200" y="120" text-anchor="middle" fill="rgba(201,168,76,0.07)" font-family="Cormorant Garamond" font-size="52" font-weight="300">FD</text>
+          </svg>
+        </div>
+        <div class="card-content">
+          <div class="card-number">02 — Co-Founder</div>
+          <div class="card-name">Francois<br>Dercksen</div>
+          <div class="card-role">Data Analyst</div>
+          <div class="card-credentials">BCom Actuarial Science · Stellenbosch</div>
+          <div class="card-divider"></div>
+          <p class="card-bio">Co-Founder of Board Assessment Management and Founder of RFX 3D Printing (2025). Currently completing a Bachelor of Commerce in Actuarial Science at Stellenbosch University.</p>
+          <a href="https://www.linkedin.com/in/francois-dercksen-374828322/" target="_blank" rel="noopener noreferrer" class="card-linkedin">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            LinkedIn
+          </a>
+        </div>
+      </div>
+
+      <!-- Rohan -->
+      <div class="team-card" id="t3">
+        <div class="card-visual">
+          <svg viewBox="0 0 400 220" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="vg3" cx="50%" cy="50%" r="55%">
+                <stop offset="0%" stop-color="#c9a84c" stop-opacity="0.09"/>
+                <stop offset="100%" stop-color="#0f1729" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+            <rect width="400" height="220" fill="#0d1428"/>
+            <ellipse cx="200" cy="110" rx="180" ry="100" fill="url(#vg3)"/>
+            <circle cx="200" cy="110" r="14" fill="rgba(201,168,76,0.1)" stroke="rgba(201,168,76,0.5)" stroke-width="1.2"/>
+            <circle cx="200" cy="110" r="5" fill="#c9a84c" opacity="0.75"/>
+            <line x1="200" y1="96"  x2="200" y2="65"  stroke="rgba(201,168,76,0.28)" stroke-width="1"/>
+            <line x1="214" y1="110" x2="248" y2="110" stroke="rgba(201,168,76,0.28)" stroke-width="1"/>
+            <line x1="200" y1="124" x2="200" y2="155" stroke="rgba(201,168,76,0.28)" stroke-width="1"/>
+            <line x1="186" y1="110" x2="152" y2="110" stroke="rgba(201,168,76,0.28)" stroke-width="1"/>
+            <line x1="210" y1="100" x2="234" y2="78"  stroke="rgba(201,168,76,0.18)" stroke-width="0.75"/>
+            <line x1="210" y1="120" x2="234" y2="142" stroke="rgba(201,168,76,0.18)" stroke-width="0.75"/>
+            <line x1="190" y1="120" x2="166" y2="142" stroke="rgba(201,168,76,0.18)" stroke-width="0.75"/>
+            <line x1="190" y1="100" x2="166" y2="78"  stroke="rgba(201,168,76,0.18)" stroke-width="0.75"/>
+            <line x1="200" y1="65"  x2="248" y2="110" stroke="rgba(201,168,76,0.08)" stroke-width="0.75"/>
+            <line x1="248" y1="110" x2="200" y2="155" stroke="rgba(201,168,76,0.08)" stroke-width="0.75"/>
+            <line x1="200" y1="155" x2="152" y2="110" stroke="rgba(201,168,76,0.08)" stroke-width="0.75"/>
+            <line x1="152" y1="110" x2="200" y2="65"  stroke="rgba(201,168,76,0.08)" stroke-width="0.75"/>
+            <circle cx="200" cy="63"  r="7" fill="rgba(201,168,76,0.07)" stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
+            <circle cx="200" cy="63"  r="2.5" fill="rgba(201,168,76,0.55)"/>
+            <circle cx="250" cy="110" r="7" fill="rgba(201,168,76,0.07)" stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
+            <circle cx="250" cy="110" r="2.5" fill="rgba(201,168,76,0.55)"/>
+            <circle cx="200" cy="157" r="7" fill="rgba(201,168,76,0.07)" stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
+            <circle cx="200" cy="157" r="2.5" fill="rgba(201,168,76,0.55)"/>
+            <circle cx="150" cy="110" r="7" fill="rgba(201,168,76,0.07)" stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
+            <circle cx="150" cy="110" r="2.5" fill="rgba(201,168,76,0.55)"/>
+            <circle cx="200" cy="110" r="45" fill="none" stroke="rgba(201,168,76,0.06)" stroke-width="1" stroke-dasharray="3,5"/>
+            <circle cx="70"  cy="45"  r="1.5" fill="rgba(201,168,76,0.2)"/>
+            <circle cx="330" cy="48"  r="1.5" fill="rgba(201,168,76,0.18)"/>
+            <circle cx="335" cy="175" r="1.5" fill="rgba(201,168,76,0.15)"/>
+            <circle cx="65"  cy="178" r="1.5" fill="rgba(201,168,76,0.15)"/>
+            <text x="200" y="120" text-anchor="middle" fill="rgba(201,168,76,0.07)" font-family="Cormorant Garamond" font-size="52" font-weight="300">RvL</text>
+          </svg>
+        </div>
+        <div class="card-content">
+          <div class="card-number">03 — Analyst</div>
+          <div class="card-name">Rohan van<br>Loggerenberg</div>
+          <div class="card-role">Data Analyst</div>
+          <div class="card-credentials">BDatSci · Stellenbosch</div>
+          <div class="card-divider"></div>
+          <p class="card-bio">Data Analyst at Board Assessment Management. Gold Medal Winner at the Beijing Youth Science Creation Competition for "Optimisation of Artificial Neural Network Training." Currently completing a Bachelor of Data Science at Stellenbosch University.</p>
+          <a href="https://www.linkedin.com/in/rohan-van-loggerenberg-a987b0333/" target="_blank" rel="noopener noreferrer" class="card-linkedin">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            LinkedIn
+          </a>
+        </div>
+      </div>
+
+      <!-- Louis -->
+      <div class="team-card" id="t4">
+        <div class="card-visual">
+          <svg viewBox="0 0 400 220" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="vg4" cx="50%" cy="50%" r="55%">
+                <stop offset="0%" stop-color="#c9a84c" stop-opacity="0.09"/>
+                <stop offset="100%" stop-color="#0f1729" stop-opacity="0"/>
+              </radialGradient>
+              <filter id="vglow4">
+                <feGaussianBlur stdDeviation="3" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+            <rect width="400" height="220" fill="#0d1428"/>
+            <ellipse cx="200" cy="110" rx="180" ry="100" fill="url(#vg4)"/>
+            <circle cx="200" cy="110" r="14" fill="rgba(201,168,76,0.1)" stroke="rgba(201,168,76,0.5)" stroke-width="1.2" filter="url(#vglow4)"/>
+            <circle cx="200" cy="110" r="5" fill="#c9a84c" opacity="0.8"/>
+            <line x1="200" y1="96"  x2="200" y2="64"  stroke="rgba(201,168,76,0.3)"  stroke-width="1"/>
+            <line x1="200" y1="96"  x2="232" y2="145" stroke="rgba(201,168,76,0.25)" stroke-width="1"/>
+            <line x1="200" y1="96"  x2="168" y2="145" stroke="rgba(201,168,76,0.25)" stroke-width="1"/>
+            <line x1="232" y1="145" x2="168" y2="145" stroke="rgba(201,168,76,0.2)"  stroke-width="1"/>
+            <line x1="200" y1="64"  x2="240" y2="68"  stroke="rgba(201,168,76,0.18)" stroke-width="0.75"/>
+            <line x1="200" y1="64"  x2="160" y2="68"  stroke="rgba(201,168,76,0.18)" stroke-width="0.75"/>
+            <line x1="232" y1="145" x2="255" y2="160" stroke="rgba(201,168,76,0.18)" stroke-width="0.75"/>
+            <line x1="168" y1="145" x2="145" y2="160" stroke="rgba(201,168,76,0.18)" stroke-width="0.75"/>
+            <line x1="200" y1="64"  x2="232" y2="145" stroke="rgba(201,168,76,0.06)" stroke-width="0.75"/>
+            <line x1="200" y1="64"  x2="168" y2="145" stroke="rgba(201,168,76,0.06)" stroke-width="0.75"/>
+            <circle cx="200" cy="62"  r="7"   fill="rgba(201,168,76,0.08)" stroke="rgba(201,168,76,0.45)" stroke-width="1"/>
+            <circle cx="200" cy="62"  r="2.5" fill="rgba(201,168,76,0.6)"/>
+            <circle cx="234" cy="147" r="7"   fill="rgba(201,168,76,0.07)" stroke="rgba(201,168,76,0.4)"  stroke-width="1"/>
+            <circle cx="234" cy="147" r="2.5" fill="rgba(201,168,76,0.55)"/>
+            <circle cx="166" cy="147" r="7"   fill="rgba(201,168,76,0.07)" stroke="rgba(201,168,76,0.4)"  stroke-width="1"/>
+            <circle cx="166" cy="147" r="2.5" fill="rgba(201,168,76,0.55)"/>
+            <circle cx="242" cy="66"  r="5"   fill="rgba(201,168,76,0.06)" stroke="rgba(201,168,76,0.3)"  stroke-width="0.75"/>
+            <circle cx="158" cy="66"  r="5"   fill="rgba(201,168,76,0.06)" stroke="rgba(201,168,76,0.3)"  stroke-width="0.75"/>
+            <circle cx="257" cy="162" r="5"   fill="rgba(201,168,76,0.06)" stroke="rgba(201,168,76,0.3)"  stroke-width="0.75"/>
+            <circle cx="143" cy="162" r="5"   fill="rgba(201,168,76,0.06)" stroke="rgba(201,168,76,0.3)"  stroke-width="0.75"/>
+            <circle cx="200" cy="110" r="50"  fill="none" stroke="rgba(201,168,76,0.05)" stroke-width="1" stroke-dasharray="3,6"/>
+            <circle cx="65"  cy="42"  r="1.5" fill="rgba(201,168,76,0.2)"/>
+            <circle cx="335" cy="45"  r="1.5" fill="rgba(201,168,76,0.18)"/>
+            <circle cx="340" cy="178" r="1.5" fill="rgba(201,168,76,0.15)"/>
+            <circle cx="60"  cy="180" r="1.5" fill="rgba(201,168,76,0.15)"/>
+            <text x="200" y="120" text-anchor="middle" fill="rgba(201,168,76,0.07)" font-family="Cormorant Garamond" font-size="52" font-weight="300">LB</text>
+          </svg>
+        </div>
+        <div class="card-content">
+          <div class="card-number">04 — Analyst</div>
+          <div class="card-name">Louis<br>Burger</div>
+          <div class="card-role">Investment Professional</div>
+          <div class="card-credentials">MEng Ind Eng (Cum Laude) · CFA Level I</div>
+          <div class="card-divider"></div>
+          <p class="card-bio">Data Engineer and Data Scientist at Spatialedge (2024–2026). Led the design and delivery of scalable data pipelines and analytics solutions, ingesting high-volume multi-source data and applying forecasting and classification models to real-world business problems.</p>
+        </div>
+      </div>
+
+    </div><!-- /team-grid -->
+  </div>
+</section>
+
+<div class="section-rule"></div>
+
+<!-- CONTACT -->
+<section id="contact" class="section-wrap">
+  <div class="section-container">
+    <div class="section-eyebrow">Contact</div>
+    <div class="contact-box">
+      <p class="contact-intro">Get in touch.</p>
+      <form id="contactForm" class="contact-form">
+        <div class="form-group"><input type="text"  id="name"    name="name"    placeholder="Name"    required></div>
+        <div class="form-group"><input type="email" id="email"   name="email"   placeholder="Email"   required></div>
+        <div class="form-group"><input type="text"  id="subject" name="subject" placeholder="Subject" required></div>
+        <div class="form-group"><textarea id="message" name="message" placeholder="Message" rows="5" required></textarea></div>
+        <button type="submit" class="submit-btn">Send Message</button>
+        <div id="formStatus"></div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-wordmark">Board<span>AM</span></div>
+  <div class="footer-copy">© 2025 Board Assessment Management. All rights reserved.</div>
+</footer>
+
+<script>
+/* ── PIPELINE ── */
+const steps = [
+  { name: 'Company Filings',        desc: 'Sourcing raw data from SEC filings, earnings calls & proxy statements' },
+  { name: 'Proprietary Model',      desc: 'AI scoring engine processes leadership data through a multi-factor risk framework' },
+  { name: 'Scorecards',             desc: 'Each CEO ranked on Experience, Track Record, Shareholding & BAM Rating' },
+  { name: 'Portfolio Construction', desc: 'Top 20% of management teams selected; diversification parameters applied' }
+];
+const C = 106.8;
+const pieData = [
+  { id: 'seg1', pct: 0.33 },
+  { id: 'seg2', pct: 0.13 },
+  { id: 'seg3', pct: 0.10 },
+  { id: 'seg4', pct: 0.44 }
+];
+let current = 0;
+
+function goTo(n) {
+  document.getElementById('stage-' + current).classList.remove('active');
+  if (current > 0) document.getElementById('arrow-' + (current - 1)).classList.remove('active');
+  document.querySelectorAll('.dot')[current].classList.remove('active');
+
+  current = n;
+
+  document.getElementById('stage-' + current).classList.add('active');
+  if (current > 0) document.getElementById('arrow-' + (current - 1)).classList.add('active');
+  document.querySelectorAll('.dot')[current].classList.add('active');
+
+  document.getElementById('stepName').textContent = steps[current].name;
+  document.getElementById('stepDesc').textContent = steps[current].desc;
+
+  if (current === 2) animateScorecard();
+  if (current === 3) animatePie();
+}
+
+function animateScorecard() {
+  document.querySelectorAll('#stage-2 .sc-val').forEach(el => {
+    const target = parseInt(el.dataset.target);
+    let v = 0;
+    el.textContent = '0';
+    const tick = () => {
+      v = Math.min(v + 3, target);
+      el.textContent = v;
+      if (v < target) requestAnimationFrame(tick);
+    };
+    setTimeout(() => requestAnimationFrame(tick), 300);
+  });
+}
+
+function animatePie() {
+  pieData.forEach((d, i) => {
+    const el = document.getElementById(d.id);
+    const len = d.pct * C;
+    const gap = C - len;
+    setTimeout(() => {
+      el.style.transition = 'stroke-dasharray 0.7s ease';
+      el.style.strokeDasharray = len + ' ' + gap;
+    }, i * 180);
+  });
+}
+
+/* Scroll-driven stage activation */
+const processSection = document.getElementById('process');
+let lastStage = -1;
+
+function onScroll() {
+  const top    = processSection.getBoundingClientRect().top;
+  const sectH  = processSection.offsetHeight;
+  const vh     = window.innerHeight;
+  const scrolled = -top;
+  const range    = sectH - vh;
+  if (range <= 0) return;
+  const progress = Math.min(1, Math.max(0, scrolled / range));
+  const stage = Math.min(3, Math.floor(progress * 4));
+  if (stage !== lastStage) {
+    lastStage = stage;
+    goTo(stage);
+  }
+}
+
+window.addEventListener('scroll', onScroll, { passive: true });
+
+/* ── NAV HAMBURGER ── */
+document.getElementById('hamburger').addEventListener('click', () => {
+  document.getElementById('navMobile').classList.toggle('open');
+});
+function closeMobileNav() {
+  document.getElementById('navMobile').classList.remove('open');
+}
+
+/* ── TEAM CARD REVEAL ── */
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      revealObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.team-leader, .team-card').forEach(c => revealObserver.observe(c));
+
+/* ── CONTACT FORM ── */
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const name    = document.getElementById('name').value;
+  const email   = document.getElementById('email').value;
+  const subject = document.getElementById('subject').value;
+  const message = document.getElementById('message').value;
+  const mailto  = 'mailto:info@boardam.com?subject=' +
+    encodeURIComponent(subject + ' — from ' + name) +
+    '&body=' + encodeURIComponent('From: ' + name + '\nEmail: ' + email + '\n\n' + message);
+  window.location.href = mailto;
+  document.getElementById('formStatus').textContent = 'Opening your email client…';
+});
+
+/* Init */
+goTo(0);
+</script>
+</body>
 </html>
