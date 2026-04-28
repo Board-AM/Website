@@ -805,6 +805,232 @@
       display: block;
       pointer-events: none;
     }
+    /* ── PORTFOLIOS ── */
+    .portfolio-header { margin-bottom: 2rem; }
+
+    .portfolio-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.9rem, 4vw, 3rem);
+      font-weight: 300;
+      color: var(--bright);
+      line-height: 1.15;
+      margin-bottom: 0.9rem;
+    }
+
+    .portfolio-intro {
+      max-width: 680px;
+      color: var(--text);
+      line-height: 1.8;
+      font-weight: 300;
+      font-size: 0.95rem;
+    }
+
+    .portfolio-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin: 2rem 0 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .portfolio-tab {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--dim);
+      padding: 0.6rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+    }
+
+    .portfolio-tab:hover { color: var(--blue); border-color: var(--blue3); }
+
+    .portfolio-tab.active {
+      color: var(--blue);
+      border-color: var(--blue2);
+      background: #131f32;
+    }
+
+    .portfolio-summary {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .portfolio-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 1.1rem 1.2rem;
+    }
+
+    .portfolio-card-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-bottom: 0.45rem;
+    }
+
+    .portfolio-card-value {
+      font-family: 'DM Mono', monospace;
+      font-size: 1.35rem;
+      color: var(--bright);
+      font-weight: 500;
+      letter-spacing: -0.02em;
+    }
+
+    .portfolio-card-sub {
+      font-size: 0.72rem;
+      color: var(--text);
+      margin-top: 0.2rem;
+    }
+
+    .portfolio-card-value.gold { color: var(--gold); }
+
+    .portfolio-layout {
+      display: grid;
+      grid-template-columns: 1fr 200px;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    .portfolio-table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: var(--card);
+    }
+
+    .portfolio-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 520px;
+    }
+
+    .portfolio-table th,
+    .portfolio-table td {
+      padding: 0.78rem 1rem;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+    }
+
+    .portfolio-table tr:last-child td { border-bottom: none; }
+
+    .portfolio-table th {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--blue3);
+      background: rgba(10,18,32,0.55);
+    }
+
+    .portfolio-table td { font-size: 0.83rem; color: var(--text); }
+
+    .portfolio-table td.pt-company { color: var(--bright); font-weight: 500; }
+    .portfolio-table td.pt-ticker {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--blue);
+      letter-spacing: 0.04em;
+    }
+    .portfolio-table td.pt-weight {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--bright);
+    }
+    .portfolio-table td.pt-score {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--gold);
+      font-weight: 500;
+    }
+
+    .portfolio-alloc-panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 1rem 1.1rem;
+    }
+
+    .portfolio-alloc-title {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--blue3);
+      margin-bottom: 0.8rem;
+    }
+
+    .alloc-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.36rem 0;
+      border-bottom: 1px solid rgba(15,30,48,0.7);
+    }
+
+    .alloc-row:last-child { border-bottom: none; }
+
+    .alloc-name {
+      font-size: 0.7rem;
+      color: var(--text);
+      flex: 1;
+      min-width: 0;
+    }
+
+    .alloc-bar-wrap {
+      width: 60px;
+      height: 3px;
+      background: var(--border);
+      border-radius: 2px;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .alloc-bar {
+      height: 100%;
+      background: var(--blue2);
+      border-radius: 2px;
+    }
+
+    .alloc-pct {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--dim);
+      width: 28px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .portfolio-disclaimer {
+      margin-top: 1.5rem;
+      font-size: 0.7rem;
+      color: var(--dim);
+      line-height: 1.7;
+      border-top: 1px solid var(--border);
+      padding-top: 1rem;
+    }
+
+    @media (max-width: 900px) {
+      .portfolio-summary { grid-template-columns: repeat(2, 1fr); }
+      .portfolio-layout { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 600px) {
+      .portfolio-summary { grid-template-columns: repeat(2, 1fr); gap: 0.6rem; }
+      .portfolio-card { padding: 0.85rem 0.9rem; }
+      .portfolio-card-value { font-size: 1.05rem; }
+      .portfolio-tabs { gap: 0.35rem; }
+      .portfolio-tab { font-size: 0.62rem; padding: 0.55rem 0.8rem; }
+    }
+
   </style>
 </head>
 <body>
@@ -819,6 +1045,7 @@
     <li><a href="#about">About</a></li>
     <li><a href="#process">Process</a></li>
     <li><a href="#team">Team</a></li>
+    <li><a href="#portfolios">Portfolios</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
   <button class="nav-hamburger" id="hamburger" aria-label="Menu">
@@ -830,6 +1057,7 @@
   <a href="#about" onclick="closeMobileNav()">About</a>
   <a href="#process" onclick="closeMobileNav()">Process</a>
   <a href="#team" onclick="closeMobileNav()">Team</a>
+  <a href="#portfolios" onclick="closeMobileNav()">Portfolios</a>
   <a href="#contact" onclick="closeMobileNav()">Contact</a>
 </div>
 
@@ -1531,6 +1759,51 @@
 
 <div class="section-rule"></div>
 
+<!-- PORTFOLIOS -->
+<section id="portfolios" class="section-wrap">
+  <div class="section-container" style="max-width:1200px">
+    <div class="section-eyebrow">Portfolios</div>
+    <div class="portfolio-header">
+      <h2 class="portfolio-heading">Leadership-weighted views.</h2>
+      <p class="portfolio-intro">Portfolio compositions scored on management quality, strategic clarity, and capital discipline — applied across the Magnificent Seven and S&amp;P 500 universe.</p>
+    </div>
+
+    <div class="portfolio-tabs" role="tablist" aria-label="Portfolio views">
+      <button class="portfolio-tab active" type="button" data-ptab="mag7" aria-selected="true">Mag7</button>
+      <button class="portfolio-tab" type="button" data-ptab="sp500" aria-selected="false">S&amp;P 500</button>
+    </div>
+
+    <div class="portfolio-summary" id="portfolioSummary"></div>
+
+    <div class="portfolio-layout">
+      <div class="portfolio-table-wrap">
+        <table class="portfolio-table" aria-label="Portfolio holdings">
+          <thead>
+            <tr>
+              <th>Company</th>
+              <th>Ticker</th>
+              <th>CEO</th>
+              <th>Sector</th>
+              <th>Weight</th>
+              <th>Score</th>
+            </tr>
+          </thead>
+          <tbody id="portfolioRows"></tbody>
+        </table>
+      </div>
+
+      <div class="portfolio-alloc-panel">
+        <div class="portfolio-alloc-title">Sector Allocation</div>
+        <div id="portfolioAlloc"></div>
+      </div>
+    </div>
+
+    <p class="portfolio-disclaimer">For illustration purposes only. Not investment advice. Holdings and weights reflect approximate market-cap composition and are subject to change. BAM scores represent internal management quality assessments.</p>
+  </div>
+</section>
+
+<div class="section-rule"></div>
+
 <!-- CONTACT -->
 <section id="contact" class="section-wrap">
   <div class="section-container">
@@ -1766,46 +2039,36 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
       }
     }
 
-    /* Pulse path — BFS from leftmost to rightmost canopy node.
-       Gives a shortest left-to-right route through the visible band,
-       reading as a signal sweeping across the hero.                  */
+    /* Pulse route — deterministic L→R sweep through evenly-spaced canopy nodes.
+       Sorted by x, evenly sampled, route edges force-added to the edge list.
+       Guaranteed non-empty regardless of graph connectivity.              */
     var canopy = [];
     nodes.forEach(function (n, idx) { if (n.zone === 0) canopy.push(idx); });
-    var si = canopy[0], eiNode = canopy[0];
-    canopy.forEach(function (idx) {
-      if (nodes[idx].x < nodes[si].x)     si = idx;
-      if (nodes[idx].x > nodes[eiNode].x) eiNode = idx;
-    });
+    canopy.sort(function (a, b) { return nodes[a].x - nodes[b].x; });
 
-    var par = {}, bQ = [si], bDone = false;
-    par[si] = -1;
-    while (bQ.length && !bDone) {
-      var bc = bQ.shift();
-      if (bc === eiNode) { bDone = true; break; }
-      nodes[bc].edges.forEach(function (nb) {
-        if (!(nb in par)) { par[nb] = bc; bQ.push(nb); }
-      });
+    var routeCount = mob ? 5 : 10;
+    var route = [];
+    if (canopy.length > 1) {
+      var step2 = (canopy.length - 1) / (routeCount - 1);
+      for (var ri = 0; ri < routeCount && ri < canopy.length; ri++) {
+        route.push(canopy[Math.round(ri * step2)]);
+      }
+    } else {
+      route = canopy.slice();
     }
 
     pulsePath = [];
-    if (eiNode in par) {
-      /* Reconstruct left-to-right node chain from parent map */
-      var chain = [], cur2 = eiNode;
-      while (cur2 !== si) { chain.unshift(cur2); cur2 = par[cur2]; }
-      chain.unshift(si);
-      for (var p = 0; p < chain.length - 1; p++) pulsePath.push([chain[p], chain[p + 1]]);
-    } else {
-      /* Fallback DFS if graph is disconnected */
-      var vis = {};
-      var dfs = function (cur) {
-        vis[cur] = true;
-        nodes[cur].edges.slice().sort(function (a, b) {
-          return nodes[b].x - nodes[a].x;
-        }).forEach(function (nb) {
-          if (!vis[nb]) { pulsePath.push([cur, nb]); dfs(nb); }
-        });
-      };
-      dfs(si);
+    for (var p = 0; p < route.length - 1; p++) {
+      var ra = route[p], rb = route[p + 1];
+      var rkey = Math.min(ra, rb) + '_' + Math.max(ra, rb);
+      if (!edgeSet[rkey]) {
+        var rdx = nodes[ra].x - nodes[rb].x, rdy = nodes[ra].y - nodes[rb].y;
+        edgeSet[rkey] = true;
+        edges.push([ra, rb, Math.sqrt(rdx * rdx + rdy * rdy)]);
+        nodes[ra].edges.push(rb);
+        nodes[rb].edges.push(ra);
+      }
+      pulsePath.push([ra, rb]);
     }
 
     pulsePos = 0;
@@ -1854,7 +2117,6 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
   window.addEventListener('resize', function () { clearTimeout(resT); resT = setTimeout(build, 250); });
 
   function frame(ts) {
-    if (document.hidden) { prevTs = 0; raf = requestAnimationFrame(frame); return; }
     var dt = prevTs ? Math.min(ts - prevTs, 50) : 0;
     prevTs = ts;
     var P = pulsePath.length;
@@ -1867,7 +2129,11 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
     /* Layer 1: base edges */
     drawEdges();
 
-    /* Layer 2: pulse trail — gold, above edges but below nodes */
+    /* Layer 2: vignette fades the base network at the periphery.
+       Drawn here so the gold pulse layers on top, undiminished. */
+    if (vigGrad) { cx.fillStyle = vigGrad; cx.fillRect(0, 0, W, H); }
+
+    /* Layer 3: pulse trail — gold, above vignette so edges never mute it */
     if (P > 0) {
       var trail = [
         { back: 3, a: 0.09, lw: 0.65, f: 1.0 },
@@ -1888,25 +2154,22 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
       }
     }
 
-    /* Layer 3: base nodes (sit above all edge layers) */
+    /* Layer 4: base nodes */
     drawNodes();
 
-    /* Layer 4: pulse head glow and node highlights */
+    /* Layer 5: pulse head glow and node highlights */
     if (P > 0) {
       var ce  = pulsePath[ci];
       var pna = nodes[ce[0]], pnb = nodes[ce[1]];
 
-      /* Arrival node: outer halo (anticipation) + brightening core */
       cx.beginPath(); cx.arc(pnb.x, pnb.y, pnb.r + 6, 0, Math.PI * 2);
       cx.fillStyle = 'rgba(201,168,76,' + (0.05 + cf * 0.09) + ')'; cx.fill();
       cx.beginPath(); cx.arc(pnb.x, pnb.y, pnb.r + 1.2, 0, Math.PI * 2);
       cx.fillStyle = 'rgba(201,168,76,' + (0.26 + cf * 0.50) + ')'; cx.fill();
 
-      /* Departure node fades behind the signal */
       cx.beginPath(); cx.arc(pna.x, pna.y, pna.r + 0.5, 0, Math.PI * 2);
       cx.fillStyle = 'rgba(201,168,76,' + (0.28 * (1 - cf)) + ')'; cx.fill();
 
-      /* Travelling pulse head: outer halo + bright core */
       var hx = pna.x + (pnb.x - pna.x) * cf;
       var hy = pna.y + (pnb.y - pna.y) * cf;
       cx.beginPath(); cx.arc(hx, hy, 5.5, 0, Math.PI * 2);
@@ -1915,19 +2178,128 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
       cx.fillStyle = 'rgba(201,168,76,0.84)'; cx.fill();
     }
 
-    /* Layer 5: vignette — softens edges, keeps logo zone open */
-    if (vigGrad) { cx.fillStyle = vigGrad; cx.fillRect(0, 0, W, H); }
-
     raf = requestAnimationFrame(frame);
   }
 
   raf = requestAnimationFrame(frame);
   document.addEventListener('visibilitychange', function () {
-    if (document.hidden) cancelAnimationFrame(raf);
-    else { prevTs = 0; raf = requestAnimationFrame(frame); }
+    if (document.hidden) { cancelAnimationFrame(raf); raf = 0; prevTs = 0; }
+    else if (!raf) { raf = requestAnimationFrame(frame); }
   });
 }());
 
+
+
+/* ── Portfolio section ── */
+(function () {
+  var portfolios = {
+    mag7: {
+      summary: { holdings: 7, avgScore: '8.4', topSector: 'Technology', topHolding: 'NVDA' },
+      sectors: [
+        { name: 'Technology', pct: 64 },
+        { name: 'Consumer Disc.', pct: 22 },
+        { name: 'Communication', pct: 14 }
+      ],
+      holdings: [
+        { company: 'NVIDIA Corp.',     ticker: 'NVDA',  ceo: 'Jensen Huang',      sector: 'Technology',    weight: '20.6%', score: '9.4' },
+        { company: 'Microsoft Corp.',  ticker: 'MSFT',  ceo: 'Satya Nadella',     sector: 'Technology',    weight: '22.4%', score: '9.1' },
+        { company: 'Apple Inc.',       ticker: 'AAPL',  ceo: 'Tim Cook',          sector: 'Technology',    weight: '21.8%', score: '8.7' },
+        { company: 'Amazon.com Inc.',  ticker: 'AMZN',  ceo: 'Andy Jassy',        sector: 'Consumer Disc.',weight: '11.9%', score: '8.5' },
+        { company: 'Alphabet Inc.',    ticker: 'GOOGL', ceo: 'Sundar Pichai',     sector: 'Communication', weight: '12.3%', score: '8.2' },
+        { company: 'Meta Platforms',   ticker: 'META',  ceo: 'Mark Zuckerberg',   sector: 'Communication', weight: '8.1%',  score: '7.8' },
+        { company: 'Tesla Inc.',       ticker: 'TSLA',  ceo: 'Elon Musk',         sector: 'Consumer Disc.',weight: '3.9%',  score: '6.3' }
+      ]
+    },
+    sp500: {
+      summary: { holdings: 503, avgScore: '7.2', topSector: 'Info Tech', topHolding: 'MSFT' },
+      sectors: [
+        { name: 'Info Technology', pct: 32 },
+        { name: 'Financials',      pct: 13 },
+        { name: 'Health Care',     pct: 12 },
+        { name: 'Consumer Disc.',  pct: 11 },
+        { name: 'Industrials',     pct: 9  },
+        { name: 'Communication',   pct: 9  },
+        { name: 'Consumer Staples',pct: 6  },
+        { name: 'Energy',          pct: 4  },
+        { name: 'Other',           pct: 4  }
+      ],
+      holdings: [
+        { company: 'Microsoft Corp.',      ticker: 'MSFT',  ceo: 'Satya Nadella',   sector: 'Technology',    weight: '7.1%', score: '9.1' },
+        { company: 'Apple Inc.',           ticker: 'AAPL',  ceo: 'Tim Cook',        sector: 'Technology',    weight: '6.8%', score: '8.7' },
+        { company: 'NVIDIA Corp.',         ticker: 'NVDA',  ceo: 'Jensen Huang',    sector: 'Technology',    weight: '6.5%', score: '9.4' },
+        { company: 'Amazon.com Inc.',      ticker: 'AMZN',  ceo: 'Andy Jassy',      sector: 'Consumer Disc.',weight: '3.8%', score: '8.5' },
+        { company: 'Meta Platforms',       ticker: 'META',  ceo: 'Mark Zuckerberg', sector: 'Communication', weight: '2.8%', score: '7.8' },
+        { company: 'Alphabet Inc.',        ticker: 'GOOGL', ceo: 'Sundar Pichai',   sector: 'Communication', weight: '2.6%', score: '8.2' },
+        { company: 'Berkshire Hathaway',   ticker: 'BRK.B', ceo: 'Greg Abel',       sector: 'Financials',    weight: '1.7%', score: '7.5' },
+        { company: 'Tesla Inc.',           ticker: 'TSLA',  ceo: 'Elon Musk',       sector: 'Consumer Disc.',weight: '1.6%', score: '6.3' },
+        { company: 'Eli Lilly & Co.',      ticker: 'LLY',   ceo: 'David Ricks',     sector: 'Health Care',   weight: '1.4%', score: '7.9' },
+        { company: 'JPMorgan Chase',       ticker: 'JPM',   ceo: 'Jamie Dimon',     sector: 'Financials',    weight: '1.3%', score: '8.6' }
+      ]
+    }
+  };
+
+  function card(label, value, sub, cls) {
+    return '<div class="portfolio-card">' +
+      '<div class="portfolio-card-label">' + label + '</div>' +
+      '<div class="portfolio-card-value' + (cls ? ' ' + cls : '') + '">' + value + '</div>' +
+      (sub ? '<div class="portfolio-card-sub">' + sub + '</div>' : '') +
+      '</div>';
+  }
+
+  function render(key) {
+    var d = portfolios[key];
+    var s = d.summary;
+
+    var sumEl = document.getElementById('portfolioSummary');
+    if (sumEl) sumEl.innerHTML =
+      card('Holdings', s.holdings, '') +
+      card('Avg Score', s.avgScore, '/10', 'gold') +
+      card('Top Sector', s.topSector, '') +
+      card('Top Holding', s.topHolding, '');
+
+    var rowEl = document.getElementById('portfolioRows');
+    if (rowEl) rowEl.innerHTML = d.holdings.map(function (h) {
+      return '<tr>' +
+        '<td class="pt-company">' + h.company + '</td>' +
+        '<td class="pt-ticker">' + h.ticker + '</td>' +
+        '<td>' + h.ceo + '</td>' +
+        '<td>' + h.sector + '</td>' +
+        '<td class="pt-weight">' + h.weight + '</td>' +
+        '<td class="pt-score">' + h.score + '</td>' +
+        '</tr>';
+    }).join('');
+
+    var allocEl = document.getElementById('portfolioAlloc');
+    if (allocEl) allocEl.innerHTML = d.sectors.map(function (sec) {
+      return '<div class="alloc-row">' +
+        '<div class="alloc-name">' + sec.name + '</div>' +
+        '<div class="alloc-bar-wrap"><div class="alloc-bar" style="width:' + sec.pct + '%"></div></div>' +
+        '<div class="alloc-pct">' + sec.pct + '%</div>' +
+        '</div>';
+    }).join('');
+  }
+
+  function initPortfolio() {
+    var active = 'mag7';
+    var tabs = document.querySelectorAll('.portfolio-tab');
+    tabs.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        active = btn.getAttribute('data-ptab');
+        tabs.forEach(function (b) { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+        render(active);
+      });
+    });
+    render(active);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPortfolio);
+  } else {
+    initPortfolio();
+  }
+}());
 
 /* Init */
 goTo(0);
