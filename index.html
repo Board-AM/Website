@@ -182,7 +182,7 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    .hero-logo { width: clamp(130px, 16vw, 165px); height: auto; opacity: 0.9; }
+    .hero-logo { width: clamp(200px, 28vw, 300px); height: auto; filter: brightness(0) invert(1); opacity: 0.82; }
 
     .hero-divider {
       width: clamp(60px, 15%, 120px);
@@ -258,18 +258,14 @@
     }
 
     /* ── PROCESS SECTION ── */
-    #process { height: 500vh; position: relative; }
+    #process { position: relative; }
 
     .process-sticky {
-      position: sticky;
-      top: 0;
-      height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
-      padding: 0 20px;
+      padding: 60px 20px;
     }
 
     .process-inner {
@@ -821,7 +817,7 @@
     }
 
     @media (max-width: 480px) {
-      .hero-logo { width: clamp(110px, 30vw, 145px); }
+      .hero-logo { width: clamp(160px, 55vw, 220px); }
       .hero-statement { font-size: clamp(2rem, 8.5vw, 3rem); }
       .hero-body { font-size: 0.88rem; line-height: 1.75; }
       .hero-logo-wrap { gap: 0.9rem; padding: 0 1rem; }
@@ -829,6 +825,32 @@
       .process-inner { padding: 16px 12px 14px; }
       .step-name { font-size: 13px; }
       .step-desc { font-size: 10px; }
+    }
+
+    /* ── PROCESS CONTROLS ── */
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--blue3);
+      border: 1px solid var(--border2);
+      background: none;
+      padding: 6px 14px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+    }
+    .btn:hover, .btn.active-btn {
+      color: var(--blue);
+      border-color: var(--blue2);
+      background: rgba(122,168,208,0.06);
     }
 
     /* ── HERO NEURAL-NET CANVAS ── */
@@ -1101,31 +1123,10 @@
   <div class="hero-radial"></div>
   <canvas id="heroCanvas" aria-hidden="true" role="presentation"></canvas>
   <div class="hero-logo-wrap">
+    <img src="static/BoardAM_Logo.svg" class="hero-logo" alt="BoardAM">
+    <div class="hero-divider"></div>
     <h1 class="hero-statement">We measure the people<br>behind <em>performance.</em></h1>
     <p class="hero-body">Every great company is a reflection of its leadership. We built a system to prove it — and to invest accordingly.</p>
-    <div class="hero-divider"></div>
-    <svg class="hero-logo" viewBox="0 0 340 88" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="52" cy="44" r="5.5" fill="#7aa8d0"/>
-      <circle cx="52" cy="22" r="3.5" fill="#7aa8d0" opacity="0.8"/>
-      <circle cx="52" cy="66" r="3.5" fill="#7aa8d0" opacity="0.8"/>
-      <circle cx="30" cy="32" r="3.5" fill="#7aa8d0" opacity="0.8"/>
-      <circle cx="30" cy="56" r="3.5" fill="#7aa8d0" opacity="0.8"/>
-      <circle cx="74" cy="32" r="3"   fill="#7aa8d0" opacity="0.7"/>
-      <circle cx="74" cy="56" r="3"   fill="#7aa8d0" opacity="0.7"/>
-      <circle cx="16" cy="44" r="2.5" fill="#7aa8d0" opacity="0.6"/>
-      <circle cx="52" cy="10" r="2.5" fill="#7aa8d0" opacity="0.5"/>
-      <line x1="52" y1="44" x2="52"   y2="25.5" stroke="#7aa8d0" stroke-width="1.2" opacity="0.5"/>
-      <line x1="52" y1="44" x2="52"   y2="62.5" stroke="#7aa8d0" stroke-width="1.2" opacity="0.5"/>
-      <line x1="52" y1="44" x2="33.5" y2="33"   stroke="#7aa8d0" stroke-width="1.2" opacity="0.5"/>
-      <line x1="52" y1="44" x2="33.5" y2="55"   stroke="#7aa8d0" stroke-width="1.2" opacity="0.5"/>
-      <line x1="52" y1="44" x2="71"   y2="33"   stroke="#7aa8d0" stroke-width="1.2" opacity="0.5"/>
-      <line x1="52" y1="44" x2="71"   y2="55"   stroke="#7aa8d0" stroke-width="1.2" opacity="0.5"/>
-      <line x1="30" y1="32" x2="16"   y2="44"   stroke="#7aa8d0" stroke-width="1"   opacity="0.35"/>
-      <line x1="30" y1="56" x2="16"   y2="44"   stroke="#7aa8d0" stroke-width="1"   opacity="0.35"/>
-      <line x1="52" y1="22" x2="52"   y2="12.5" stroke="#7aa8d0" stroke-width="1"   opacity="0.35"/>
-      <text x="88" y="54" font-family="'DM Sans',sans-serif" font-size="36" font-weight="300" letter-spacing="-0.5" fill="#c8dff0">Board</text>
-      <text x="215" y="54" font-family="'DM Sans',sans-serif" font-size="36" font-weight="300" letter-spacing="-0.5" fill="#4a7a9a">AM</text>
-    </svg>
   </div>
     <div class="scroll-indicator">
     <span>Scroll</span>
@@ -1143,8 +1144,8 @@
       <div class="title-rule"></div>
 
       <div class="step-label">
-        <div class="step-name" id="stepName">Executive Data</div>
-        <div class="step-desc" id="stepDesc">DEF 14A proxy statements reveal the people, incentives, ownership and governance structures behind the enterprise</div>
+        <div class="step-name" id="stepName">Company Filings</div>
+        <div class="step-desc" id="stepDesc">Sourcing raw data from SEC filings, earnings calls &amp; proxy statements</div>
       </div>
 
       <div class="pipeline">
@@ -1161,7 +1162,7 @@
             <rect x="15" y="2"  width="38" height="48" rx="3" fill="#162335" stroke="#2e5070" stroke-width="1" opacity="0.6"/>
             <rect x="12" y="4"  width="38" height="48" rx="3" fill="#111e2f" stroke="#2e5070" stroke-width="1" opacity="0.8"/>
           </svg>
-          <div class="stage-title">Executive<br>Data</div>
+          <div class="stage-title">Company<br>Filings</div>
           <div class="stage-content">
             <div class="filing-lines">
               <div class="filing-line"></div>
@@ -1194,7 +1195,7 @@
             <line x1="32" y1="32" x2="17" y2="42" stroke="#7aa8d0" stroke-width="1.2" opacity="0.6"/>
             <line x1="32" y1="32" x2="47" y2="42" stroke="#7aa8d0" stroke-width="1.2" opacity="0.6"/>
           </svg>
-          <div class="stage-title">AI<br>Model</div>
+          <div class="stage-title">Proprietary<br>Model</div>
           <div class="stage-content">
             <div class="model-nodes">
               <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1235,7 +1236,7 @@
             <rect x="10" y="51" width="20" height="2" rx="1" fill="#2e5070"/>
             <rect x="32" y="51" width="6"  rx="1" height="2" fill="#7aa8d0" opacity="0.7"/>
           </svg>
-          <div class="stage-title">Management<br>Scorecards</div>
+          <div class="stage-title">Scorecards</div>
           <div class="stage-content">
             <div class="scorecard">
               <div class="scorecard-header">
@@ -1309,8 +1310,13 @@
         <div class="dot" onclick="goTo(2)"></div>
         <div class="dot" onclick="goTo(3)"></div>
       </div>
+      <div class="controls">
+        <button class="btn" onclick="prevStep()">← Prev</button>
+        <button class="btn active-btn" id="autoBtn" onclick="toggleAuto()">⏸ Auto</button>
+        <button class="btn" onclick="nextStep()">Next →</button>
+      </div>
       <div class="process-scroll-hint">↓ Scroll to advance through the process</div>
-      <div class="disclaimer">For illustration purposes only. Not real investment advice.</div>
+      <div class="disclaimer">For illustration purposes only. Back test and not real life return.</div>
     </div>
   </div>
 </section>
@@ -1777,6 +1783,10 @@
           <div class="card-credentials">MEng Ind Eng (Cum Laude) · CFA Level I</div>
           <div class="card-divider"></div>
           <p class="card-bio">Data Engineer and Data Scientist at Spatialedge (2024–2026). Led the design and delivery of scalable data pipelines and analytics solutions, ingesting high-volume multi-source data and applying forecasting and classification models to real-world business problems.</p>
+          <a href="https://www.linkedin.com/in/louis-willem-burger/" target="_blank" rel="noopener noreferrer" class="card-linkedin">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            LinkedIn
+          </a>
         </div>
       </div>
 
@@ -1858,10 +1868,10 @@
 <script>
 /* ── PIPELINE ── */
 const steps = [
-  { name: 'Executive Data',         desc: 'DEF 14A proxy statements reveal the people, incentives, ownership and governance structures behind the enterprise' },
-  { name: 'Proprietary AI Model',   desc: 'A systematic model extracts leadership signals from structured and semi-structured disclosure' },
-  { name: 'Management Scorecards',  desc: 'Qualitative evidence is compressed into quantitative leadership scores built for cross-company comparison' },
-  { name: 'Portfolio Construction', desc: 'Capital tilted toward companies where management quality is expected to compound over multi-year horizons' }
+  { name: 'Company Filings',        desc: 'Sourcing raw data from SEC filings, earnings calls & proxy statements' },
+  { name: 'Proprietary Model',      desc: 'AI scoring engine processes leadership data through a multi-factor risk framework' },
+  { name: 'Scorecards',             desc: 'Each CEO ranked on Experience, Track Record, Shareholding & BAM Rating' },
+  { name: 'Portfolio Construction', desc: 'Top 20% of management teams selected; diversification parameters applied' }
 ];
 const C = 106.8;
 const pieData = [
@@ -1871,6 +1881,8 @@ const pieData = [
   { id: 'seg4', pct: 0.44 }
 ];
 let current = 0;
+let autoPlay = true;
+let timer = null;
 
 function goTo(n) {
   document.getElementById('stage-' + current).classList.remove('active');
@@ -1888,6 +1900,29 @@ function goTo(n) {
 
   if (current === 2) animateScorecard();
   if (current === 3) animatePie();
+  if (autoPlay) resetTimer();
+}
+
+function nextStep() { goTo((current + 1) % 4); }
+function prevStep() { goTo((current + 3) % 4); }
+
+function resetTimer() {
+  clearInterval(timer);
+  timer = setInterval(nextStep, 3200);
+}
+
+function toggleAuto() {
+  autoPlay = !autoPlay;
+  const btn = document.getElementById('autoBtn');
+  if (autoPlay) {
+    btn.textContent = '⏸ Auto';
+    btn.classList.add('active-btn');
+    resetTimer();
+  } else {
+    btn.textContent = '▶ Auto';
+    btn.classList.remove('active-btn');
+    clearInterval(timer);
+  }
 }
 
 function animateScorecard() {
@@ -1916,26 +1951,6 @@ function animatePie() {
   });
 }
 
-/* Scroll-driven stage activation */
-const processSection = document.getElementById('process');
-let lastStage = -1;
-
-function onScroll() {
-  const top    = processSection.getBoundingClientRect().top;
-  const sectH  = processSection.offsetHeight;
-  const vh     = window.innerHeight;
-  const scrolled = -top;
-  const range    = sectH - vh;
-  if (range <= 0) return;
-  const progress = Math.min(1, Math.max(0, scrolled / range));
-  const stage = Math.min(3, Math.floor(progress * 4));
-  if (stage !== lastStage) {
-    lastStage = stage;
-    goTo(stage);
-  }
-}
-
-window.addEventListener('scroll', onScroll, { passive: true });
 
 /* ── NAV HAMBURGER ── */
 document.getElementById('hamburger').addEventListener('click', () => {
@@ -2330,6 +2345,7 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
 
 /* Init */
 goTo(0);
+setTimeout(() => { if (autoPlay) resetTimer(); }, 1200);
 </script>
 </body>
 </html>

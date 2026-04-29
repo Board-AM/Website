@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Investment Process — BoardAM</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy:    #0a1220;
+  --card:    #111e2f;
+  --border:  #0f1e30;
+  --border2: #1e3450;
+  --blue:    #7aa8d0;
+  --blue2:   #4a7a9a;
+  --blue3:   #2e5070;
+  --dim:     #3a6080;
+  --text:    #6a8aa8;
+  --bright:  #c8dff0;
+  --glow:    rgba(122,168,208,0.18);
+}
+
+body {
+  background: var(--navy);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 36px 24px;
+}
+
+.page {
+  width: 100%;
+  max-width: 1100px;
+  background: var(--navy);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 36px 36px 28px;
+}
+
+/* ── HEADER ── */
+.page-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 24px;
+  gap: 0;
+}
+.page-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-top: 0;
+}
+.title-rule { width: 100%; height: 1px; background: var(--border); margin-bottom: 8px; }
+
+/* ── STEP LABEL ── */
+.step-label {
+  text-align: center;
+  margin-bottom: 28px;
+  height: 52px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+.step-name {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--bright);
+  letter-spacing: 0.04em;
+  transition: opacity 0.4s;
+}
+.step-desc {
+  font-size: 13px;
+  color: var(--dim);
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.06em;
+  transition: opacity 0.4s;
+}
+
+/* ── PIPELINE ── */
+.pipeline {
+  display: grid;
+  grid-template-columns: 1fr 48px 1fr 48px 1fr 48px 1fr;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 0;
+  padding: 40px 0 40px;
+}
+
+/* Arrow */
+.arrow-col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+.arrow {
+  width: 36px;
+  height: 2px;
+  background: var(--border2);
+  position: relative;
+  transition: background 0.4s;
+}
+.arrow::after {
+  content: '';
+  position: absolute;
+  right: -1px; top: -4px;
+  border: 5px solid transparent;
+  border-left: 7px solid var(--border2);
+  transition: border-left-color 0.4s;
+}
+.arrow.active { background: var(--blue); }
+.arrow.active::after { border-left-color: var(--blue); }
+
+/* ── STAGE CARD ── */
+.stage {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  padding: 24px 18px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: border-color 0.4s, box-shadow 0.45s, background 0.4s, transform 0.45s cubic-bezier(.34,1.4,.64,1);
+  position: relative;
+  min-height: 240px;
+  z-index: 1;
+  transform: scale(1);
+}
+.stage.active {
+  border-color: var(--blue2);
+  box-shadow: 0 0 52px rgba(122,168,208,0.25), inset 0 0 30px rgba(122,168,208,0.07);
+  background: #131f32;
+  transform: scale(1.18);
+  z-index: 10;
+}
+.stage-icon {
+  width: 64px;
+  height: 64px;
+  opacity: 0.45;
+  transition: opacity 0.4s, transform 0.4s;
+}
+.stage.active .stage-icon { opacity: 1; }
+
+.stage-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--blue3);
+  text-align: center;
+  transition: color 0.4s;
+}
+.stage.active .stage-title { color: var(--blue); }
+
+.stage-content {
+  width: 100%;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.5s 0.2s, transform 0.5s 0.2s;
+}
+.stage.active .stage-content {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── PROGRESS DOTS ── */
+.progress {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 18px;
+  margin-top: 16px;
+}
+.dot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: var(--border2);
+  transition: background 0.3s, transform 0.3s;
+  cursor: pointer;
+}
+.dot.active { background: var(--blue); transform: scale(1.35); }
+
+/* ── CONTROLS ── */
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.btn {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--blue3);
+  border: 1px solid var(--border2);
+  background: none;
+  padding: 8px 18px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+.btn:hover, .btn.active-btn {
+  color: var(--blue);
+  border-color: var(--blue2);
+  background: rgba(122,168,208,0.06);
+}
+
+/* ── FILING STAGE CONTENT ── */
+.filing-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.filing-line {
+  height: 5px;
+  border-radius: 2px;
+  background: var(--border2);
+  animation: none;
+}
+.stage.active .filing-line {
+  animation: fillLine 0.4s ease forwards;
+}
+.filing-line:nth-child(1) { width: 90%; animation-delay: 0.1s; }
+.filing-line:nth-child(2) { width: 75%; animation-delay: 0.2s; }
+.filing-line:nth-child(3) { width: 85%; animation-delay: 0.3s; }
+.filing-line:nth-child(4) { width: 60%; animation-delay: 0.4s; }
+.filing-line:nth-child(5) { width: 80%; animation-delay: 0.5s; }
+.filing-line:nth-child(6) { width: 55%; animation-delay: 0.6s; }
+@keyframes fillLine {
+  from { background: var(--border2); }
+  to   { background: var(--blue2); }
+}
+
+.filing-tag {
+  display: inline-block;
+  font-family: 'DM Mono', monospace;
+  font-size: 8px;
+  color: var(--blue3);
+  letter-spacing: 0.08em;
+  border: 1px solid var(--border2);
+  border-radius: 3px;
+  padding: 2px 6px;
+  margin-top: 4px;
+}
+.stage.active .filing-tag { color: var(--blue); border-color: var(--blue2); }
+
+/* ── MODEL STAGE CONTENT ── */
+.model-nodes {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  margin: 0 auto;
+}
+.model-nodes svg {
+  width: 100%; height: 100%;
+}
+.stage.active .model-nodes svg {
+  animation: spinSlow 4s linear infinite;
+}
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.model-badge {
+  text-align: center;
+  font-family: 'DM Mono', monospace;
+  font-size: 8px;
+  color: var(--blue3);
+  letter-spacing: 0.06em;
+  line-height: 1.5;
+}
+.stage.active .model-badge { color: var(--blue2); }
+
+/* ── SCORECARD STAGE CONTENT ── */
+.scorecard {
+  background: #0c1828;
+  border: 1px solid var(--border2);
+  border-radius: 5px;
+  overflow: hidden;
+  width: 100%;
+}
+.scorecard-header {
+  background: var(--blue2);
+  padding: 4px 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.sc-name {
+  font-family: 'DM Mono', monospace;
+  font-size: 7.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: #fff;
+}
+.sc-sector {
+  font-family: 'DM Mono', monospace;
+  font-size: 7px;
+  color: rgba(255,255,255,0.7);
+  letter-spacing: 0.08em;
+}
+.scorecard-body { padding: 6px 8px; }
+.sc-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2.5px 0;
+  border-bottom: 1px solid rgba(122,168,208,0.08);
+}
+.sc-row:last-child { border-bottom: none; }
+.sc-metric {
+  font-family: 'DM Mono', monospace;
+  font-size: 7.5px;
+  color: var(--dim);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.sc-val {
+  font-family: 'DM Mono', monospace;
+  font-size: 8.5px;
+  font-weight: 600;
+  color: var(--blue);
+  min-width: 22px;
+  text-align: right;
+  /* counter animation */
+  transition: color 0.3s;
+}
+/* bar under each row */
+.sc-bar-wrap {
+  width: 40px; height: 3px; background: var(--border);
+  border-radius: 2px; margin-left: 6px; overflow: hidden;
+}
+.sc-bar {
+  height: 100%; border-radius: 2px;
+  background: var(--blue2);
+  width: 0;
+  transition: width 0.8s ease;
+}
+.stage.active .sc-bar { width: var(--w); }
+
+/* ── PORTFOLIO STAGE CONTENT ── */
+.pie-wrap {
+  width: 80px; height: 80px;
+  margin: 0 auto;
+  position: relative;
+}
+.pie-wrap svg { width: 100%; height: 100%; }
+
+/* SVG pie segments start at 0 and animate to final value */
+.pie-seg {
+  transition: stroke-dasharray 0.8s ease, opacity 0.5s;
+  opacity: 0;
+}
+.stage.active .pie-seg { opacity: 1; }
+
+.port-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 100%;
+}
+.port-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'DM Mono', monospace;
+  font-size: 7.5px;
+  color: var(--dim);
+  letter-spacing: 0.04em;
+}
+.port-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.port-pct {
+  margin-left: auto;
+  color: var(--blue2);
+  font-size: 8px;
+}
+
+/* ── DISCLAIMER ── */
+.disclaimer {
+  margin-top: 4px;
+  font-size: 9px;
+  color: #2a4a68;
+  font-style: italic;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <div class="page-title">Investment Process</div>
+  </div>
+  <div class="title-rule"></div>
+
+  <!-- CURRENT STEP LABEL -->
+  <div class="step-label">
+    <div class="step-name" id="stepName">Company Filings</div>
+    <div class="step-desc" id="stepDesc">Sourcing and ingesting raw company data as structured input</div>
+  </div>
+
+  <!-- PIPELINE -->
+  <div class="pipeline">
+
+    <!-- STAGE 1: Company Filings -->
+    <div class="stage active" id="stage-0" onclick="goTo(0)">
+      <svg class="stage-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="10" y="6" width="38" height="48" rx="3" fill="#1e3450" stroke="#7aa8d0" stroke-width="1.5"/>
+        <rect x="14" y="12" width="30" height="4" rx="1.5" fill="#7aa8d0" opacity="0.7"/>
+        <rect x="14" y="20" width="24" height="3" rx="1.5" fill="#7aa8d0" opacity="0.5"/>
+        <rect x="14" y="27" width="28" height="3" rx="1.5" fill="#7aa8d0" opacity="0.5"/>
+        <rect x="14" y="34" width="20" height="3" rx="1.5" fill="#7aa8d0" opacity="0.4"/>
+        <rect x="14" y="41" width="26" height="3" rx="1.5" fill="#7aa8d0" opacity="0.4"/>
+        <!-- Stacked pages behind -->
+        <rect x="15" y="2" width="38" height="48" rx="3" fill="#162335" stroke="#2e5070" stroke-width="1" opacity="0.6"/>
+        <rect x="12" y="4" width="38" height="48" rx="3" fill="#111e2f" stroke="#2e5070" stroke-width="1" opacity="0.8"/>
+      </svg>
+      <div class="stage-title">Company<br>Filings</div>
+      <div class="stage-content">
+        <div class="filing-lines">
+          <div class="filing-line"></div>
+          <div class="filing-line"></div>
+          <div class="filing-line"></div>
+          <div class="filing-line"></div>
+          <div class="filing-line"></div>
+          <div class="filing-line"></div>
+        </div>
+        <span class="filing-tag">Data Input</span>
+      </div>
+    </div>
+
+    <!-- ARROW 1 -->
+    <div class="arrow-col"><div class="arrow" id="arrow-0"></div></div>
+
+    <!-- STAGE 2: Proprietary Model -->
+    <div class="stage" id="stage-1" onclick="goTo(1)">
+      <svg class="stage-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="32" cy="32" r="8"  fill="#1e3450" stroke="#7aa8d0" stroke-width="1.5"/>
+        <circle cx="32" cy="12" r="5"  fill="#162335" stroke="#7aa8d0" stroke-width="1.2"/>
+        <circle cx="32" cy="52" r="5"  fill="#162335" stroke="#7aa8d0" stroke-width="1.2"/>
+        <circle cx="12" cy="22" r="5"  fill="#162335" stroke="#7aa8d0" stroke-width="1.2"/>
+        <circle cx="52" cy="22" r="5"  fill="#162335" stroke="#7aa8d0" stroke-width="1.2"/>
+        <circle cx="12" cy="42" r="5"  fill="#162335" stroke="#7aa8d0" stroke-width="1.2"/>
+        <circle cx="52" cy="42" r="5"  fill="#162335" stroke="#7aa8d0" stroke-width="1.2"/>
+        <line x1="32" y1="32" x2="32" y2="17" stroke="#7aa8d0" stroke-width="1.2" opacity="0.6"/>
+        <line x1="32" y1="32" x2="32" y2="47" stroke="#7aa8d0" stroke-width="1.2" opacity="0.6"/>
+        <line x1="32" y1="32" x2="17" y2="22" stroke="#7aa8d0" stroke-width="1.2" opacity="0.6"/>
+        <line x1="32" y1="32" x2="47" y2="22" stroke="#7aa8d0" stroke-width="1.2" opacity="0.6"/>
+        <line x1="32" y1="32" x2="17" y2="42" stroke="#7aa8d0" stroke-width="1.2" opacity="0.6"/>
+        <line x1="32" y1="32" x2="47" y2="42" stroke="#7aa8d0" stroke-width="1.2" opacity="0.6"/>
+      </svg>
+      <div class="stage-title">Proprietary<br>Model</div>
+      <div class="stage-content">
+        <div class="model-nodes">
+          <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="40" cy="40" r="8" fill="#1e3450" stroke="#7aa8d0" stroke-width="1.5"/>
+            <circle cx="40" cy="14" r="5" fill="#162335" stroke="#7aa8d0" stroke-width="1"/>
+            <circle cx="40" cy="66" r="5" fill="#162335" stroke="#7aa8d0" stroke-width="1"/>
+            <circle cx="14" cy="27" r="5" fill="#162335" stroke="#7aa8d0" stroke-width="1"/>
+            <circle cx="66" cy="27" r="5" fill="#162335" stroke="#7aa8d0" stroke-width="1"/>
+            <circle cx="14" cy="53" r="5" fill="#162335" stroke="#7aa8d0" stroke-width="1"/>
+            <circle cx="66" cy="53" r="5" fill="#162335" stroke="#7aa8d0" stroke-width="1"/>
+            <line x1="40" y1="40" x2="40" y2="19" stroke="#7aa8d0" stroke-width="1" opacity="0.5"/>
+            <line x1="40" y1="40" x2="40" y2="61" stroke="#7aa8d0" stroke-width="1" opacity="0.5"/>
+            <line x1="40" y1="40" x2="19" y2="27" stroke="#7aa8d0" stroke-width="1" opacity="0.5"/>
+            <line x1="40" y1="40" x2="61" y2="27" stroke="#7aa8d0" stroke-width="1" opacity="0.5"/>
+            <line x1="40" y1="40" x2="19" y2="53" stroke="#7aa8d0" stroke-width="1" opacity="0.5"/>
+            <line x1="40" y1="40" x2="61" y2="53" stroke="#7aa8d0" stroke-width="1" opacity="0.5"/>
+          </svg>
+        </div>
+        <div class="model-badge">AI Scoring Engine<br>Insurance &amp; Banking<br>Risk Framework</div>
+      </div>
+    </div>
+
+    <!-- ARROW 2 -->
+    <div class="arrow-col"><div class="arrow" id="arrow-1"></div></div>
+
+    <!-- STAGE 3: Scorecards -->
+    <div class="stage" id="stage-2" onclick="goTo(2)">
+      <svg class="stage-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Card stack -->
+        <rect x="16" y="8"  width="32" height="42" rx="3" fill="#162335" stroke="#2e5070" stroke-width="1" opacity="0.6"/>
+        <rect x="12" y="12" width="32" height="42" rx="3" fill="#1a2d44" stroke="#2e5070" stroke-width="1" opacity="0.8"/>
+        <rect x="8"  y="16" width="32" height="42" rx="3" fill="#1e3450" stroke="#7aa8d0" stroke-width="1.5"/>
+        <!-- Photo area -->
+        <rect x="10" y="18" width="28" height="18" rx="2" fill="#0f1e30" opacity="0.6"/>
+        <circle cx="24" cy="27" r="7" fill="#162335" stroke="#7aa8d0" stroke-width="1" opacity="0.5"/>
+        <!-- Stats -->
+        <rect x="10" y="38" width="28" height="3" rx="1" fill="#7aa8d0" opacity="0.8"/>
+        <rect x="10" y="43" width="20" height="2" rx="1" fill="#2e5070"/>
+        <rect x="32" y="43" width="6"  rx="1" height="2" fill="#7aa8d0" opacity="0.7"/>
+        <rect x="10" y="47" width="20" height="2" rx="1" fill="#2e5070"/>
+        <rect x="32" y="47" width="6"  rx="1" height="2" fill="#7aa8d0" opacity="0.7"/>
+        <rect x="10" y="51" width="20" height="2" rx="1" fill="#2e5070"/>
+        <rect x="32" y="51" width="6"  rx="1" height="2" fill="#7aa8d0" opacity="0.7"/>
+      </svg>
+      <div class="stage-title">Scorecards</div>
+      <div class="stage-content">
+        <div class="scorecard">
+          <div class="scorecard-header">
+            <div class="sc-name">M. K. WIRTH</div>
+            <div class="sc-sector">ENERGY · CVX</div>
+          </div>
+          <div class="scorecard-body">
+            <div class="sc-row">
+              <div class="sc-metric">Experience</div>
+              <div class="sc-bar-wrap"><div class="sc-bar" style="--w:95%"></div></div>
+              <div class="sc-val" data-target="95">0</div>
+            </div>
+            <div class="sc-row">
+              <div class="sc-metric">Track Record</div>
+              <div class="sc-bar-wrap"><div class="sc-bar" style="--w:85%"></div></div>
+              <div class="sc-val" data-target="85">0</div>
+            </div>
+            <div class="sc-row">
+              <div class="sc-metric">Shareholding</div>
+              <div class="sc-bar-wrap"><div class="sc-bar" style="--w:10%"></div></div>
+              <div class="sc-val" data-target="10">0</div>
+            </div>
+            <div class="sc-row">
+              <div class="sc-metric">BAM Rating</div>
+              <div class="sc-bar-wrap"><div class="sc-bar" style="--w:71%"></div></div>
+              <div class="sc-val" data-target="71">0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ARROW 3 -->
+    <div class="arrow-col"><div class="arrow" id="arrow-2"></div></div>
+
+    <!-- STAGE 4: Portfolio Construction -->
+    <div class="stage" id="stage-3" onclick="goTo(3)">
+      <svg class="stage-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Pie chart icon -->
+        <circle cx="32" cy="32" r="22" fill="#0f1e30" stroke="#2e5070" stroke-width="1"/>
+        <!-- Segments - approximate wedges -->
+        <path d="M32 32 L32 10 A22 22 0 0 1 51 43 Z" fill="#7aa8d0" opacity="0.8"/>
+        <path d="M32 32 L51 43 A22 22 0 0 1 18 52 Z" fill="#4a7a9a" opacity="0.7"/>
+        <path d="M32 32 L18 52 A22 22 0 0 1 14 22 Z" fill="#2e5070" opacity="0.6"/>
+        <path d="M32 32 L14 22 A22 22 0 0 1 32 10 Z" fill="#1e3450" opacity="0.8"/>
+        <circle cx="32" cy="32" r="8" fill="#0a1220"/>
+      </svg>
+      <div class="stage-title">Portfolio<br>Construction</div>
+      <div class="stage-content">
+        <div class="pie-wrap">
+          <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+            <!-- Animated pie using stroke-dasharray on circle -->
+            <circle cx="40" cy="40" r="28" fill="#0f1e30" stroke="#0f1e30" stroke-width="1"/>
+            <!-- Segment 1: IT ~33% (119deg) -->
+            <circle id="seg1" cx="40" cy="40" r="17" fill="none"
+              stroke="#7aa8d0" stroke-width="12"
+              stroke-dasharray="0 107"
+              stroke-dashoffset="27"
+              transform="rotate(-90 40 40)"/>
+            <!-- Segment 2: Financials ~13% (47deg) -->
+            <circle id="seg2" cx="40" cy="40" r="17" fill="none"
+              stroke="#4a7a9a" stroke-width="12"
+              stroke-dasharray="0 107"
+              stroke-dashoffset="-8"
+              transform="rotate(-90 40 40)"/>
+            <!-- Segment 3: Cons Disc ~10% (36deg) -->
+            <circle id="seg3" cx="40" cy="40" r="17" fill="none"
+              stroke="#2e5070" stroke-width="12"
+              stroke-dasharray="0 107"
+              stroke-dashoffset="-21"
+              transform="rotate(-90 40 40)"/>
+            <!-- Segment 4: Other ~44% -->
+            <circle id="seg4" cx="40" cy="40" r="17" fill="none"
+              stroke="#1e3450" stroke-width="12"
+              stroke-dasharray="0 107"
+              stroke-dashoffset="-35"
+              transform="rotate(-90 40 40)"/>
+            <circle cx="40" cy="40" r="10" fill="#0a1220"/>
+          </svg>
+        </div>
+        <div class="port-legend">
+          <div class="port-row"><span class="port-dot" style="background:#7aa8d0"></span>Technology<span class="port-pct">33%</span></div>
+          <div class="port-row"><span class="port-dot" style="background:#4a7a9a"></span>Financials<span class="port-pct">13%</span></div>
+          <div class="port-row"><span class="port-dot" style="background:#2e5070"></span>Cons. Disc.<span class="port-pct">10%</span></div>
+          <div class="port-row"><span class="port-dot" style="background:#1e3450"></span>Other<span class="port-pct">44%</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end pipeline -->
+
+  <!-- PROGRESS DOTS -->
+  <div class="progress">
+    <div class="dot active" onclick="goTo(0)"></div>
+    <div class="dot" onclick="goTo(1)"></div>
+    <div class="dot" onclick="goTo(2)"></div>
+    <div class="dot" onclick="goTo(3)"></div>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="controls">
+    <button class="btn" onclick="prevStep()">← Prev</button>
+    <button class="btn active-btn" id="autoBtn" onclick="toggleAuto()">⏸ Auto</button>
+    <button class="btn" onclick="nextStep()">Next →</button>
+  </div>
+
+  <div class="disclaimer">
+    For illustration purposes only. Back test and not real life return.
+  </div>
+
+</div>
+
+<script>
+const steps = [
+  {
+    name: 'Company Filings',
+    desc: 'Sourcing and ingesting raw company data as structured input'
+  },
+  {
+    name: 'Proprietary Model',
+    desc: 'AI scoring engine processes leadership data through a multi-factor risk framework'
+  },
+  {
+    name: 'Scorecards',
+    desc: 'Each CEO ranked on Experience, Track Record, Shareholding & BAM Rating'
+  },
+  {
+    name: 'Portfolio Construction',
+    desc: 'Top 20% of management teams selected; diversification parameters applied'
+  }
+];
+
+// Circumference of pie circles r=17 → 2π×17 ≈ 106.8
+const C = 106.8;
+const pieData = [
+  { id: 'seg1', pct: 0.33 },
+  { id: 'seg2', pct: 0.13 },
+  { id: 'seg3', pct: 0.10 },
+  { id: 'seg4', pct: 0.44 }
+];
+
+let current = 0;
+let autoPlay = true;
+let timer = null;
+
+// Prevent scroll events on the pipeline from bubbling / driving anything
+document.querySelector('.pipeline').addEventListener('wheel', function(e) {
+  e.stopPropagation();
+}, { passive: true });
+
+function goTo(n) {
+  document.getElementById('stage-' + current).classList.remove('active');
+  if (current > 0) document.getElementById('arrow-' + (current-1)).classList.remove('active');
+  document.querySelectorAll('.dot')[current].classList.remove('active');
+
+  current = n;
+
+  document.getElementById('stage-' + current).classList.add('active');
+  if (current > 0) document.getElementById('arrow-' + (current-1)).classList.add('active');
+  document.querySelectorAll('.dot')[current].classList.add('active');
+
+  document.getElementById('stepName').textContent = steps[current].name;
+  document.getElementById('stepDesc').textContent = steps[current].desc;
+
+  if (current === 2) animateScorecard();
+  if (current === 3) animatePie();
+
+  if (autoPlay) resetTimer();
+}
+
+function animateScorecard() {
+  const vals = document.querySelectorAll('#stage-2 .sc-val');
+  vals.forEach(el => {
+    const target = parseInt(el.dataset.target);
+    let v = 0;
+    el.textContent = '0';
+    const step = () => {
+      v = Math.min(v + 3, target);
+      el.textContent = v;
+      if (v < target) requestAnimationFrame(step);
+    };
+    setTimeout(() => requestAnimationFrame(step), 300);
+  });
+}
+
+function animatePie() {
+  let offset = 0;
+  pieData.forEach((d, i) => {
+    const el = document.getElementById(d.id);
+    const len = d.pct * C;
+    const gap = C - len;
+    setTimeout(() => {
+      el.style.transition = 'stroke-dasharray 0.7s ease';
+      el.style.strokeDasharray = len + ' ' + gap;
+    }, i * 180);
+    offset += d.pct * C;
+  });
+}
+
+function nextStep() { goTo((current + 1) % 4); }
+function prevStep() { goTo((current + 3) % 4); }
+
+function resetTimer() {
+  clearInterval(timer);
+  timer = setInterval(nextStep, 3200);
+}
+
+function toggleAuto() {
+  autoPlay = !autoPlay;
+  const btn = document.getElementById('autoBtn');
+  if (autoPlay) {
+    btn.textContent = '⏸ Auto';
+    btn.classList.add('active-btn');
+    resetTimer();
+  } else {
+    btn.textContent = '▶ Auto';
+    btn.classList.remove('active-btn');
+    clearInterval(timer);
+  }
+}
+
+// Start
+goTo(0);
+</script>
+</body>
+</html>
