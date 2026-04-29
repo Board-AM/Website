@@ -84,7 +84,7 @@
       font-size: 0.68rem;
       letter-spacing: 0.15em;
       text-transform: uppercase;
-      color: var(--dim);
+      color: var(--text);
       text-decoration: none;
       transition: color 0.3s;
     }
@@ -126,7 +126,7 @@
       font-size: 0.75rem;
       letter-spacing: 0.15em;
       text-transform: uppercase;
-      color: var(--dim);
+      color: var(--text);
       text-decoration: none;
       transition: color 0.3s;
     }
@@ -171,29 +171,60 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 1.5rem;
+      gap: 1.1rem;
       animation: heroFadeUp 1s ease both;
+      max-width: 760px;
+      padding: 0 2rem;
+      gap: 1.4rem;
     }
     @keyframes heroFadeUp {
       from { opacity: 0; transform: translateY(28px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    .hero-logo { width: clamp(240px, 38vw, 420px); height: auto; }
+    .hero-logo { width: clamp(130px, 16vw, 165px); height: auto; opacity: 0.9; }
 
     .hero-divider {
-      width: 100%;
+      width: clamp(60px, 15%, 120px);
       height: 1px;
       background: linear-gradient(to right, transparent, var(--border2), transparent);
+      margin: 0.2rem auto;
     }
 
-    .hero-cta {
+    /* ── Hero statement ── */
+    .hero-tag {
       font-family: 'DM Mono', monospace;
-      font-size: 0.62rem;
-      letter-spacing: 0.4em;
+      font-size: 0.58rem;
+      letter-spacing: 0.38em;
       text-transform: uppercase;
-      color: var(--dim);
-      animation: heroFadeUp 1s 0.3s ease both;
+      color: var(--blue3);
+      animation: heroFadeUp 1s 0.45s ease both;
+    }
+
+    .hero-statement {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.8rem, 6.5vw, 5rem);
+      font-weight: 300;
+      line-height: 1.12;
+      color: var(--bright);
+      text-align: center;
+      letter-spacing: -0.02em;
+      animation: heroFadeUp 1s 0s ease both;
+    }
+
+    .hero-statement em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    .hero-body {
+      font-size: 0.94rem;
+      line-height: 1.82;
+      color: var(--text);
+      font-weight: 300;
+      text-align: center;
+      max-width: 560px;
+      animation: heroFadeUp 1s 0.2s ease both;
     }
 
     .scroll-indicator {
@@ -790,7 +821,10 @@
     }
 
     @media (max-width: 480px) {
-      .hero-logo { width: clamp(170px, 50vw, 230px); }
+      .hero-logo { width: clamp(110px, 30vw, 145px); }
+      .hero-statement { font-size: clamp(2rem, 8.5vw, 3rem); }
+      .hero-body { font-size: 0.88rem; line-height: 1.75; }
+      .hero-logo-wrap { gap: 0.9rem; padding: 0 1rem; }
       .section-wrap { padding: 4rem 1.2rem; }
       .process-inner { padding: 16px 12px 14px; }
       .step-name { font-size: 13px; }
@@ -1067,6 +1101,9 @@
   <div class="hero-radial"></div>
   <canvas id="heroCanvas" aria-hidden="true" role="presentation"></canvas>
   <div class="hero-logo-wrap">
+    <h1 class="hero-statement">We measure the people<br>behind <em>performance.</em></h1>
+    <p class="hero-body">Every great company is a reflection of its leadership. We built a system to prove it — and to invest accordingly.</p>
+    <div class="hero-divider"></div>
     <svg class="hero-logo" viewBox="0 0 340 88" xmlns="http://www.w3.org/2000/svg">
       <circle cx="52" cy="44" r="5.5" fill="#7aa8d0"/>
       <circle cx="52" cy="22" r="3.5" fill="#7aa8d0" opacity="0.8"/>
@@ -1088,12 +1125,9 @@
       <line x1="52" y1="22" x2="52"   y2="12.5" stroke="#7aa8d0" stroke-width="1"   opacity="0.35"/>
       <text x="88" y="54" font-family="'DM Sans',sans-serif" font-size="36" font-weight="300" letter-spacing="-0.5" fill="#c8dff0">Board</text>
       <text x="215" y="54" font-family="'DM Sans',sans-serif" font-size="36" font-weight="300" letter-spacing="-0.5" fill="#4a7a9a">AM</text>
-      <text x="88" y="70" font-family="'DM Mono',monospace" font-size="9" letter-spacing="3" fill="#2e5070">FIRST PRINCIPLES INVESTING</text>
     </svg>
-    <div class="hero-divider"></div>
-    <div class="hero-cta">Scroll to explore</div>
   </div>
-  <div class="scroll-indicator">
+    <div class="scroll-indicator">
     <span>Scroll</span>
     <div class="scroll-line"></div>
   </div>
@@ -1287,13 +1321,6 @@
 <section id="about" class="section-wrap">
   <div class="section-container">
     <div class="section-eyebrow">About</div>
-
-    <!-- Manifesto -->
-    <div class="about-manifesto">
-      <div class="about-manifesto-label">Board Assessment Management</div>
-      <h2 class="about-manifesto-heading">We measure the people behind performance.</h2>
-      <p class="about-manifesto-sub">Every great company is a reflection of its leadership. We built a system to prove it — and to invest accordingly.</p>
-    </div>
 
     <!-- Pillars -->
     <div class="about-pillars">

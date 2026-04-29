@@ -158,9 +158,9 @@
 
   .hero-title {
     font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(3rem, 7vw, 6rem);
+    font-size: clamp(2.4rem, 5.5vw, 5.2rem);
     font-weight: 300;
-    line-height: 1.05;
+    line-height: 1.1;
     color: var(--white);
     margin-bottom: 1.5rem;
     letter-spacing: -0.01em;
@@ -172,10 +172,10 @@
   }
 
   .hero-subtitle {
-    font-size: 1.05rem;
-    line-height: 1.8;
+    font-size: 1rem;
+    line-height: 1.85;
     color: var(--text-dim);
-    max-width: 620px;
+    max-width: 580px;
     margin: 0 auto 3rem;
     font-weight: 300;
   }
@@ -460,9 +460,10 @@
 
   /* ─── RESPONSIVE ─── */
   @media (max-width: 900px) {
-    nav { padding: 1.5rem 2rem; }
+    nav { padding: 1.25rem 2rem; }
     .nav-links { display: none; }
-    .hero { padding: 8rem 2rem 4rem; }
+    .hero { padding: 7rem 2rem 4rem; }
+    .hero-content { padding: 0 0.5rem; }
     .philosophy { padding: 4rem 2rem; }
     .pillar { grid-template-columns: 1fr; }
     .pillar:nth-child(even) { direction: ltr; }
@@ -470,6 +471,15 @@
     .pillar-content { padding: 2.5rem 2rem; }
     .statement { padding: 5rem 2rem; }
     footer { padding: 2rem; flex-direction: column; gap: 1rem; text-align: center; }
+  }
+
+  @media (max-width: 480px) {
+    .hero { padding: 6.5rem 1.5rem 3.5rem; }
+    .hero-eyebrow { font-size: 0.58rem; letter-spacing: 0.3em; gap: 0.6rem; }
+    .hero-eyebrow::before, .hero-eyebrow::after { width: 24px; }
+    .hero-title { font-size: clamp(2rem, 9vw, 2.8rem); }
+    .hero-subtitle { font-size: 0.92rem; }
+    .hero-cta { font-size: 0.62rem; padding: 0.8rem 1.8rem; }
   }
 </style>
 </head>
@@ -492,8 +502,8 @@
   <div class="hero-grid"></div>
   <div class="hero-content">
     <div class="hero-eyebrow">Board Assessment Management</div>
-    <h1 class="hero-title">Management<br><em>drives outcomes.</em></h1>
-    <p class="hero-subtitle">An investment philosophy grounded in first principles — the decisions of boards and executive teams define valuation, profitability, and the future of every enterprise.</p>
+    <h1 class="hero-title">We measure the people<br><em>behind the performance.</em></h1>
+    <p class="hero-subtitle">Leadership quality is the single most reliable predictor of long-term returns. We quantify it — with the rigour of banking risk models applied to equity selection.</p>
     <a href="#philosophy" class="hero-cta">Discover Our Approach →</a>
   </div>
   <div class="scroll-indicator">
