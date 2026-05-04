@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BoardAM — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0a0f1e;
+    --navy-mid: #0f1729;
+    --navy-light: #162040;
+    --gold: #c9a84c;
+    --gold-light: #e2c97e;
+    --gold-dim: rgba(201,168,76,0.15);
+    --text: #d4cfc6;
+    --text-dim: #8a8578;
+    --white: #f5f1ea;
+    --border: rgba(201,168,76,0.2);
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; height: 100%; }
+
+  body {
+    background: var(--navy);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  /* GRAIN OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem 4rem;
+    border-bottom: 1px solid var(--border);
+    background: rgba(10,15,30,0.85);
+    backdrop-filter: blur(20px);
+  }
+
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 300;
+    letter-spacing: 0.25em;
+    color: var(--white);
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+
+  .nav-logo span { color: var(--gold); }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .nav-links a:hover,
+  .nav-links a.active { color: var(--gold); }
+
+  /* PAGE WRAPPER */
+  .page {
+    padding: 4.2rem 1.5rem 1rem;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* PAGE HEADER */
+  .page-header {
+    margin-bottom: 0.4rem;
+    animation: fadeUp 0.9s ease both;
+    flex-shrink: 0;
+  }
+
+  .page-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.6rem, 2.5vw, 2.4rem);
+    font-weight: 300;
+    color: var(--white);
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+  }
+
+  .page-title em { font-style: italic; color: var(--gold); }
+
+  /* SUB-LINE */
+  .page-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 0.7rem;
+    animation: fadeUp 0.9s 0.12s ease both;
+    flex-shrink: 0;
+  }
+
+  .page-sub .gold { color: var(--gold); }
+  .page-sub-sep { display: inline-block; width: 3px; height: 3px; border-radius: 50%; background: var(--gold); opacity: 0.45; }
+
+  /* TREEMAP GRID */
+  .treemap {
+    display: grid;
+    grid-template-columns: 3fr 2fr 2fr;
+    grid-template-rows: auto;
+    gap: 3px;
+    animation: fadeUp 0.9s 0.3s ease both;
+    background: rgba(201,168,76,0.08);
+    border: 1px solid var(--border);
+    height: 62vh;
+    min-height: 380px;
+  }
+
+  /* LEFT COLUMN (IT + Financials) */
+  .col-left {
+    display: grid;
+    height: 100%;
+    grid-template-rows: 3fr 1.5fr;
+    gap: 3px;
+  }
+
+  /* MIDDLE COLUMN */
+  .col-mid {
+    display: grid;
+    height: 100%;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: 3px;
+  }
+
+  /* RIGHT COLUMN */
+  .col-right {
+    display: grid;
+    height: 100%;
+    grid-template-rows: 1.5fr 1fr 1fr 0.55fr;
+    gap: 3px;
+  }
+
+  /* Bottom row: Utilities + Materials + Real Estate side by side */
+  .col-right-row3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 3px;
+  }
+
+  /* SECTOR CELL */
+  .sector-cell {
+    background: var(--navy-mid);
+    padding: 1.4rem 1.6rem;
+    position: relative;
+    overflow: hidden;
+    cursor: default;
+    transition: background 0.3s;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .sector-cell::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(201,168,76,0.03) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .sector-cell:hover { background: var(--navy-light); }
+
+  /* Cell header */
+  .cell-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    z-index: 1;
+    position: relative;
+  }
+
+  .sector-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.75;
+  }
+
+  .sector-pct {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1.1;
+  }
+
+  .sector-cell.large .sector-pct { font-size: 2.6rem; }
+  .sector-cell.medium .sector-pct { font-size: 2rem; }
+
+  /* Company logo area */
+  .company-logo-area {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .company-logo-text {
+    font-size: 2.4rem;
+    font-weight: 300;
+    color: rgba(212,207,198,0.18);
+    letter-spacing: -0.03em;
+    text-align: center;
+    white-space: nowrap;
+    user-select: none;
+    pointer-events: none;
+    transition: color 0.3s;
+  }
+
+  .sector-cell.large .company-logo-text { font-size: 3.6rem; }
+  .sector-cell.medium .company-logo-text { font-size: 2.8rem; }
+  .sector-cell.small .company-logo-text { font-size: 1.6rem; }
+  .sector-cell.tiny .company-logo-text { font-size: 1.1rem; }
+
+  /* Colored logo styles */
+  .logo-cadence { font-family: 'DM Sans', sans-serif; font-weight: 300; letter-spacing: -0.04em; color: rgba(212,207,198,0.15); }
+  .logo-jackhenry { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 2rem; color: rgba(212,207,198,0.15); }
+  .logo-aptiv { font-family: 'DM Mono', monospace; font-weight: 500; letter-spacing: 0.25em; color: rgba(212,207,198,0.15); }
+  .logo-alphabet { font-family: 'DM Sans', sans-serif; font-weight: 400; color: rgba(212,207,198,0.15); }
+  .logo-jnj { font-family: 'Cormorant Garamond', serif; font-weight: 400; letter-spacing: 0.05em; color: rgba(212,207,198,0.12); }
+  .logo-emerson { font-family: 'DM Sans', sans-serif; font-weight: 500; letter-spacing: 0.06em; color: rgba(212,207,198,0.15); }
+  .logo-sysco { font-family: 'DM Sans', sans-serif; font-weight: 700; color: rgba(212,207,198,0.14); }
+  .logo-chevron { font-family: 'DM Sans', sans-serif; font-weight: 600; letter-spacing: 0.04em; color: rgba(212,207,198,0.14); }
+
+  /* Cell footer — holding data */
+  .cell-footer {
+    position: relative;
+    z-index: 1;
+  }
+
+  .holding-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+  }
+
+  .holding-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.55rem;
+    color: var(--text-dim);
+    opacity: 0.6;
+    margin-top: 0.15rem;
+  }
+
+  /* Cells with no holding shown (small sectors) */
+  .sector-only .cell-footer { display: none; }
+
+  /* ─── HOVER POPUP ─── */
+  .popup-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    pointer-events: none;
+  }
+
+  .company-popup {
+    position: fixed;
+    z-index: 600;
+    width: 360px;
+    background: #0b1222;
+    border: 1px solid rgba(201,168,76,0.35);
+    box-shadow: 0 0 0 1px rgba(201,168,76,0.08), 0 24px 60px rgba(0,0,0,0.7);
+    padding: 0;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(6px);
+    transition: opacity 0.22s ease, transform 0.22s ease;
+    overflow: hidden;
+  }
+
+  .company-popup.visible {
+    opacity: 1;
+    pointer-events: none;
+    transform: translateY(0);
+  }
+
+  .popup-header {
+    background: rgba(201,168,76,0.07);
+    border-bottom: 1px solid rgba(201,168,76,0.2);
+    padding: 1.1rem 1.4rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .popup-company-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1.1;
+  }
+
+  .popup-ticker {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    background: rgba(201,168,76,0.1);
+    border: 1px solid rgba(201,168,76,0.25);
+    padding: 0.2rem 0.5rem;
+    white-space: nowrap;
+  }
+
+  .popup-sector-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-top: 0.2rem;
+  }
+
+  .popup-body {
+    padding: 1.2rem 1.4rem 1.4rem;
+  }
+
+  .popup-intro {
+    font-size: 0.85rem;
+    line-height: 1.75;
+    color: #a8c4e0;
+    margin-bottom: 1rem;
+  }
+
+  .popup-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+    border-top: 1px solid rgba(201,168,76,0.12);
+    padding-top: 1rem;
+  }
+
+  .popup-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .popup-stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.52rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    opacity: 0.7;
+  }
+
+  .popup-stat-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--gold-light);
+    letter-spacing: 0.05em;
+  }
+
+  /* Decorative corner */
+  .popup-corner {
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 28px; height: 28px;
+    border-top: 1px solid rgba(201,168,76,0.2);
+    border-left: 1px solid rgba(201,168,76,0.2);
+  }
+
+  /* SECTION DIVIDER */
+  .section-divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+    opacity: 0.3;
+    margin: 0 auto;
+  }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 3rem 4rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--white);
+  }
+
+  .footer-logo span { color: var(--gold); }
+
+  .footer-copy {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+    opacity: 0.5;
+  }
+
+  /* ─── TOP 10 DUAL TABLE ─── */
+  .holdings-section {
+    margin-top: 3px;
+    flex-shrink: 0;
+    padding-bottom: 2rem;
+  }
+
+  .holdings-top-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.52rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.55;
+    padding: 0.4rem 0 0.3rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0;
+  }
+
+  /* Two-panel wrapper */
+  .holdings-panels {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px;
+    margin-top: 3px;
+  }
+
+  .holdings-panel {
+    background: var(--navy-mid);
+    padding: 0;
+    overflow: hidden;
+  }
+
+  /* Panel heading row (BAMCOR / MERQUBE US LARGE CAP) */
+  .panel-heading {
+    padding: 0.5rem 0.9rem 0.35rem;
+    border-bottom: 1px solid rgba(201,168,76,0.18);
+    background: rgba(201,168,76,0.05);
+  }
+
+  .panel-heading-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--white);
+  }
+
+  /* Column headers */
+  .htable {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .htable thead tr {
+    border-bottom: 1px solid rgba(201,168,76,0.12);
+  }
+
+  .htable th {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.48rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 400;
+    opacity: 0.65;
+    padding: 0.3rem 0.6rem;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  .htable th.r, .htable td.r { text-align: right; }
+
+  /* Data rows */
+  .htable tbody tr {
+    border-bottom: 1px solid rgba(201,168,76,0.05);
+    transition: background 0.15s;
+  }
+
+  .htable tbody tr:last-child { border-bottom: none; }
+  .htable tbody tr:hover { background: rgba(201,168,76,0.04); }
+
+  /* Total row */
+  .htable tbody tr.total-row {
+    border-top: 1px solid rgba(201,168,76,0.18);
+    background: rgba(201,168,76,0.03);
+  }
+
+  .htable tbody tr.total-row td {
+    color: var(--white);
+    font-weight: 400;
+  }
+
+  .htable td {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 300;
+    color: var(--text);
+    padding: 0.28rem 0.6rem;
+    line-height: 1.25;
+    white-space: nowrap;
+  }
+
+  .td-name { color: var(--white) !important; }
+  .td-ceo  { color: var(--text-dim) !important; font-size: 0.65rem !important; }
+
+  .td-sector-cell {
+    color: var(--text-dim) !important;
+    font-family: 'DM Mono', monospace !important;
+    font-size: 0.58rem !important;
+    letter-spacing: 0.03em;
+  }
+
+  .td-w {
+    font-family: 'DM Mono', monospace !important;
+    font-size: 0.68rem !important;
+    color: var(--gold-light) !important;
+    letter-spacing: 0.04em;
+  }
+
+  .td-score {
+    font-family: 'DM Mono', monospace !important;
+    font-size: 0.64rem !important;
+    color: var(--text-dim) !important;
+    padding-left: 0.3rem !important;
+    padding-right: 0.3rem !important;
+  }
+
+  .score-hi { color: var(--gold) !important; }
+
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+</nav>
+
+<!-- MAIN -->
+<main class="page">
+
+  <!-- Header -->
+  <div class="page-header">
+    <h1 class="page-title"><em>Portfolio</em></h1>
+  </div>
+  <div class="page-sub">
+    Top Holding per Sector
+    <span class="page-sub-sep"></span>
+    Total Holdings <span class="gold">92</span>
+  </div>
+
+  <!-- TREEMAP -->
+  <div class="treemap">
+
+    <!-- LEFT COLUMN -->
+    <div class="col-left">
+
+      <!-- IT — Large cell -->
+      <div class="sector-cell large"
+           data-company="Cadence Design Systems"
+           data-ticker="CDNS"
+           data-sector="Information Technology"
+           data-intro="Cadence Design Systems is a global leader in electronic design automation (EDA) software, hardware, and IP. Its tools are essential to the design of semiconductors, PCBs, and complex systems-on-chip used in everything from data centres to autonomous vehicles. Cadence's deep integration into chip-design workflows makes it a near-irreplaceable partner to fabless semiconductor companies and major foundries."
+           data-weight="3.25%" data-mgmt="10.6" data-sector-avg="7.2" data-ceo="Anirudh Devgan">
+        <div class="cell-header">
+          <span class="sector-name">Information Technology</span>
+          <span class="sector-pct">33%</span>
+        </div>
+        <div class="company-logo-area">
+          <span class="company-logo-text logo-cadence">cādence</span>
+        </div>
+        <div class="cell-footer">
+          <div class="holding-name">Cadence Design Systems · 3.25%</div>
+          <div class="holding-meta">Anirudh Devgan, CEO · Mgmt Score: 10.6 · Sector Avg: 7.2</div>
+        </div>
+      </div>
+
+      <!-- Financials -->
+      <div class="sector-cell medium"
+           data-company="Jack Henry & Associates"
+           data-ticker="JKHY"
+           data-sector="Financials"
+           data-intro="Jack Henry & Associates provides technology solutions and payment processing services exclusively for community and mid-tier banks in the United States. Its deeply embedded core banking platforms create exceptional client retention and recurring revenue, while its fintech ecosystem enables smaller banks to compete with larger institutions on digital capabilities."
+           data-weight="2.02%" data-mgmt="9.6" data-sector-avg="6.4" data-ceo="David B. Foss">
+        <div class="cell-header">
+          <span class="sector-name">Financials</span>
+          <span class="sector-pct">13%</span>
+        </div>
+        <div class="company-logo-area">
+          <span class="company-logo-text logo-jackhenry">jack henry</span>
+        </div>
+        <div class="cell-footer">
+          <div class="holding-name">Jack Henry & Associates · 2.02%</div>
+          <div class="holding-meta">David B. Foss, CEO · Mgmt Score: 9.6 · Sector Avg: 6.4</div>
+        </div>
+      </div>
+
+    </div><!-- /col-left -->
+
+    <!-- MIDDLE COLUMN -->
+    <div class="col-mid">
+
+      <!-- Consumer Discretionary -->
+      <div class="sector-cell"
+           data-company="Aptiv PLC"
+           data-ticker="APTV"
+           data-sector="Consumer Discretionary"
+           data-intro="Aptiv is a global technology company focused on making vehicles safer, greener, and more connected. Spun out of Delphi Automotive, it develops advanced electrical architectures, software platforms, and autonomous-driving components for major automakers. As vehicles become increasingly software-defined, Aptiv's deep integration with OEM production lines positions it at the centre of the EV transition."
+           data-weight="8.59%" data-mgmt="10.1" data-sector-avg="6.5" data-ceo="Kevin P. Clark">
+        <div class="cell-header">
+          <span class="sector-name">Consumer Discretionary</span>
+          <span class="sector-pct">10%</span>
+        </div>
+        <div class="company-logo-area">
+          <span class="company-logo-text logo-aptiv">·APTIV·</span>
+        </div>
+        <div class="cell-footer">
+          <div class="holding-name">Aptiv PLC · 8.59%</div>
+          <div class="holding-meta">Kevin P. Clark, CEO · Mgmt Score: 10.1 · Sector Avg: 6.5</div>
+        </div>
+      </div>
+
+      <!-- Communication Services -->
+      <div class="sector-cell"
+           data-company="Alphabet Inc."
+           data-ticker="GOOGL"
+           data-sector="Communication Services"
+           data-intro="Alphabet is the parent company of Google, the world's dominant search engine, and a collection of businesses spanning cloud computing (Google Cloud), autonomous vehicles (Waymo), life sciences (Verily), and venture investments. Its advertising-driven revenue model generates exceptional free cash flow, while Google Cloud represents a high-conviction growth vector in enterprise AI and infrastructure."
+           data-weight="10.38%" data-mgmt="8.3" data-sector-avg="6.7" data-ceo="Sundar Pichai">
+        <div class="cell-header">
+          <span class="sector-name">Communication Services</span>
+          <span class="sector-pct">10%</span>
+        </div>
+        <div class="company-logo-area">
+          <span class="company-logo-text logo-alphabet">Alphabet</span>
+        </div>
+        <div class="cell-footer">
+          <div class="holding-name">Alphabet Inc. · 10.38%</div>
+          <div class="holding-meta">Sundar Pichai, CEO · Mgmt Score: 8.3 · Sector Avg: 6.7</div>
+        </div>
+      </div>
+
+      <!-- Health Care -->
+      <div class="sector-cell"
+           data-company="Johnson & Johnson"
+           data-ticker="JNJ"
+           data-sector="Health Care"
+           data-intro="Johnson & Johnson is one of the world's largest and most diversified healthcare companies, operating across pharmaceuticals and medical technology. Following its separation of the consumer health segment into Kenvue, J&J is now a focused med-tech and innovative medicines business. Its deep R&D pipeline, including oncology, immunology, and surgical robotics, underpins a durable long-term growth thesis."
+           data-weight="3.08%" data-mgmt="10.2" data-sector-avg="6.7" data-ceo="Joaquin Duato">
+        <div class="cell-header">
+          <span class="sector-name">Health Care</span>
+          <span class="sector-pct">9%</span>
+        </div>
+        <div class="company-logo-area">
+          <span class="company-logo-text logo-jnj">Johnson&amp;Johnson</span>
+        </div>
+        <div class="cell-footer">
+          <div class="holding-name">Johnson & Johnson · 3.08%</div>
+          <div class="holding-meta">Joaquin Duato, CEO · Mgmt Score: 10.2 · Sector Avg: 6.7</div>
+        </div>
+      </div>
+
+    </div><!-- /col-mid -->
+
+    <!-- RIGHT COLUMN -->
+    <div class="col-right">
+
+      <!-- Industrials -->
+      <div class="sector-cell medium"
+           data-company="Emerson Electric"
+           data-ticker="EMR"
+           data-sector="Industrials"
+           data-intro="Emerson Electric is a global technology and engineering company delivering solutions for industrial automation, process control, and climate technologies. Following a major portfolio restructuring — including the sale of its climate segment and merger with AspenTech — Emerson is now a focused automation pure-play, benefiting from the reindustrialisation of manufacturing in North America and the global energy transition."
+           data-weight="1.31%" data-mgmt="9.9" data-sector-avg="6.5" data-ceo="Lal Karsanbhai">
+        <div class="cell-header">
+          <span class="sector-name">Industrials</span>
+          <span class="sector-pct">9%</span>
+        </div>
+        <div class="company-logo-area">
+          <span class="company-logo-text logo-emerson">EMERSON.</span>
+        </div>
+        <div class="cell-footer">
+          <div class="holding-name">Emerson Electric · 1.31%</div>
+          <div class="holding-meta">Lal Karsanbhai, CEO · Mgmt Score: 9.9 · Sector Avg: 6.5</div>
+        </div>
+      </div>
+
+      <!-- Consumer Staples — full width row -->
+      <div class="sector-cell small"
+           data-company="Sysco Corp"
+           data-ticker="SYY"
+           data-sector="Consumer Staples"
+           data-intro="Sysco is North America's largest foodservice distribution company, delivering food and kitchen supplies to restaurants, healthcare facilities, and hotels. Its vast logistics network and scale create durable competitive advantages that are extremely difficult to replicate. Sysco's operating leverage and pricing power have made it a consistent compounder through economic cycles."
+           data-weight="0.9%" data-mgmt="10.0" data-sector-avg="6.7" data-ceo="Kevin Hourican">
+        <div class="cell-header">
+          <span class="sector-name">Consumer Staples</span>
+          <span class="sector-pct">5%</span>
+        </div>
+        <div class="company-logo-area">
+          <span class="company-logo-text logo-sysco">Sysco</span>
+        </div>
+        <div class="cell-footer">
+          <div class="holding-name">Sysco Corp · 0.9%</div>
+          <div class="holding-meta">Mgmt: 10.0 · Avg: 6.7</div>
+        </div>
+      </div>
+
+      <!-- Energy — full width row -->
+      <div class="sector-cell small"
+           data-company="Chevron Corp"
+           data-ticker="CVX"
+           data-sector="Energy"
+           data-intro="Chevron is one of the world's largest integrated energy companies, with upstream operations across the Permian Basin, Kazakhstan, and Australia. Its disciplined capital allocation, strong balance sheet, and commitment to shareholder returns through dividends and buybacks have made it a benchmark holding in the energy sector. Chevron is also pursuing lower-carbon energy investments including hydrogen and carbon capture."
+           data-weight="1.64%" data-mgmt="9.7" data-sector-avg="6.3" data-ceo="Mike Wirth">
+        <div class="cell-header">
+          <span class="sector-name">Energy</span>
+          <span class="sector-pct">4%</span>
+        </div>
+        <div class="company-logo-area">
+          <span class="company-logo-text logo-chevron">Chevron</span>
+        </div>
+        <div class="cell-footer">
+          <div class="holding-name">Chevron · 1.64%</div>
+          <div class="holding-meta">Mgmt: 9.7 · Avg: 6.3</div>
+        </div>
+      </div>
+
+      <!-- Utilities + Materials + Real Estate — one row, thirds -->
+      <div class="col-right-row3">
+        <div class="sector-cell tiny sector-only">
+          <div class="cell-header">
+            <span class="sector-name">Utilities</span>
+            <span class="sector-pct">3%</span>
+          </div>
+        </div>
+        <div class="sector-cell tiny sector-only">
+          <div class="cell-header">
+            <span class="sector-name">Materials</span>
+            <span class="sector-pct">2%</span>
+          </div>
+        </div>
+        <div class="sector-cell tiny sector-only">
+          <div class="cell-header">
+            <span class="sector-name">Real Estate</span>
+            <span class="sector-pct">2%</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /col-right -->
+
+  </div><!-- /treemap -->
+
+
+  <!-- TOP 10 HOLDINGS TABLE -->
+  <div class="holdings-section">
+
+    <div class="holdings-top-label">Top 10 Holdings</div>
+
+    <div class="holdings-panels">
+
+      <!-- LEFT: BAMCOR -->
+      <div class="holdings-panel">
+        <div class="panel-heading"><span class="panel-heading-text">BAMCOR</span></div>
+        <table class="htable">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>CEO</th>
+              <th>Sector</th>
+              <th class="r">Weight</th>
+              <th class="r">Score</th>
+              <th class="r">Avg</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-name">Alphabet Inc.</td><td class="td-ceo">Sundar Pichai</td><td class="td-sector-cell">Communication</td><td class="td-w r">10.4%</td><td class="td-score r score-hi">8.3</td><td class="td-score r">6.7</td></tr>
+            <tr><td class="td-name">Aptiv PLC</td><td class="td-ceo">Kevin P. Clark</td><td class="td-sector-cell">Consumer Disc.</td><td class="td-w r">8.6%</td><td class="td-score r">7.7</td><td class="td-score r">6.5</td></tr>
+            <tr><td class="td-name">Cadence Design Systems</td><td class="td-ceo">Anirudh Devgan</td><td class="td-sector-cell">Tech</td><td class="td-w r">3.2%</td><td class="td-score r">8.1</td><td class="td-score r">7.2</td></tr>
+            <tr><td class="td-name">Johnson &amp; Johnson</td><td class="td-ceo">Joaquin Duato</td><td class="td-sector-cell">Health Care</td><td class="td-w r">3.1%</td><td class="td-score r">7.9</td><td class="td-score r">6.7</td></tr>
+            <tr><td class="td-name">Adobe Inc.</td><td class="td-ceo">Shantanu Narayen</td><td class="td-sector-cell">Tech</td><td class="td-w r">2.8%</td><td class="td-score r">8.0</td><td class="td-score r">7.2</td></tr>
+            <tr><td class="td-name">NetApp, Inc.</td><td class="td-ceo">George Kurian</td><td class="td-sector-cell">Tech</td><td class="td-w r">2.7%</td><td class="td-score r">8.0</td><td class="td-score r">7.2</td></tr>
+            <tr><td class="td-name">ServiceNow, Inc.</td><td class="td-ceo">Bill McDermott</td><td class="td-sector-cell">Tech</td><td class="td-w r">2.4%</td><td class="td-score r">7.9</td><td class="td-score r">7.2</td></tr>
+            <tr><td class="td-name">Vertex Pharmaceuticals</td><td class="td-ceo">Reshma Kewalramani</td><td class="td-sector-cell">Health Care</td><td class="td-w r">2.3%</td><td class="td-score r">7.7</td><td class="td-score r">6.7</td></tr>
+            <tr><td class="td-name">PTC Inc.</td><td class="td-ceo">Neil Barua</td><td class="td-sector-cell">Tech</td><td class="td-w r">2.3%</td><td class="td-score r">7.9</td><td class="td-score r">7.2</td></tr>
+            <tr><td class="td-name">Analog Devices, Inc.</td><td class="td-ceo">Vincent Roche</td><td class="td-sector-cell">Tech</td><td class="td-w r">2.2%</td><td class="td-score r">7.8</td><td class="td-score r">7.2</td></tr>
+            <tr class="total-row"><td class="td-name">TOTAL</td><td></td><td></td><td class="td-w r">40.1%</td><td class="td-score r">7.9</td><td class="td-score r">7.0</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- RIGHT: MERQUBE US LARGE CAP -->
+      <div class="holdings-panel">
+        <div class="panel-heading"><span class="panel-heading-text">Merqube US Large Cap</span></div>
+        <table class="htable">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>CEO</th>
+              <th>Sector</th>
+              <th class="r">Weight</th>
+              <th class="r">Score</th>
+              <th class="r">Avg</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-name">NVIDIA Corp</td><td class="td-ceo">Jensen Huang</td><td class="td-sector-cell">Tech</td><td class="td-w r">7.6%</td><td class="td-score r">7.4</td><td class="td-score r">7.2</td></tr>
+            <tr><td class="td-name">Apple Inc</td><td class="td-ceo">Tim Cook</td><td class="td-sector-cell">Tech</td><td class="td-w r">6.6%</td><td class="td-score r">7.4</td><td class="td-score r">7.2</td></tr>
+            <tr><td class="td-name">Microsoft Corp</td><td class="td-ceo">Satya Nadella</td><td class="td-sector-cell">Tech</td><td class="td-w r">4.9%</td><td class="td-score r">7.4</td><td class="td-score r">7.2</td></tr>
+            <tr><td class="td-name">Amazon.com Inc</td><td class="td-ceo">Andy Jassy</td><td class="td-sector-cell">Consumer Disc.</td><td class="td-w r">3.6%</td><td class="td-score r">7.7</td><td class="td-score r">6.5</td></tr>
+            <tr><td class="td-name">Alphabet Inc Class A</td><td class="td-ceo">Sundar Pichai</td><td class="td-sector-cell">Communication</td><td class="td-w r">3.1%</td><td class="td-score r score-hi">8.3</td><td class="td-score r">6.7</td></tr>
+            <tr><td class="td-name">Broadcom Inc</td><td class="td-ceo">Hock E. Tan</td><td class="td-sector-cell">Tech</td><td class="td-w r">2.6%</td><td class="td-score r">7.3</td><td class="td-score r">7.2</td></tr>
+            <tr><td class="td-name">Alphabet Inc Class C</td><td class="td-ceo">Sundar Pichai</td><td class="td-sector-cell">Communication</td><td class="td-w r">2.4%</td><td class="td-score r score-hi">8.3</td><td class="td-score r">6.7</td></tr>
+            <tr><td class="td-name">Meta Platforms Inc</td><td class="td-ceo">Mark Zuckerberg</td><td class="td-sector-cell">Communication</td><td class="td-w r">2.2%</td><td class="td-score r">7.6</td><td class="td-score r">6.7</td></tr>
+            <tr><td class="td-name">Tesla Inc</td><td class="td-ceo">Elon Musk</td><td class="td-sector-cell">Consumer Disc.</td><td class="td-w r">1.9%</td><td class="td-score r">7.8</td><td class="td-score r">6.5</td></tr>
+            <tr><td class="td-name">Berkshire Hathaway B</td><td class="td-ceo">Greg Abel</td><td class="td-sector-cell">Financials</td><td class="td-w r">1.6%</td><td class="td-score r">6.5</td><td class="td-score r">6.4</td></tr>
+            <tr class="total-row"><td class="td-name">TOTAL</td><td></td><td></td><td class="td-w r">36.5%</td><td class="td-score r">7.6</td><td class="td-score r">6.8</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div><!-- /holdings-panels -->
+  </div>
+
+</main>
+
+<!-- POPUP -->
+<div class="company-popup" id="companyPopup">
+  <div class="popup-header">
+    <div>
+      <div class="popup-company-name" id="popupName"></div>
+      <div class="popup-sector-tag" id="popupSector"></div>
+    </div>
+    <div class="popup-ticker" id="popupTicker"></div>
+  </div>
+  <div class="popup-body">
+    <p class="popup-intro" id="popupIntro"></p>
+    <div class="popup-stats">
+      <div class="popup-stat">
+        <span class="popup-stat-label">Portfolio Weight</span>
+        <span class="popup-stat-value" id="popupWeight"></span>
+      </div>
+      <div class="popup-stat">
+        <span class="popup-stat-label">CEO</span>
+        <span class="popup-stat-value" id="popupCEO"></span>
+      </div>
+      <div class="popup-stat">
+        <span class="popup-stat-label">Mgmt Score</span>
+        <span class="popup-stat-value" id="popupMgmt"></span>
+      </div>
+      <div class="popup-stat">
+        <span class="popup-stat-label">Sector Avg</span>
+        <span class="popup-stat-value" id="popupAvg"></span>
+      </div>
+    </div>
+  </div>
+  <div class="popup-corner"></div>
+</div>
+
+
+
+<script>
+  const popup = document.getElementById('companyPopup');
+  const cells = document.querySelectorAll('.sector-cell[data-company]');
+
+  let mouseX = 0, mouseY = 0;
+
+  document.addEventListener('mousemove', e => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+  });
+
+  function positionPopup() {
+    const pw = 360;
+    const ph = popup.offsetHeight || 280;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const offset = 16;
+
+    let left = mouseX + offset;
+    let top  = mouseY + offset;
+
+    if (left + pw > vw - 12) left = mouseX - pw - offset;
+    if (top  + ph > vh - 12) top  = mouseY - ph - offset;
+
+    popup.style.left = left + 'px';
+    popup.style.top  = top  + 'px';
+  }
+
+  cells.forEach(cell => {
+    cell.addEventListener('mouseenter', () => {
+      document.getElementById('popupName').textContent   = cell.dataset.company;
+      document.getElementById('popupTicker').textContent = cell.dataset.ticker;
+      document.getElementById('popupSector').textContent = cell.dataset.sector;
+      document.getElementById('popupIntro').textContent  = cell.dataset.intro;
+      document.getElementById('popupWeight').textContent = cell.dataset.weight;
+      document.getElementById('popupCEO').textContent    = cell.dataset.ceo;
+      document.getElementById('popupMgmt').textContent   = cell.dataset.mgmt;
+      document.getElementById('popupAvg').textContent    = cell.dataset.sectorAvg;
+
+      positionPopup();
+      popup.classList.add('visible');
+    });
+
+    cell.addEventListener('mousemove', positionPopup);
+
+    cell.addEventListener('mouseleave', () => {
+      popup.classList.remove('visible');
+    });
+  });
+
+  // Pillar fade-in via IntersectionObserver
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.treemap').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
