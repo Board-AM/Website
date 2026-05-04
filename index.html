@@ -505,7 +505,9 @@
       min-height: 380px;
     }
     .about-pillar:nth-child(even) .about-pillar-visual { border-right: none; border-left: 1px solid var(--border); }
-    .about-pillar-svg { width: 100%; max-width: 380px; }
+    .about-pillar:first-child .about-pillar-svg {
+      max-width: 520px;
+    }
 
     .about-pillar-content {
       padding: 3rem 3.5rem;
@@ -732,6 +734,7 @@
       border-radius: 9px;
       padding: 2.5rem;
       max-width: 560px;
+      margin: 0 auto;
     }
     .contact-intro { font-size: 0.88rem; color: var(--text); margin-bottom: 1.5rem; font-weight: 300; }
     .contact-form { display: flex; flex-direction: column; gap: 0.8rem; }
@@ -860,229 +863,459 @@
       pointer-events: none;
     }
     /* ── PORTFOLIOS ── */
-    .portfolio-header { margin-bottom: 2rem; }
+    .portfolio-header {
+      margin-bottom: 1rem;
+      text-align: center;
+    }
 
     .portfolio-heading {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(1.9rem, 4vw, 3rem);
+      font-size: clamp(2rem, 4vw, 3.2rem);
       font-weight: 300;
       color: var(--bright);
       line-height: 1.15;
-      margin-bottom: 0.9rem;
+      margin-bottom: 0.7rem;
     }
 
-    .portfolio-intro {
-      max-width: 680px;
-      color: var(--text);
-      line-height: 1.8;
-      font-weight: 300;
-      font-size: 0.95rem;
+    .portfolio-heading em {
+      color: var(--gold);
+      font-style: italic;
     }
 
-    .portfolio-tabs {
+    .portfolio-sub {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--dim);
       display: flex;
-      gap: 0.5rem;
-      margin: 2rem 0 1.5rem;
+      justify-content: center;
+      align-items: center;
+      gap: 0.8rem;
       flex-wrap: wrap;
     }
 
-    .portfolio-tab {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.68rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      background: var(--card);
-      border: 1px solid var(--border);
-      color: var(--dim);
-      padding: 0.6rem 1rem;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: color 0.15s, border-color 0.15s, background 0.15s;
+    .portfolio-sub .gold { color: var(--gold); }
+
+    .portfolio-sub-sep {
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--gold);
+      opacity: 0.45;
     }
 
-    .portfolio-tab:hover { color: var(--blue); border-color: var(--blue3); }
+    .treemap {
+      display: grid;
+      grid-template-columns: 3fr 2fr 2fr;
+      gap: 3px;
+      background: rgba(201,168,76,0.08);
+      border: 1px solid rgba(201,168,76,0.2);
+      height: 62vh;
+      min-height: 420px;
+      margin-top: 2rem;
+    }
 
-    .portfolio-tab.active {
-      color: var(--blue);
-      border-color: var(--blue2);
+    .col-left {
+      display: grid;
+      grid-template-rows: 3fr 1.5fr;
+      gap: 3px;
+    }
+
+    .col-mid {
+      display: grid;
+      grid-template-rows: 1fr 1fr 1fr;
+      gap: 3px;
+    }
+
+    .col-right {
+      display: grid;
+      grid-template-rows: 1.5fr 1fr 1fr 0.55fr;
+      gap: 3px;
+    }
+
+    .col-right-row3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3px;
+    }
+
+    .sector-cell {
+      background: var(--card);
+      padding: 1.3rem 1.4rem;
+      position: relative;
+      overflow: hidden;
+      cursor: default;
+      transition: background 0.3s, border-color 0.3s;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 1px solid transparent;
+    }
+
+    .sector-cell::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(201,168,76,0.04) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .sector-cell:hover {
       background: #131f32;
+      border-color: rgba(201,168,76,0.28);
     }
 
-    .portfolio-summary {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1rem;
-      margin-bottom: 2rem;
+    .cell-header,
+    .cell-footer {
+      position: relative;
+      z-index: 1;
     }
 
-    .portfolio-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 9px;
-      padding: 1.1rem 1.2rem;
-    }
-
-    .portfolio-card-label {
+    .sector-name {
       font-family: 'DM Mono', monospace;
-      font-size: 0.6rem;
-      letter-spacing: 0.12em;
+      font-size: 0.58rem;
+      letter-spacing: 0.22em;
       text-transform: uppercase;
-      color: var(--dim);
-      margin-bottom: 0.45rem;
-    }
-
-    .portfolio-card-value {
-      font-family: 'DM Mono', monospace;
-      font-size: 1.35rem;
-      color: var(--bright);
-      font-weight: 500;
-      letter-spacing: -0.02em;
-    }
-
-    .portfolio-card-sub {
-      font-size: 0.72rem;
-      color: var(--text);
-      margin-top: 0.2rem;
-    }
-
-    .portfolio-card-value.gold { color: var(--gold); }
-
-    .portfolio-layout {
-      display: grid;
-      grid-template-columns: 1fr 200px;
-      gap: 1.5rem;
-      align-items: start;
-    }
-
-    .portfolio-table-wrap {
-      overflow-x: auto;
-      border: 1px solid var(--border);
-      border-radius: 9px;
-      background: var(--card);
-    }
-
-    .portfolio-table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 520px;
-    }
-
-    .portfolio-table th,
-    .portfolio-table td {
-      padding: 0.78rem 1rem;
-      border-bottom: 1px solid var(--border);
-      text-align: left;
-    }
-
-    .portfolio-table tr:last-child td { border-bottom: none; }
-
-    .portfolio-table th {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.6rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--blue3);
-      background: rgba(10,18,32,0.55);
-    }
-
-    .portfolio-table td { font-size: 0.83rem; color: var(--text); }
-
-    .portfolio-table td.pt-company { color: var(--bright); font-weight: 500; }
-    .portfolio-table td.pt-ticker {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.75rem;
-      color: var(--blue);
-      letter-spacing: 0.04em;
-    }
-    .portfolio-table td.pt-weight {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.78rem;
-      color: var(--bright);
-    }
-    .portfolio-table td.pt-score {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.78rem;
       color: var(--gold);
-      font-weight: 500;
+      opacity: 0.75;
     }
 
-    .portfolio-alloc-panel {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 9px;
-      padding: 1rem 1.1rem;
+    .sector-pct {
+      display: block;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
+      font-weight: 300;
+      color: var(--bright);
+      line-height: 1.1;
+      margin-top: 0.15rem;
     }
 
-    .portfolio-alloc-title {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.6rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--blue3);
-      margin-bottom: 0.8rem;
-    }
+    .sector-cell.large .sector-pct { font-size: 2.7rem; }
+    .sector-cell.medium .sector-pct { font-size: 2rem; }
 
-    .alloc-row {
+    .company-logo-area {
+      position: absolute;
+      inset: 0;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      padding: 0.36rem 0;
-      border-bottom: 1px solid rgba(15,30,48,0.7);
+      justify-content: center;
+      z-index: 1;
+      pointer-events: none;
     }
 
-    .alloc-row:last-child { border-bottom: none; }
-
-    .alloc-name {
-      font-size: 0.7rem;
-      color: var(--text);
-      flex: 1;
-      min-width: 0;
+    .company-logo-text {
+      font-size: 2.4rem;
+      font-weight: 300;
+      color: rgba(200,223,240,0.14);
+      letter-spacing: -0.03em;
+      text-align: center;
+      white-space: nowrap;
+      user-select: none;
     }
 
-    .alloc-bar-wrap {
-      width: 60px;
-      height: 3px;
-      background: var(--border);
-      border-radius: 2px;
-      flex-shrink: 0;
+    .sector-cell.large .company-logo-text { font-size: 3.6rem; }
+    .sector-cell.medium .company-logo-text { font-size: 2.8rem; }
+    .sector-cell.small .company-logo-text { font-size: 1.6rem; }
+    .sector-cell.tiny .company-logo-text { font-size: 1.05rem; white-space: normal; }
+
+    .logo-cadence { font-family: 'DM Sans', sans-serif; letter-spacing: -0.04em; }
+    .logo-jackhenry { font-family: 'Cormorant Garamond', serif; font-style: italic; }
+    .logo-aptiv { font-family: 'DM Mono', monospace; font-weight: 500; letter-spacing: 0.25em; }
+    .logo-alphabet { font-family: 'DM Sans', sans-serif; font-weight: 400; }
+    .logo-jnj { font-family: 'Cormorant Garamond', serif; letter-spacing: 0.05em; }
+    .logo-emerson { font-family: 'DM Sans', sans-serif; font-weight: 500; letter-spacing: 0.06em; }
+    .logo-sysco { font-family: 'DM Sans', sans-serif; font-weight: 700; }
+    .logo-chevron { font-family: 'DM Sans', sans-serif; font-weight: 600; letter-spacing: 0.04em; }
+
+    .holding-name {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.58rem;
+      color: var(--bright);
+      letter-spacing: 0.05em;
+    }
+
+    .holding-meta {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.55rem;
+      color: var(--dim);
+      opacity: 0.8;
+      margin-top: 0.18rem;
+      line-height: 1.45;
+    }
+
+    .sector-only .cell-footer { display: none; }
+
+    .company-popup {
+      position: fixed;
+      z-index: 800;
+      width: 360px;
+      background: #0b1222;
+      border: 1px solid rgba(201,168,76,0.35);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.7);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(6px);
+      transition: opacity 0.22s ease, transform 0.22s ease;
       overflow: hidden;
     }
 
-    .alloc-bar {
-      height: 100%;
-      background: var(--blue2);
-      border-radius: 2px;
+    .company-popup.visible {
+      opacity: 1;
+      transform: translateY(0);
     }
 
-    .alloc-pct {
+    .popup-header {
+      background: rgba(201,168,76,0.07);
+      border-bottom: 1px solid rgba(201,168,76,0.2);
+      padding: 1.1rem 1.4rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .popup-company-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-weight: 300;
+      color: var(--bright);
+      line-height: 1.1;
+    }
+
+    .popup-ticker {
       font-family: 'DM Mono', monospace;
-      font-size: 0.65rem;
-      color: var(--dim);
-      width: 28px;
-      text-align: right;
-      flex-shrink: 0;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      color: var(--gold);
+      background: rgba(201,168,76,0.1);
+      border: 1px solid rgba(201,168,76,0.25);
+      padding: 0.2rem 0.5rem;
+      white-space: nowrap;
     }
 
-    .portfolio-disclaimer {
-      margin-top: 1.5rem;
-      font-size: 0.7rem;
+    .popup-sector-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.55rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
       color: var(--dim);
-      line-height: 1.7;
-      border-top: 1px solid var(--border);
+      margin-top: 0.2rem;
+    }
+
+    .popup-body {
+      padding: 1.2rem 1.4rem 1.4rem;
+    }
+
+    .popup-intro {
+      font-size: 0.85rem;
+      line-height: 1.75;
+      color: var(--text);
+      margin-bottom: 1rem;
+    }
+
+    .popup-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.7rem;
+      border-top: 1px solid rgba(201,168,76,0.12);
       padding-top: 1rem;
     }
 
+    .popup-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .popup-stat-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.52rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--dim);
+    }
+
+    .popup-stat-value {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--gold);
+      letter-spacing: 0.05em;
+    }
+
+    .popup-corner {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 28px;
+      height: 28px;
+      border-top: 1px solid rgba(201,168,76,0.2);
+      border-left: 1px solid rgba(201,168,76,0.2);
+    }
+
+    .holdings-section {
+      margin-top: 3px;
+    }
+
+    .holdings-top-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0.65;
+      padding: 1rem 0 0.55rem;
+      border-bottom: 1px solid rgba(201,168,76,0.18);
+    }
+
+    .holdings-panels {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3px;
+      margin-top: 3px;
+    }
+
+    .holdings-panel {
+      background: var(--card);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .panel-heading {
+      padding: 0.7rem 0.9rem 0.5rem;
+      border-bottom: 1px solid rgba(201,168,76,0.18);
+      background: rgba(201,168,76,0.05);
+    }
+
+    .panel-heading-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--bright);
+    }
+
+    .htable {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .htable thead tr {
+      border-bottom: 1px solid rgba(201,168,76,0.12);
+    }
+
+    .htable th {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.48rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 400;
+      opacity: 0.65;
+      padding: 0.35rem 0.6rem;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .htable th.r,
+    .htable td.r {
+      text-align: right;
+    }
+
+    .htable tbody tr {
+      border-bottom: 1px solid rgba(201,168,76,0.05);
+      transition: background 0.15s;
+    }
+
+    .htable tbody tr:last-child { border-bottom: none; }
+    .htable tbody tr:hover { background: rgba(201,168,76,0.04); }
+
+    .htable tbody tr.total-row {
+      border-top: 1px solid rgba(201,168,76,0.18);
+      background: rgba(201,168,76,0.03);
+    }
+
+    .htable td {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 300;
+      color: var(--text);
+      padding: 0.32rem 0.6rem;
+      line-height: 1.25;
+      white-space: nowrap;
+    }
+
+    .td-name { color: var(--bright) !important; }
+    .td-ceo { color: var(--dim) !important; font-size: 0.65rem !important; }
+
+    .td-sector-cell {
+      color: var(--dim) !important;
+      font-family: 'DM Mono', monospace !important;
+      font-size: 0.58rem !important;
+    }
+
+    .td-w {
+      font-family: 'DM Mono', monospace !important;
+      font-size: 0.68rem !important;
+      color: var(--gold) !important;
+    }
+
+    .td-score {
+      font-family: 'DM Mono', monospace !important;
+      font-size: 0.64rem !important;
+      color: var(--dim) !important;
+    }
+
+    .score-hi { color: var(--gold) !important; }
+
     @media (max-width: 900px) {
-      .portfolio-summary { grid-template-columns: repeat(2, 1fr); }
-      .portfolio-layout { grid-template-columns: 1fr; }
+      .treemap {
+        grid-template-columns: 1fr;
+        height: auto;
+      }
+
+      .col-left,
+      .col-mid,
+      .col-right {
+        grid-template-rows: none;
+      }
+
+      .sector-cell {
+        min-height: 190px;
+      }
+
+      .col-right-row3 {
+        grid-template-columns: 1fr;
+      }
+
+      .holdings-panels {
+        grid-template-columns: 1fr;
+      }
+
+      .holdings-panel {
+        overflow-x: auto;
+      }
+
+      .company-popup {
+        display: none;
+      }
     }
 
     @media (max-width: 600px) {
-      .portfolio-summary { grid-template-columns: repeat(2, 1fr); gap: 0.6rem; }
-      .portfolio-card { padding: 0.85rem 0.9rem; }
-      .portfolio-card-value { font-size: 1.05rem; }
-      .portfolio-tabs { gap: 0.35rem; }
-      .portfolio-tab { font-size: 0.62rem; padding: 0.55rem 0.8rem; }
+      .portfolio-sub {
+        font-size: 0.55rem;
+        gap: 0.55rem;
+      }
+
+      .sector-cell {
+        padding: 1rem;
+        min-height: 170px;
+      }
+
+      .company-logo-text {
+        font-size: 1.9rem !important;
+      }
     }
 
   </style>
@@ -1543,7 +1776,6 @@
     <!-- Johan (CEO leader card) -->
     <div class="team-leader" id="t1">
       <div class="card-visual">
-        <div class="card-initials-bg">JB</div>
         <img src="./static/BoardAM_Icon.svg" class="card-logo-overlay" alt="BoardAM Logo">
       </div>
       <div class="card-content">
@@ -1566,7 +1798,6 @@
       <!-- Francois -->
       <div class="team-card" id="t2">
         <div class="card-visual">
-        <div class="card-initials-bg">FD</div>
         <img src="./static/BoardAM_Icon.svg" class="card-logo-overlay" alt="BoardAM Logo">
         </div>
         <div class="card-content">
@@ -1586,7 +1817,6 @@
       <!-- Rohan -->
       <div class="team-card" id="t3">
         <div class="card-visual">
-        <div class="card-initials-bg">RvL</div>
         <img src="./static/BoardAM_Icon.svg" class="card-logo-overlay" alt="BoardAM Logo">
         </div>
         <div class="card-content">
@@ -1606,7 +1836,6 @@
       <!-- Louis -->
       <div class="team-card" id="t4">
         <div class="card-visual">
-        <div class="card-initials-bg">LB</div>
         <img src="./static/BoardAM_Icon.svg" class="card-logo-overlay" alt="BoardAM Logo">
         </div>
         <div class="card-content">
@@ -1633,44 +1862,297 @@
 <section id="portfolios" class="section-wrap">
   <div class="section-container" style="max-width:1200px">
     <div class="section-eyebrow">Portfolios</div>
+
     <div class="portfolio-header">
-      <h2 class="portfolio-heading">Leadership-weighted views.</h2>
-      <p class="portfolio-intro">Portfolio compositions scored on management quality, strategic clarity, and capital discipline — applied across the Magnificent Seven and S&amp;P 500 universe.</p>
-    </div>
-
-    <div class="portfolio-tabs" role="tablist" aria-label="Portfolio views">
-      <button class="portfolio-tab active" type="button" data-ptab="mag7" aria-selected="true">Mag7</button>
-      <button class="portfolio-tab" type="button" data-ptab="sp500" aria-selected="false">S&amp;P 500</button>
-    </div>
-
-    <div class="portfolio-summary" id="portfolioSummary"></div>
-
-    <div class="portfolio-layout">
-      <div class="portfolio-table-wrap">
-        <table class="portfolio-table" aria-label="Portfolio holdings">
-          <thead>
-            <tr>
-              <th>Company</th>
-              <th>Ticker</th>
-              <th>CEO</th>
-              <th>Sector</th>
-              <th>Weight</th>
-              <th>Score</th>
-            </tr>
-          </thead>
-          <tbody id="portfolioRows"></tbody>
-        </table>
-      </div>
-
-      <div class="portfolio-alloc-panel">
-        <div class="portfolio-alloc-title">Sector Allocation</div>
-        <div id="portfolioAlloc"></div>
+      <h2 class="portfolio-heading"><em>Leadership-weighted</em> portfolio view.</h2>
+      <div class="portfolio-sub">
+        Top Holding per Sector
+        <span class="portfolio-sub-sep"></span>
+        Total Holdings <span class="gold">92</span>
       </div>
     </div>
 
-    <p class="portfolio-disclaimer">For illustration purposes only. Not investment advice. Holdings and weights reflect approximate market-cap composition and are subject to change. BAM scores represent internal management quality assessments.</p>
+    <div class="treemap">
+
+      <div class="col-left">
+        <div class="sector-cell large"
+             data-company="Cadence Design Systems"
+             data-ticker="CDNS"
+             data-sector="Information Technology"
+             data-intro="Cadence Design Systems is a global leader in electronic design automation software, hardware, and IP. Its tools are deeply embedded in semiconductor design workflows, making the business a critical partner to chip designers and foundries."
+             data-weight="3.25%" data-mgmt="8.1" data-sector-avg="7.2" data-ceo="Anirudh Devgan">
+          <div class="cell-header">
+            <span class="sector-name">Information Technology</span>
+            <span class="sector-pct">33%</span>
+          </div>
+          <div class="company-logo-area">
+            <span class="company-logo-text logo-cadence">cādence</span>
+          </div>
+          <div class="cell-footer">
+            <div class="holding-name">Cadence Design Systems · 3.25%</div>
+            <div class="holding-meta">Anirudh Devgan, CEO · Mgmt Score: 8.1 · Sector Avg: 7.2</div>
+          </div>
+        </div>
+
+        <div class="sector-cell medium"
+             data-company="Jack Henry & Associates"
+             data-ticker="JKHY"
+             data-sector="Financials"
+             data-intro="Jack Henry & Associates provides core technology and payment processing services to community and mid-tier banks. Its embedded platforms create strong retention and recurring revenue."
+             data-weight="2.02%" data-mgmt="9.6" data-sector-avg="6.4" data-ceo="David B. Foss">
+          <div class="cell-header">
+            <span class="sector-name">Financials</span>
+            <span class="sector-pct">13%</span>
+          </div>
+          <div class="company-logo-area">
+            <span class="company-logo-text logo-jackhenry">jack henry</span>
+          </div>
+          <div class="cell-footer">
+            <div class="holding-name">Jack Henry & Associates · 2.02%</div>
+            <div class="holding-meta">David B. Foss, CEO · Mgmt Score: 9.6 · Sector Avg: 6.4</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-mid">
+        <div class="sector-cell"
+             data-company="Aptiv PLC"
+             data-ticker="APTV"
+             data-sector="Consumer Discretionary"
+             data-intro="Aptiv develops electrical architectures, software platforms, and autonomous-driving components for major automakers. As vehicles become increasingly software-defined, Aptiv sits near the centre of the EV and autonomy transition."
+             data-weight="8.59%" data-mgmt="7.7" data-sector-avg="6.5" data-ceo="Kevin P. Clark">
+          <div class="cell-header">
+            <span class="sector-name">Consumer Discretionary</span>
+            <span class="sector-pct">10%</span>
+          </div>
+          <div class="company-logo-area">
+            <span class="company-logo-text logo-aptiv">·APTIV·</span>
+          </div>
+          <div class="cell-footer">
+            <div class="holding-name">Aptiv PLC · 8.59%</div>
+            <div class="holding-meta">Kevin P. Clark, CEO · Mgmt Score: 7.7 · Sector Avg: 6.5</div>
+          </div>
+        </div>
+
+        <div class="sector-cell"
+             data-company="Alphabet Inc."
+             data-ticker="GOOGL"
+             data-sector="Communication Services"
+             data-intro="Alphabet owns Google, Google Cloud, YouTube, Waymo, and other long-duration assets. Its advertising engine produces exceptional cash flow while cloud and AI infrastructure remain major growth vectors."
+             data-weight="10.38%" data-mgmt="8.3" data-sector-avg="6.7" data-ceo="Sundar Pichai">
+          <div class="cell-header">
+            <span class="sector-name">Communication Services</span>
+            <span class="sector-pct">10%</span>
+          </div>
+          <div class="company-logo-area">
+            <span class="company-logo-text logo-alphabet">Alphabet</span>
+          </div>
+          <div class="cell-footer">
+            <div class="holding-name">Alphabet Inc. · 10.38%</div>
+            <div class="holding-meta">Sundar Pichai, CEO · Mgmt Score: 8.3 · Sector Avg: 6.7</div>
+          </div>
+        </div>
+
+        <div class="sector-cell"
+             data-company="Johnson & Johnson"
+             data-ticker="JNJ"
+             data-sector="Health Care"
+             data-intro="Johnson & Johnson is a diversified healthcare leader across pharmaceuticals and medical technology. Following the Kenvue separation, the company is more focused on innovative medicine and med-tech execution."
+             data-weight="3.08%" data-mgmt="7.9" data-sector-avg="6.7" data-ceo="Joaquin Duato">
+          <div class="cell-header">
+            <span class="sector-name">Health Care</span>
+            <span class="sector-pct">9%</span>
+          </div>
+          <div class="company-logo-area">
+            <span class="company-logo-text logo-jnj">Johnson&amp;Johnson</span>
+          </div>
+          <div class="cell-footer">
+            <div class="holding-name">Johnson & Johnson · 3.08%</div>
+            <div class="holding-meta">Joaquin Duato, CEO · Mgmt Score: 7.9 · Sector Avg: 6.7</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-right">
+        <div class="sector-cell medium"
+             data-company="Emerson Electric"
+             data-ticker="EMR"
+             data-sector="Industrials"
+             data-intro="Emerson Electric is a global automation and engineering company. Its portfolio restructuring has sharpened the company into a more focused automation business."
+             data-weight="1.31%" data-mgmt="9.9" data-sector-avg="6.5" data-ceo="Lal Karsanbhai">
+          <div class="cell-header">
+            <span class="sector-name">Industrials</span>
+            <span class="sector-pct">9%</span>
+          </div>
+          <div class="company-logo-area">
+            <span class="company-logo-text logo-emerson">EMERSON.</span>
+          </div>
+          <div class="cell-footer">
+            <div class="holding-name">Emerson Electric · 1.31%</div>
+            <div class="holding-meta">Lal Karsanbhai, CEO · Mgmt Score: 9.9 · Sector Avg: 6.5</div>
+          </div>
+        </div>
+
+        <div class="sector-cell small"
+             data-company="Sysco Corp"
+             data-ticker="SYY"
+             data-sector="Consumer Staples"
+             data-intro="Sysco is North America's largest foodservice distribution company. Its logistics scale and customer network create durable competitive advantages."
+             data-weight="0.90%" data-mgmt="10.0" data-sector-avg="6.7" data-ceo="Kevin Hourican">
+          <div class="cell-header">
+            <span class="sector-name">Consumer Staples</span>
+            <span class="sector-pct">5%</span>
+          </div>
+          <div class="company-logo-area">
+            <span class="company-logo-text logo-sysco">Sysco</span>
+          </div>
+          <div class="cell-footer">
+            <div class="holding-name">Sysco Corp · 0.90%</div>
+            <div class="holding-meta">Kevin Hourican, CEO · Mgmt Score: 10.0 · Sector Avg: 6.7</div>
+          </div>
+        </div>
+
+        <div class="sector-cell small"
+             data-company="Chevron Corp"
+             data-ticker="CVX"
+             data-sector="Energy"
+             data-intro="Chevron is a major integrated energy company with disciplined capital allocation, a strong balance sheet, and a long history of shareholder returns."
+             data-weight="1.64%" data-mgmt="9.7" data-sector-avg="6.3" data-ceo="Mike Wirth">
+          <div class="cell-header">
+            <span class="sector-name">Energy</span>
+            <span class="sector-pct">4%</span>
+          </div>
+          <div class="company-logo-area">
+            <span class="company-logo-text logo-chevron">Chevron</span>
+          </div>
+          <div class="cell-footer">
+            <div class="holding-name">Chevron · 1.64%</div>
+            <div class="holding-meta">Mike Wirth, CEO · Mgmt Score: 9.7 · Sector Avg: 6.3</div>
+          </div>
+        </div>
+
+        <div class="col-right-row3">
+          <div class="sector-cell tiny sector-only">
+            <div class="cell-header">
+              <span class="sector-name">Utilities</span>
+              <span class="sector-pct">3%</span>
+            </div>
+          </div>
+          <div class="sector-cell tiny sector-only">
+            <div class="cell-header">
+              <span class="sector-name">Materials</span>
+              <span class="sector-pct">2%</span>
+            </div>
+          </div>
+          <div class="sector-cell tiny sector-only">
+            <div class="cell-header">
+              <span class="sector-name">Real Estate</span>
+              <span class="sector-pct">2%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="holdings-section">
+      <div class="holdings-top-label">Top 10 Holdings</div>
+
+      <div class="holdings-panels">
+
+        <div class="holdings-panel">
+          <div class="panel-heading"><span class="panel-heading-text">BAMCOR</span></div>
+          <table class="htable">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>CEO</th>
+                <th>Sector</th>
+                <th class="r">Weight</th>
+                <th class="r">Score</th>
+                <th class="r">Avg</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td class="td-name">Alphabet Inc.</td><td class="td-ceo">Sundar Pichai</td><td class="td-sector-cell">Communication</td><td class="td-w r">10.4%</td><td class="td-score r score-hi">8.3</td><td class="td-score r">6.7</td></tr>
+              <tr><td class="td-name">Aptiv PLC</td><td class="td-ceo">Kevin P. Clark</td><td class="td-sector-cell">Consumer Disc.</td><td class="td-w r">8.6%</td><td class="td-score r">7.7</td><td class="td-score r">6.5</td></tr>
+              <tr><td class="td-name">Cadence Design Systems</td><td class="td-ceo">Anirudh Devgan</td><td class="td-sector-cell">Tech</td><td class="td-w r">3.2%</td><td class="td-score r">8.1</td><td class="td-score r">7.2</td></tr>
+              <tr><td class="td-name">Johnson &amp; Johnson</td><td class="td-ceo">Joaquin Duato</td><td class="td-sector-cell">Health Care</td><td class="td-w r">3.1%</td><td class="td-score r">7.9</td><td class="td-score r">6.7</td></tr>
+              <tr><td class="td-name">Adobe Inc.</td><td class="td-ceo">Shantanu Narayen</td><td class="td-sector-cell">Tech</td><td class="td-w r">2.8%</td><td class="td-score r">8.0</td><td class="td-score r">7.2</td></tr>
+              <tr><td class="td-name">NetApp, Inc.</td><td class="td-ceo">George Kurian</td><td class="td-sector-cell">Tech</td><td class="td-w r">2.7%</td><td class="td-score r">8.0</td><td class="td-score r">7.2</td></tr>
+              <tr><td class="td-name">ServiceNow, Inc.</td><td class="td-ceo">Bill McDermott</td><td class="td-sector-cell">Tech</td><td class="td-w r">2.4%</td><td class="td-score r">7.9</td><td class="td-score r">7.2</td></tr>
+              <tr><td class="td-name">Vertex Pharmaceuticals</td><td class="td-ceo">Reshma Kewalramani</td><td class="td-sector-cell">Health Care</td><td class="td-w r">2.3%</td><td class="td-score r">7.7</td><td class="td-score r">6.7</td></tr>
+              <tr><td class="td-name">PTC Inc.</td><td class="td-ceo">Neil Barua</td><td class="td-sector-cell">Tech</td><td class="td-w r">2.3%</td><td class="td-score r">7.9</td><td class="td-score r">7.2</td></tr>
+              <tr><td class="td-name">Analog Devices, Inc.</td><td class="td-ceo">Vincent Roche</td><td class="td-sector-cell">Tech</td><td class="td-w r">2.2%</td><td class="td-score r">7.8</td><td class="td-score r">7.2</td></tr>
+              <tr class="total-row"><td class="td-name">TOTAL</td><td></td><td></td><td class="td-w r">40.1%</td><td class="td-score r">7.9</td><td class="td-score r">7.0</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="holdings-panel">
+          <div class="panel-heading"><span class="panel-heading-text">Merqube US Large Cap</span></div>
+          <table class="htable">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>CEO</th>
+                <th>Sector</th>
+                <th class="r">Weight</th>
+                <th class="r">Score</th>
+                <th class="r">Avg</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td class="td-name">NVIDIA Corp</td><td class="td-ceo">Jensen Huang</td><td class="td-sector-cell">Tech</td><td class="td-w r">7.6%</td><td class="td-score r">7.4</td><td class="td-score r">7.2</td></tr>
+              <tr><td class="td-name">Apple Inc</td><td class="td-ceo">Tim Cook</td><td class="td-sector-cell">Tech</td><td class="td-w r">6.6%</td><td class="td-score r">7.4</td><td class="td-score r">7.2</td></tr>
+              <tr><td class="td-name">Microsoft Corp</td><td class="td-ceo">Satya Nadella</td><td class="td-sector-cell">Tech</td><td class="td-w r">4.9%</td><td class="td-score r">7.4</td><td class="td-score r">7.2</td></tr>
+              <tr><td class="td-name">Amazon.com Inc</td><td class="td-ceo">Andy Jassy</td><td class="td-sector-cell">Consumer Disc.</td><td class="td-w r">3.6%</td><td class="td-score r">7.7</td><td class="td-score r">6.5</td></tr>
+              <tr><td class="td-name">Alphabet Inc Class A</td><td class="td-ceo">Sundar Pichai</td><td class="td-sector-cell">Communication</td><td class="td-w r">3.1%</td><td class="td-score r score-hi">8.3</td><td class="td-score r">6.7</td></tr>
+              <tr><td class="td-name">Broadcom Inc</td><td class="td-ceo">Hock E. Tan</td><td class="td-sector-cell">Tech</td><td class="td-w r">2.6%</td><td class="td-score r">7.3</td><td class="td-score r">7.2</td></tr>
+              <tr><td class="td-name">Alphabet Inc Class C</td><td class="td-ceo">Sundar Pichai</td><td class="td-sector-cell">Communication</td><td class="td-w r">2.4%</td><td class="td-score r score-hi">8.3</td><td class="td-score r">6.7</td></tr>
+              <tr><td class="td-name">Meta Platforms Inc</td><td class="td-ceo">Mark Zuckerberg</td><td class="td-sector-cell">Communication</td><td class="td-w r">2.2%</td><td class="td-score r">7.6</td><td class="td-score r">6.7</td></tr>
+              <tr><td class="td-name">Tesla Inc</td><td class="td-ceo">Elon Musk</td><td class="td-sector-cell">Consumer Disc.</td><td class="td-w r">1.9%</td><td class="td-score r">7.8</td><td class="td-score r">6.5</td></tr>
+              <tr><td class="td-name">Berkshire Hathaway B</td><td class="td-ceo">Greg Abel</td><td class="td-sector-cell">Financials</td><td class="td-w r">1.6%</td><td class="td-score r">6.5</td><td class="td-score r">6.4</td></tr>
+              <tr class="total-row"><td class="td-name">TOTAL</td><td></td><td></td><td class="td-w r">36.5%</td><td class="td-score r">7.6</td><td class="td-score r">6.8</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
   </div>
 </section>
+
+<div class="company-popup" id="companyPopup">
+  <div class="popup-header">
+    <div>
+      <div class="popup-company-name" id="popupName"></div>
+      <div class="popup-sector-tag" id="popupSector"></div>
+    </div>
+    <div class="popup-ticker" id="popupTicker"></div>
+  </div>
+  <div class="popup-body">
+    <p class="popup-intro" id="popupIntro"></p>
+    <div class="popup-stats">
+      <div class="popup-stat">
+        <span class="popup-stat-label">Portfolio Weight</span>
+        <span class="popup-stat-value" id="popupWeight"></span>
+      </div>
+      <div class="popup-stat">
+        <span class="popup-stat-label">CEO</span>
+        <span class="popup-stat-value" id="popupCEO"></span>
+      </div>
+      <div class="popup-stat">
+        <span class="popup-stat-label">Mgmt Score</span>
+        <span class="popup-stat-value" id="popupMgmt"></span>
+      </div>
+      <div class="popup-stat">
+        <span class="popup-stat-label">Sector Avg</span>
+        <span class="popup-stat-value" id="popupAvg"></span>
+      </div>
+    </div>
+  </div>
+  <div class="popup-corner"></div>
+</div>
 
 <div class="section-rule"></div>
 
@@ -2065,115 +2547,58 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
 
 
 
-/* ── Portfolio section ── */
+/* ── Portfolio hover popup ── */
 (function () {
-  var portfolios = {
-    mag7: {
-      summary: { holdings: 7, avgScore: '8.4', topSector: 'Technology', topHolding: 'NVDA' },
-      sectors: [
-        { name: 'Technology', pct: 64 },
-        { name: 'Consumer Disc.', pct: 22 },
-        { name: 'Communication', pct: 14 }
-      ],
-      holdings: [
-        { company: 'NVIDIA Corp.',     ticker: 'NVDA',  ceo: 'Jensen Huang',      sector: 'Technology',    weight: '20.6%', score: '9.4' },
-        { company: 'Microsoft Corp.',  ticker: 'MSFT',  ceo: 'Satya Nadella',     sector: 'Technology',    weight: '22.4%', score: '9.1' },
-        { company: 'Apple Inc.',       ticker: 'AAPL',  ceo: 'Tim Cook',          sector: 'Technology',    weight: '21.8%', score: '8.7' },
-        { company: 'Amazon.com Inc.',  ticker: 'AMZN',  ceo: 'Andy Jassy',        sector: 'Consumer Disc.',weight: '11.9%', score: '8.5' },
-        { company: 'Alphabet Inc.',    ticker: 'GOOGL', ceo: 'Sundar Pichai',     sector: 'Communication', weight: '12.3%', score: '8.2' },
-        { company: 'Meta Platforms',   ticker: 'META',  ceo: 'Mark Zuckerberg',   sector: 'Communication', weight: '8.1%',  score: '7.8' },
-        { company: 'Tesla Inc.',       ticker: 'TSLA',  ceo: 'Elon Musk',         sector: 'Consumer Disc.',weight: '3.9%',  score: '6.3' }
-      ]
-    },
-    sp500: {
-      summary: { holdings: 503, avgScore: '7.2', topSector: 'Info Tech', topHolding: 'MSFT' },
-      sectors: [
-        { name: 'Info Technology', pct: 32 },
-        { name: 'Financials',      pct: 13 },
-        { name: 'Health Care',     pct: 12 },
-        { name: 'Consumer Disc.',  pct: 11 },
-        { name: 'Industrials',     pct: 9  },
-        { name: 'Communication',   pct: 9  },
-        { name: 'Consumer Staples',pct: 6  },
-        { name: 'Energy',          pct: 4  },
-        { name: 'Other',           pct: 4  }
-      ],
-      holdings: [
-        { company: 'Microsoft Corp.',      ticker: 'MSFT',  ceo: 'Satya Nadella',   sector: 'Technology',    weight: '7.1%', score: '9.1' },
-        { company: 'Apple Inc.',           ticker: 'AAPL',  ceo: 'Tim Cook',        sector: 'Technology',    weight: '6.8%', score: '8.7' },
-        { company: 'NVIDIA Corp.',         ticker: 'NVDA',  ceo: 'Jensen Huang',    sector: 'Technology',    weight: '6.5%', score: '9.4' },
-        { company: 'Amazon.com Inc.',      ticker: 'AMZN',  ceo: 'Andy Jassy',      sector: 'Consumer Disc.',weight: '3.8%', score: '8.5' },
-        { company: 'Meta Platforms',       ticker: 'META',  ceo: 'Mark Zuckerberg', sector: 'Communication', weight: '2.8%', score: '7.8' },
-        { company: 'Alphabet Inc.',        ticker: 'GOOGL', ceo: 'Sundar Pichai',   sector: 'Communication', weight: '2.6%', score: '8.2' },
-        { company: 'Berkshire Hathaway',   ticker: 'BRK.B', ceo: 'Greg Abel',       sector: 'Financials',    weight: '1.7%', score: '7.5' },
-        { company: 'Tesla Inc.',           ticker: 'TSLA',  ceo: 'Elon Musk',       sector: 'Consumer Disc.',weight: '1.6%', score: '6.3' },
-        { company: 'Eli Lilly & Co.',      ticker: 'LLY',   ceo: 'David Ricks',     sector: 'Health Care',   weight: '1.4%', score: '7.9' },
-        { company: 'JPMorgan Chase',       ticker: 'JPM',   ceo: 'Jamie Dimon',     sector: 'Financials',    weight: '1.3%', score: '8.6' }
-      ]
-    }
-  };
+  const popup = document.getElementById('companyPopup');
+  const cells = document.querySelectorAll('.sector-cell[data-company]');
+  if (!popup || !cells.length) return;
 
-  function card(label, value, sub, cls) {
-    return '<div class="portfolio-card">' +
-      '<div class="portfolio-card-label">' + label + '</div>' +
-      '<div class="portfolio-card-value' + (cls ? ' ' + cls : '') + '">' + value + '</div>' +
-      (sub ? '<div class="portfolio-card-sub">' + sub + '</div>' : '') +
-      '</div>';
+  let mouseX = 0;
+  let mouseY = 0;
+
+  document.addEventListener('mousemove', e => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+  });
+
+  function positionPopup() {
+    const pw = 360;
+    const ph = popup.offsetHeight || 280;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const offset = 16;
+
+    let left = mouseX + offset;
+    let top = mouseY + offset;
+
+    if (left + pw > vw - 12) left = mouseX - pw - offset;
+    if (top + ph > vh - 12) top = mouseY - ph - offset;
+
+    popup.style.left = left + 'px';
+    popup.style.top = top + 'px';
   }
 
-  function render(key) {
-    var d = portfolios[key];
-    var s = d.summary;
+  cells.forEach(cell => {
+    cell.addEventListener('mouseenter', () => {
+      document.getElementById('popupName').textContent = cell.dataset.company;
+      document.getElementById('popupTicker').textContent = cell.dataset.ticker;
+      document.getElementById('popupSector').textContent = cell.dataset.sector;
+      document.getElementById('popupIntro').textContent = cell.dataset.intro;
+      document.getElementById('popupWeight').textContent = cell.dataset.weight;
+      document.getElementById('popupCEO').textContent = cell.dataset.ceo;
+      document.getElementById('popupMgmt').textContent = cell.dataset.mgmt;
+      document.getElementById('popupAvg').textContent = cell.dataset.sectorAvg;
 
-    var sumEl = document.getElementById('portfolioSummary');
-    if (sumEl) sumEl.innerHTML =
-      card('Holdings', s.holdings, '') +
-      card('Avg Score', s.avgScore, '/10', 'gold') +
-      card('Top Sector', s.topSector, '') +
-      card('Top Holding', s.topHolding, '');
-
-    var rowEl = document.getElementById('portfolioRows');
-    if (rowEl) rowEl.innerHTML = d.holdings.map(function (h) {
-      return '<tr>' +
-        '<td class="pt-company">' + h.company + '</td>' +
-        '<td class="pt-ticker">' + h.ticker + '</td>' +
-        '<td>' + h.ceo + '</td>' +
-        '<td>' + h.sector + '</td>' +
-        '<td class="pt-weight">' + h.weight + '</td>' +
-        '<td class="pt-score">' + h.score + '</td>' +
-        '</tr>';
-    }).join('');
-
-    var allocEl = document.getElementById('portfolioAlloc');
-    if (allocEl) allocEl.innerHTML = d.sectors.map(function (sec) {
-      return '<div class="alloc-row">' +
-        '<div class="alloc-name">' + sec.name + '</div>' +
-        '<div class="alloc-bar-wrap"><div class="alloc-bar" style="width:' + sec.pct + '%"></div></div>' +
-        '<div class="alloc-pct">' + sec.pct + '%</div>' +
-        '</div>';
-    }).join('');
-  }
-
-  function initPortfolio() {
-    var active = 'mag7';
-    var tabs = document.querySelectorAll('.portfolio-tab');
-    tabs.forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        active = btn.getAttribute('data-ptab');
-        tabs.forEach(function (b) { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
-        btn.classList.add('active');
-        btn.setAttribute('aria-selected', 'true');
-        render(active);
-      });
+      positionPopup();
+      popup.classList.add('visible');
     });
-    render(active);
-  }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initPortfolio);
-  } else {
-    initPortfolio();
-  }
+    cell.addEventListener('mousemove', positionPopup);
+
+    cell.addEventListener('mouseleave', () => {
+      popup.classList.remove('visible');
+    });
+  });
 }());
 
 /* Init */
