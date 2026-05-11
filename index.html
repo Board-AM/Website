@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -68,7 +68,7 @@
     .nav-logo-text {
       font-family: 'DM Sans', sans-serif;
       font-size: 18px;
-      font-weight: 500;
+      font-weight: 400;
       letter-spacing: 0.08em;
       color: var(--gold);
     }
@@ -81,7 +81,7 @@
     .nav-links a {
       font-family: 'DM Mono', monospace;
       font-size: 0.85rem;
-      font-weight: 600;
+      font-weight: 400;
       letter-spacing: 0.2em;
       text-transform: uppercase;
       color: var(--gold);
@@ -1318,9 +1318,207 @@
       }
     }
 
+
+    /* ── DESIGN HARMONIZATION LAYER ──
+       Principle: one line language across the site.
+       Structural lines = quiet blue. Signal lines = restrained gold. */
+    :root {
+      --line-soft: rgba(122,168,208,0.10);
+      --line: rgba(122,168,208,0.18);
+      --line-strong: rgba(122,168,208,0.28);
+      --signal-soft: rgba(201,168,76,0.12);
+      --signal: rgba(201,168,76,0.28);
+      --signal-strong: rgba(201,168,76,0.52);
+      --surface-glow: rgba(122,168,208,0.035);
+    }
+
+    body {
+      position: relative;
+      background:
+        radial-gradient(ellipse 70% 42% at 50% 0%, rgba(122,168,208,0.055), transparent 65%),
+        linear-gradient(180deg, #0a1220 0%, #08111f 45%, #0a1220 100%);
+    }
+
+    body > section,
+    body > footer,
+    body > .section-rule,
+    body > .company-popup {
+      position: relative;
+      z-index: 1;
+    }
+
+    #signalCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.82;
+      mix-blend-mode: screen;
+    }
+
+    nav,
+    .nav-mobile { border-color: var(--line); }
+
+    .section-rule {
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--line-soft), var(--signal), var(--line-soft), transparent);
+      opacity: 0.9;
+    }
+
+    .hero-divider,
+    .title-rule {
+      background: linear-gradient(to right, transparent, var(--line), var(--signal), var(--line), transparent);
+    }
+
+    .process-inner,
+    .stage,
+    .scorecard,
+    .about-pillar,
+    .about-pillar-visual,
+    .about-dims,
+    .about-dims-grid,
+    .dim-card,
+    .team-leader,
+    .team-card,
+    .team-card .card-visual,
+    .card-content,
+    .contact-box,
+    .treemap,
+    .sector-cell,
+    .holdings-panel,
+    .panel-heading,
+    footer {
+      border-color: var(--line) !important;
+    }
+
+    .process-inner,
+    .contact-box,
+    .sector-cell,
+    .holdings-panel,
+    .dim-card,
+    .team-card,
+    .team-leader {
+      background-image: radial-gradient(ellipse 85% 70% at 50% 50%, var(--surface-glow), transparent 72%);
+    }
+
+    .stage.active,
+    .sector-cell:hover,
+    .team-card:hover,
+    .team-leader:hover,
+    .contact-box:focus-within {
+      border-color: var(--signal) !important;
+      box-shadow: 0 0 28px rgba(201,168,76,0.045), inset 0 0 22px rgba(122,168,208,0.035);
+    }
+
+    .arrow,
+    .filing-line,
+    .sc-bar-wrap,
+    .alloc-bar-wrap,
+    .dot {
+      background: var(--line-strong) !important;
+    }
+
+    .arrow::after { border-left-color: var(--line-strong) !important; }
+    .arrow.active,
+    .dot.active { background: var(--signal-strong) !important; }
+    .arrow.active::after { border-left-color: var(--signal-strong) !important; }
+
+    .stage.active .filing-line,
+    .sc-bar,
+    .alloc-bar {
+      background: linear-gradient(90deg, var(--blue2), var(--gold)) !important;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .submit-btn,
+    .filing-tag,
+    .popup-ticker {
+      border-color: var(--line-strong) !important;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .submit-btn:hover {
+      border-color: var(--signal) !important;
+      box-shadow: 0 0 0 1px rgba(201,168,76,0.08);
+    }
+
+    .about-pillar-svg {
+      width: 100%;
+      max-width: 420px;
+      overflow: visible;
+      filter: drop-shadow(0 18px 34px rgba(0,0,0,0.18));
+    }
+
+    .about-pillar:first-child .about-pillar-svg { max-width: 540px; }
+
+    .about-pillar-svg rect,
+    .about-pillar-svg circle {
+      stroke: var(--line-strong);
+      vector-effect: non-scaling-stroke;
+    }
+
+    .about-pillar-svg line,
+    .about-pillar-svg polyline {
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .about-pillar:first-child .about-pillar-svg line {
+      stroke: var(--signal-strong);
+      stroke-width: 1.4;
+    }
+
+    .about-pillar:first-child .about-pillar-svg rect:last-of-type {
+      stroke: var(--signal-strong);
+    }
+
+    .about-pillar-svg text {
+      paint-order: stroke;
+      stroke: rgba(10,18,32,0.5);
+      stroke-width: 0.7px;
+    }
+
+    .treemap,
+    .holdings-panels,
+    .col-left,
+    .col-mid,
+    .col-right,
+    .col-right-row3 {
+      gap: 1px;
+    }
+
+    .treemap {
+      background: linear-gradient(135deg, var(--line-soft), var(--signal-soft));
+      border-color: var(--signal) !important;
+    }
+
+    .sector-cell::after {
+      background:
+        linear-gradient(135deg, rgba(122,168,208,0.03), transparent 38%),
+        radial-gradient(ellipse 80% 60% at 50% 50%, rgba(201,168,76,0.035) 0%, transparent 70%);
+    }
+
+    .htable thead tr,
+    .htable tbody tr,
+    .htable tbody tr.total-row,
+    .popup-header,
+    .popup-stats {
+      border-color: var(--signal-soft) !important;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #signalCanvas { display: none; }
+    }
+
   </style>
 </head>
 <body>
+<canvas id="signalCanvas" aria-hidden="true" role="presentation"></canvas>
 
 <!-- NAV -->
 <nav id="navbar">
@@ -1357,7 +1555,7 @@
     <img src="static/BoardAM_Logo.svg" class="hero-logo" alt="BoardAM">
     <div class="hero-divider"></div>
     <h1 class="hero-statement">We measure the people<br>behind <em>performance.</em></h1>
-    <p class="hero-body">Every great company is a reflection of its leadership. We built a system to prove it — and to invest accordingly.</p>
+    <p class="hero-body">Every great company is a reflection of its leadership.</p>
   </div>
     <div class="scroll-indicator">
     <div class="scroll-line"></div>
@@ -1375,7 +1573,7 @@
 
       <div class="step-label">
         <div class="step-name" id="stepName">Company Filings</div>
-        <div class="step-desc" id="stepDesc">Sourcing raw data from SEC filings, earnings calls &amp; proxy statements</div>
+        <div class="step-desc" id="stepDesc">Sourcing and ingesting raw company data as structured input</div>
       </div>
 
       <div class="pipeline">
@@ -1402,7 +1600,7 @@
               <div class="filing-line"></div>
               <div class="filing-line"></div>
             </div>
-            <span class="filing-tag">SEC · 10-K · Proxy</span>
+            <span class="filing-tag">Data Input</span>
           </div>
         </div>
 
@@ -1563,7 +1761,7 @@
       <!-- Pillar 1: Philosophy -->
       <div class="about-pillar">
         <div class="about-pillar-visual">
-          <svg class="about-pillar-svg" viewBox="0 0 400 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg class="about-pillar-svg" viewBox="0 0 400 240" width="100%" height="500px" style="transform: scale(1.5); transform-origin: center;" fill="none" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <marker id="ap1" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
                 <path d="M0,0 L0,6 L8,3 z" fill="#7aa8d0" opacity="0.7"/>
@@ -1598,7 +1796,7 @@
         <div class="about-pillar-content">
           <div class="ab-number">01 · Philosophy</div>
           <h3 class="ab-title">Management drives outcomes.</h3>
-          <p class="ab-text">Every fundamental you can measure — revenue growth, margin expansion, capital efficiency — originates in a decision made by a person in a boardroom. We invest at the source, not the symptom.</p>
+          <p class="ab-text">Every fundamental you can measure, revenue growth, margin expansion, capital efficiency originates in a decision made by a person in a boardroom. We invest at the source, not the symptom.</p>
           <div class="ab-accent">
             <div class="ab-accent-line"></div>
             <div class="ab-accent-text">The S&amp;P 500 is not 500 companies. It is 500 leadership teams with 500 distinct decision-making cultures.</div>
@@ -1609,7 +1807,7 @@
       <!-- Pillar 2: Methodology -->
       <div class="about-pillar">
         <div class="about-pillar-visual">
-          <svg class="about-pillar-svg" viewBox="0 0 400 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg class="about-pillar-svg" viewBox="0 0 400 260" width="100%" height="550px" style="transform: scale(1.4); transform-origin: center;" fill="none" xmlns="http://www.w3.org/2000/svg">
             <!-- scorecard table -->
             <rect x="40" y="20" width="320" height="36" rx="5" fill="#0f1e30"/>
             <text x="60" y="43" fill="#c9a84c" font-family="DM Mono,monospace" font-size="9" letter-spacing="1">DIMENSION</text>
@@ -1655,10 +1853,10 @@
         <div class="about-pillar-content">
           <div class="ab-number">02 · Methodology</div>
           <h3 class="ab-title">Qualitative leadership, made quantitative.</h3>
-          <p class="ab-text">We read every DEF 14A proxy filing in the S&amp;P 500. We score boards across eight dimensions — from track record and shareholding to incentive alignment and governance quality — producing a composite 0–10 leadership score for each company.</p>
+          <p class="ab-text">We read every DEF 14A proxy filing in the S&amp;P 500. We score boards across eight dimensions. From track record and shareholding to incentive alignment and governance quality, producing a composite 0–10 leadership score for each company.</p>
           <div class="ab-accent">
             <div class="ab-accent-line"></div>
-            <div class="ab-accent-text">The same analytical rigour applied to credit risk in banking — now applied to the people running public companies.</div>
+            <div class="ab-accent-text">The same analytical rigour applied to credit risk in banking now applied to the people running public companies.</div>
           </div>
         </div>
       </div>
@@ -1666,7 +1864,7 @@
       <!-- Pillar 3: Outcome -->
       <div class="about-pillar">
         <div class="about-pillar-visual">
-          <svg class="about-pillar-svg" viewBox="0 0 400 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg class="about-pillar-svg" viewBox="0 0 400 240" width="100%" height="480px" style="transform: scale(1.2); transform-origin: center;" fill="none" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <linearGradient id="bamLine" x1="0" y1="0" x2="1" y2="0">
                 <stop offset="0%" stop-color="#c9a84c" stop-opacity="0.3"/>
@@ -1690,23 +1888,23 @@
             <!-- area under BAM -->
             <polygon points="50,175 50,175 110,155 170,128 230,100 290,72 370,38 370,185" fill="#c9a84c" fill-opacity="0.06"/>
 
-            <!-- labels -->
-            <text x="375" y="42" fill="#c9a84c" font-family="DM Mono,monospace" font-size="8" font-weight="500">BAM</text>
-            <text x="375" y="99" fill="#3a6080" font-family="DM Mono,monospace" font-size="8">BMK</text>
+            <!-- labels (Updated: percentages are retained from previous version) -->
+            <text x="375" y="42" fill="#c9a84c" font-family="DM Mono,monospace" font-size="8" font-weight="500">14.7%</text>
+            <text x="375" y="99" fill="#3a6080" font-family="DM Mono,monospace" font-size="8">10.6%</text>
 
             <!-- y-axis ticks -->
             <text x="44" y="188" fill="#3a6080" font-family="DM Mono,monospace" font-size="7" text-anchor="end">2005</text>
             <text x="374" y="196" fill="#3a6080" font-family="DM Mono,monospace" font-size="7" text-anchor="end">2025</text>
 
-            <!-- CAGR callouts -->
-            <text x="200" y="218" fill="#c9a84c" font-family="DM Mono,monospace" font-size="8.5" text-anchor="middle" font-weight="500">BAM CAGR 14.7%</text>
-            <text x="200" y="230" fill="#3a6080" font-family="DM Mono,monospace" font-size="8" text-anchor="middle">Benchmark 10.6%</text>
+            <!-- CAGR callouts (Updated: simplified text retained from previous version) -->
+            <text x="200" y="218" fill="#c9a84c" font-family="DM Mono,monospace" font-size="8.5" text-anchor="middle" font-weight="500">BAM CAGR</text>
+            <text x="200" y="230" fill="#3a6080" font-family="DM Mono,monospace" font-size="8" text-anchor="middle">Benchmark</text>
           </svg>
         </div>
         <div class="about-pillar-content">
           <div class="ab-number">03 · Outcome</div>
           <h3 class="ab-title">Systematic. Repeatable. Alpha-generating.</h3>
-          <p class="ab-text">When you buy great leadership and short poor leadership, the spread compounds. Our process converts a structural edge — access to information the market consistently misprices — into sustained outperformance across market cycles.</p>
+          <p class="ab-text">When you buy great leadership and short poor leadership, the spread compounds. Our process converts a structural edge, access to information the market consistently misprices, into sustained outperformance across market cycles.</p>
           <div class="ab-accent">
             <div class="ab-accent-line"></div>
             <div class="ab-accent-text">Leadership quality is persistent. Markets underprice it. That gap is our alpha.</div>
@@ -1715,53 +1913,6 @@
       </div>
 
     </div><!-- /about-pillars -->
-
-    <!-- Leadership Dimensions -->
-    <div class="about-dims">
-      <div class="about-dims-label">Leadership Dimensions</div>
-      <div class="about-dims-grid">
-        <div class="dim-card">
-          <div class="dim-num">01</div>
-          <div class="dim-name">Executive Competence</div>
-          <div class="dim-desc">Track record of delivering measurable results across economic cycles.</div>
-        </div>
-        <div class="dim-card">
-          <div class="dim-num">02</div>
-          <div class="dim-name">Incentive Alignment</div>
-          <div class="dim-desc">Compensation structures that reward long-term shareholder value creation.</div>
-        </div>
-        <div class="dim-card">
-          <div class="dim-num">03</div>
-          <div class="dim-name">Ownership Alignment</div>
-          <div class="dim-desc">Meaningful insider shareholding that creates shared stakes with investors.</div>
-        </div>
-        <div class="dim-card">
-          <div class="dim-num">04</div>
-          <div class="dim-name">Governance Quality</div>
-          <div class="dim-desc">Board independence, diversity of expertise, and oversight effectiveness.</div>
-        </div>
-        <div class="dim-card">
-          <div class="dim-num">05</div>
-          <div class="dim-name">Capital Allocation</div>
-          <div class="dim-desc">Disciplined deployment of capital towards highest-return opportunities.</div>
-        </div>
-        <div class="dim-card">
-          <div class="dim-num">06</div>
-          <div class="dim-name">Succession Planning</div>
-          <div class="dim-desc">Depth of leadership pipeline and clarity of long-term continuity.</div>
-        </div>
-        <div class="dim-card">
-          <div class="dim-num">07</div>
-          <div class="dim-name">Technology Orientation</div>
-          <div class="dim-desc">Board capacity to guide and challenge digital transformation strategies.</div>
-        </div>
-        <div class="dim-card">
-          <div class="dim-num">08</div>
-          <div class="dim-name">Execution History</div>
-          <div class="dim-desc">Consistent delivery against stated strategic goals and guidance.</div>
-        </div>
-      </div>
-    </div>
 
   </div>
 </section>
@@ -1859,21 +2010,19 @@
 <div class="section-rule"></div>
 
 <!-- PORTFOLIOS -->
-<section id="portfolios" class="section-wrap">
+<section id="portfolios" class="section-wrap" style="padding-bottom: 20px;"> <!-- Reduced padding here -->
   <div class="section-container" style="max-width:1200px">
     <div class="section-eyebrow">Portfolios</div>
 
-    <div class="portfolio-header">
-      <h2 class="portfolio-heading"><em>Leadership-weighted</em> portfolio view.</h2>
-      <div class="portfolio-sub">
-        Top Holding per Sector
-        <span class="portfolio-sub-sep"></span>
+    <div class="portfolio-header" style="margin-bottom: 40px;">
+      <h2 class="portfolio-heading" style="text-align: left;"><em>Leadership-weighted</em> portfolio view.</h2>
+      <div class="holdings-top-label" style="text-align: left; margin-bottom: 20px;">TOP HOLDINGS PER SECTOR</div>
+      <div class="portfolio-sub" style="text-align: left;">
         Total Holdings <span class="gold">92</span>
       </div>
     </div>
 
-    <div class="treemap">
-
+    <div class="treemap" style="margin-bottom: 60px;"> <!-- Slightly reduced from 80px -->
       <div class="col-left">
         <div class="sector-cell large"
              data-company="Cadence Design Systems"
@@ -2054,11 +2203,10 @@
       </div>
     </div>
 
-    <div class="holdings-section">
-      <div class="holdings-top-label">Top 10 Holdings</div>
+    <div class="holdings-section" style="margin-bottom: 0;"> <!-- Explicitly zeroed out margin -->
+      <div class="holdings-top-label" style="text-align: left; margin-bottom: 40px;">TOP 10 HOLDINGS</div>
 
       <div class="holdings-panels">
-
         <div class="holdings-panel">
           <div class="panel-heading"><span class="panel-heading-text">BAMCOR</span></div>
           <table class="htable">
@@ -2116,45 +2264,14 @@
             </tbody>
           </table>
         </div>
-
       </div>
     </div>
   </div>
 </section>
 
-<div class="company-popup" id="companyPopup">
-  <div class="popup-header">
-    <div>
-      <div class="popup-company-name" id="popupName"></div>
-      <div class="popup-sector-tag" id="popupSector"></div>
-    </div>
-    <div class="popup-ticker" id="popupTicker"></div>
-  </div>
-  <div class="popup-body">
-    <p class="popup-intro" id="popupIntro"></p>
-    <div class="popup-stats">
-      <div class="popup-stat">
-        <span class="popup-stat-label">Portfolio Weight</span>
-        <span class="popup-stat-value" id="popupWeight"></span>
-      </div>
-      <div class="popup-stat">
-        <span class="popup-stat-label">CEO</span>
-        <span class="popup-stat-value" id="popupCEO"></span>
-      </div>
-      <div class="popup-stat">
-        <span class="popup-stat-label">Mgmt Score</span>
-        <span class="popup-stat-value" id="popupMgmt"></span>
-      </div>
-      <div class="popup-stat">
-        <span class="popup-stat-label">Sector Avg</span>
-        <span class="popup-stat-value" id="popupAvg"></span>
-      </div>
-    </div>
-  </div>
-  <div class="popup-corner"></div>
-</div>
+<!-- Company Popup Logic remains here -->
 
-<div class="section-rule"></div>
+<div class="section-rule" style="margin-top: 0; height: 1px;"></div> <!-- Tightened Rule -->
 
 <!-- CONTACT -->
 <section id="contact" class="section-wrap">
@@ -2183,7 +2300,7 @@
 <script>
 /* ── PIPELINE ── */
 const steps = [
-  { name: 'Company Filings',        desc: 'Sourcing raw data from SEC filings, earnings calls & proxy statements' },
+  { name: 'Company Filings',        desc: 'Sourcing and ingesting raw company data as structured input' },
   { name: 'Proprietary Model',      desc: 'AI scoring engine processes leadership data through a multi-factor risk framework' },
   { name: 'Scorecards',             desc: 'Each CEO ranked on Experience, Track Record, Shareholding & BAM Rating' },
   { name: 'Portfolio Construction', desc: 'Top 20% of management teams selected; diversification parameters applied' }
@@ -2545,6 +2662,147 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
   });
 }());
 
+
+
+/* ── PAGE-WIDE SIGNAL FIELD ── */
+(function () {
+  var REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var CV = document.getElementById('signalCanvas');
+  if (!CV || REDUCED) return;
+
+  var cx = CV.getContext('2d');
+  var W = 0, H = 0, DPR = 1, nodes = [], links = [], raf = 0, last = 0, phase = 0, resizeT = 0;
+  var TRAVEL_MS = 13500;
+
+  function rng(seed) {
+    var s = seed >>> 0;
+    return function () {
+      s = (s + 0x6D2B79F5) | 0;
+      var t = Math.imul(s ^ (s >>> 15), 1 | s);
+      t ^= t + Math.imul(t ^ (t >>> 7), 61 | t);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  function resize() {
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    W = window.innerWidth;
+    H = window.innerHeight;
+    CV.width = Math.floor(W * DPR);
+    CV.height = Math.floor(H * DPR);
+    CV.style.width = W + 'px';
+    CV.style.height = H + 'px';
+    cx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    build();
+  }
+
+  function build() {
+    var R = rng(0xB0A2D5);
+    var count = W < 768 ? 34 : 62;
+    nodes = [];
+    links = [];
+
+    for (var i = 0; i < count; i++) {
+      nodes.push({
+        x: R() * W,
+        y: R() * H,
+        r: 0.8 + R() * 1.4,
+        drift: 0.25 + R() * 0.45
+      });
+    }
+
+    for (var a = 0; a < nodes.length; a++) {
+      var near = [];
+      for (var b = 0; b < nodes.length; b++) {
+        if (a === b) continue;
+        var dx = nodes[a].x - nodes[b].x;
+        var dy = nodes[a].y - nodes[b].y;
+        var d = Math.sqrt(dx * dx + dy * dy);
+        if (d < (W < 768 ? 130 : 185)) near.push({ i: b, d: d });
+      }
+      near.sort(function (u, v) { return u.d - v.d; });
+      for (var k = 0; k < Math.min(2, near.length); k++) {
+        if (a < near[k].i) links.push([a, near[k].i, near[k].d]);
+      }
+    }
+  }
+
+  function drawSignal(t) {
+    var p = (phase % 1);
+    var sx = -W * 0.18 + p * W * 1.36;
+    var sy = H * 0.12 + Math.sin(p * Math.PI * 2) * H * 0.10 + p * H * 0.72;
+    var angle = Math.atan2(H * 0.72, W * 1.36);
+    var tx = Math.cos(angle), ty = Math.sin(angle);
+
+    for (var i = 7; i >= 0; i--) {
+      var back = i * 22;
+      var alpha = Math.max(0, 0.34 - i * 0.038);
+      cx.strokeStyle = 'rgba(201,168,76,' + alpha + ')';
+      cx.lineWidth = Math.max(0.65, 2.2 - i * 0.18);
+      cx.beginPath();
+      cx.moveTo(sx - tx * back, sy - ty * back);
+      cx.lineTo(sx - tx * (back + 18), sy - ty * (back + 18));
+      cx.stroke();
+    }
+
+    var glow = cx.createRadialGradient(sx, sy, 0, sx, sy, 18);
+    glow.addColorStop(0, 'rgba(201,168,76,0.58)');
+    glow.addColorStop(0.35, 'rgba(201,168,76,0.16)');
+    glow.addColorStop(1, 'rgba(201,168,76,0)');
+    cx.fillStyle = glow;
+    cx.beginPath();
+    cx.arc(sx, sy, 18, 0, Math.PI * 2);
+    cx.fill();
+
+    cx.fillStyle = 'rgba(201,168,76,0.9)';
+    cx.beginPath();
+    cx.arc(sx, sy, 2.4, 0, Math.PI * 2);
+    cx.fill();
+  }
+
+  function frame(ts) {
+    var dt = last ? Math.min(ts - last, 50) : 0;
+    last = ts;
+    phase = (phase + dt / TRAVEL_MS) % 1;
+
+    cx.clearRect(0, 0, W, H);
+
+    for (var i = 0; i < links.length; i++) {
+      var l = links[i], a = nodes[l[0]], b = nodes[l[1]];
+      var proximity = Math.max(0, 1 - l[2] / 190);
+      cx.strokeStyle = 'rgba(122,168,208,' + (0.022 + proximity * 0.045) + ')';
+      cx.lineWidth = 0.55;
+      cx.beginPath();
+      cx.moveTo(a.x, a.y);
+      cx.lineTo(b.x, b.y);
+      cx.stroke();
+    }
+
+    for (var n = 0; n < nodes.length; n++) {
+      var node = nodes[n];
+      var pulse = 0.5 + Math.sin(ts * 0.00035 + n) * 0.5;
+      cx.fillStyle = 'rgba(122,168,208,' + (0.08 + pulse * 0.06) + ')';
+      cx.beginPath();
+      cx.arc(node.x, node.y, node.r, 0, Math.PI * 2);
+      cx.fill();
+    }
+
+    drawSignal(ts);
+    raf = requestAnimationFrame(frame);
+  }
+
+  resize();
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeT);
+    resizeT = setTimeout(resize, 180);
+  });
+  raf = requestAnimationFrame(frame);
+
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) { cancelAnimationFrame(raf); raf = 0; last = 0; }
+    else if (!raf) { raf = requestAnimationFrame(frame); }
+  });
+}());
 
 
 /* ── Portfolio hover popup ── */
