@@ -270,54 +270,55 @@
 
     .process-inner {
       width: 100%;
-      max-width: 900px;
-      background: var(--navy);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 28px 28px 22px;
+      max-width: 1140px;
+      background: transparent;
+      padding: 0 0 24px;
     }
 
     .process-header {
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin-bottom: 16px;
+      margin-bottom: 0;
     }
     .process-title {
       font-family: 'DM Mono', monospace;
-      font-size: 9px;
-      font-weight: 600;
-      letter-spacing: 0.22em;
+      font-size: 1.5rem;
+      font-weight: 500;
+      letter-spacing: 0.25em;
       text-transform: uppercase;
-      color: var(--blue);
+      color: var(--gold);
+      margin-bottom: 2rem;
+      text-align: center;
     }
-    .title-rule { width: 100%; height: 1px; background: var(--border); margin-bottom: 6px; margin-top: 16px; }
 
     .step-label {
       text-align: center;
-      margin-bottom: 18px;
-      min-height: 36px;
+      margin-top: 24px;
+      margin-bottom: 0;
+      min-height: 40px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 3px;
+      gap: 5px;
     }
-    .step-name { font-size: 15px; font-weight: 600; color: var(--bright); letter-spacing: 0.04em; transition: opacity 0.4s; }
+    .step-name { font-size: 16px; font-weight: 500; color: var(--bright); letter-spacing: 0.04em; transition: opacity 0.4s; }
     .step-desc { font-size: 11px; color: var(--dim); font-family: 'DM Mono', monospace; letter-spacing: 0.06em; transition: opacity 0.4s; }
 
     /* ── PIPELINE ── */
     .pipeline {
       display: grid;
-      grid-template-columns: 1fr 36px 1fr 36px 1fr 36px 1fr;
+      grid-template-columns: 1fr 48px 1fr 48px 1fr 48px 1fr;
       align-items: center;
       gap: 0;
-      margin-bottom: 20px;
+      margin-bottom: 0;
+      padding: 12px 0;
     }
 
     .arrow-col { display: flex; align-items: center; justify-content: center; }
     .arrow {
-      width: 28px; height: 2px;
+      width: 36px; height: 2px;
       background: var(--border2);
       position: relative;
       transition: background 0.4s;
@@ -336,22 +337,22 @@
     .stage {
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 9px;
-      padding: 18px 14px 16px;
+      border-radius: 11px;
+      padding: 26px 18px 22px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       cursor: pointer;
       transition: border-color 0.4s, box-shadow 0.4s, background 0.4s;
-      min-height: 200px;
+      min-height: 260px;
     }
     .stage.active {
       border-color: var(--blue2);
-      box-shadow: 0 0 24px rgba(122,168,208,0.12), inset 0 0 20px rgba(122,168,208,0.04);
+      box-shadow: 0 0 36px rgba(122,168,208,0.14), inset 0 0 24px rgba(122,168,208,0.05);
       background: #131f32;
     }
-    .stage-icon { width: 52px; height: 52px; opacity: 0.45; transition: opacity 0.4s; }
+    .stage-icon { width: 68px; height: 68px; opacity: 0.45; transition: opacity 0.4s; }
     .stage.active .stage-icon { opacity: 1; }
     .stage-title {
       font-family: 'DM Mono', monospace;
@@ -424,7 +425,7 @@
     .port-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
     .port-pct { margin-left: auto; color: var(--blue2); font-size: 8px; }
 
-    .progress { display: flex; justify-content: center; gap: 8px; margin-bottom: 10px; }
+    .progress { display: flex; justify-content: center; gap: 10px; margin-bottom: 0; margin-top: 4px; }
     .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border2); transition: background 0.3s, transform 0.3s; cursor: pointer; }
     .dot.active { background: var(--blue); transform: scale(1.25); }
 
@@ -814,7 +815,7 @@
       }
       .arrow.active::after { border-top-color: var(--blue); border-left-color: transparent; }
       .stage { min-height: auto; }
-      .process-inner { padding: 20px 16px 16px; }
+      .process-inner { padding: 0 0 16px; }
     }
 
     @media (max-width: 480px) {
@@ -823,7 +824,7 @@
       .hero-body { font-size: 0.88rem; line-height: 1.75; }
       .hero-logo-wrap { gap: 0.9rem; padding: 0 1rem; }
       .section-wrap { padding: 2.5rem 1.2rem; }
-      .process-inner { padding: 16px 12px 14px; }
+      .process-inner { padding: 0 0 14px; }
       .step-name { font-size: 13px; }
       .step-desc { font-size: 10px; }
     }
@@ -866,6 +867,9 @@
     .portfolio-header {
       margin-bottom: 1rem;
       text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     .portfolio-heading {
@@ -1164,8 +1168,8 @@
       text-transform: uppercase;
       color: var(--gold);
       opacity: 0.65;
-      padding: 1rem 0 0.55rem;
-      border-bottom: 1px solid rgba(201,168,76,0.18);
+      padding: 0.4rem 1.2rem;
+      border: 1px solid rgba(201,168,76,0.18);
     }
 
     .holdings-panels {
@@ -1341,8 +1345,7 @@
 
     body > section,
     body > footer,
-    body > .section-rule,
-    body > .company-popup {
+    body > .section-rule {
       position: relative;
       z-index: 1;
     }
@@ -1569,12 +1572,6 @@
       <div class="process-header">
         <div class="process-title">Investment Process</div>
       </div>
-      <div class="title-rule"></div>
-
-      <div class="step-label">
-        <div class="step-name" id="stepName">Company Filings</div>
-        <div class="step-desc" id="stepDesc">Sourcing and ingesting raw company data as structured input</div>
-      </div>
 
       <div class="pipeline">
 
@@ -1738,10 +1735,9 @@
         <div class="dot" onclick="goTo(2)"></div>
         <div class="dot" onclick="goTo(3)"></div>
       </div>
-      <div class="controls">
-        <button class="btn" onclick="prevStep()">← Prev</button>
-        <button class="btn active-btn" id="autoBtn" onclick="toggleAuto()">⏸ Auto</button>
-        <button class="btn" onclick="nextStep()">Next →</button>
+      <div class="step-label">
+        <div class="step-name" id="stepName">Company Filings</div>
+        <div class="step-desc" id="stepDesc">Sourcing and ingesting raw company data as structured input</div>
       </div>
       <div class="disclaimer">For illustration purposes only. Back test and not real life return.</div>
     </div>
@@ -1761,36 +1757,42 @@
       <!-- Pillar 1: Philosophy -->
       <div class="about-pillar">
         <div class="about-pillar-visual">
-          <svg class="about-pillar-svg" viewBox="0 0 400 240" width="100%" height="500px" style="transform: scale(1.5); transform-origin: center;" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg class="about-pillar-svg" viewBox="0 0 400 260" width="100%" height="420px" style="transform: scale(1.2); transform-origin: center;" fill="none" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <marker id="ap1" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
                 <path d="M0,0 L0,6 L8,3 z" fill="#7aa8d0" opacity="0.7"/>
               </marker>
             </defs>
-            <!-- nodes -->
-            <rect x="10" y="90" width="76" height="60" rx="6" fill="#111e2f" stroke="#1e3450"/>
-            <text x="48" y="116" fill="#c8dff0" font-family="DM Sans,sans-serif" font-size="9" text-anchor="middle" font-weight="500">MANAGEMENT</text>
-            <text x="48" y="130" fill="#7aa8d0" font-family="DM Sans,sans-serif" font-size="8" text-anchor="middle">DECISIONS</text>
 
-            <rect x="112" y="90" width="76" height="60" rx="6" fill="#111e2f" stroke="#1e3450"/>
-            <text x="150" y="116" fill="#c8dff0" font-family="DM Sans,sans-serif" font-size="9" text-anchor="middle" font-weight="500">PRODUCT</text>
-            <text x="150" y="130" fill="#7aa8d0" font-family="DM Sans,sans-serif" font-size="8" text-anchor="middle">STRATEGY</text>
+            <!-- Row 1 (left → right) -->
+            <rect x="20" y="40" width="140" height="58" rx="6" fill="#111e2f" stroke="#1e3450"/>
+            <text x="90" y="66" fill="#c8dff0" font-family="DM Sans,sans-serif" font-size="9" text-anchor="middle" font-weight="500">MANAGEMENT</text>
+            <text x="90" y="80" fill="#7aa8d0" font-family="DM Sans,sans-serif" font-size="8" text-anchor="middle">DECISIONS</text>
 
-            <rect x="214" y="90" width="76" height="60" rx="6" fill="#111e2f" stroke="#1e3450"/>
-            <text x="252" y="116" fill="#c8dff0" font-family="DM Sans,sans-serif" font-size="9" text-anchor="middle" font-weight="500">PROFITABILITY</text>
-            <text x="252" y="130" fill="#7aa8d0" font-family="DM Sans,sans-serif" font-size="8" text-anchor="middle">METRICS</text>
+            <!-- arrow right -->
+            <line x1="162" y1="69" x2="238" y2="69" stroke="#7aa8d0" stroke-opacity="0.7" stroke-width="1.5" marker-end="url(#ap1)"/>
 
-            <rect x="316" y="90" width="76" height="60" rx="6" fill="#111e2f" stroke="#c9a84c" stroke-opacity="0.5"/>
-            <text x="354" y="116" fill="#c8dff0" font-family="DM Sans,sans-serif" font-size="9" text-anchor="middle" font-weight="500">SHAREHOLDER</text>
-            <text x="354" y="130" fill="#c9a84c" font-family="DM Sans,sans-serif" font-size="8" text-anchor="middle">VALUE</text>
+            <rect x="240" y="40" width="140" height="58" rx="6" fill="#111e2f" stroke="#1e3450"/>
+            <text x="310" y="66" fill="#c8dff0" font-family="DM Sans,sans-serif" font-size="9" text-anchor="middle" font-weight="500">PRODUCT</text>
+            <text x="310" y="80" fill="#7aa8d0" font-family="DM Sans,sans-serif" font-size="8" text-anchor="middle">STRATEGY</text>
 
-            <!-- arrows -->
-            <line x1="86" y1="120" x2="110" y2="120" stroke="#7aa8d0" stroke-opacity="0.7" stroke-width="1.5" marker-end="url(#ap1)"/>
-            <line x1="188" y1="120" x2="212" y2="120" stroke="#7aa8d0" stroke-opacity="0.7" stroke-width="1.5" marker-end="url(#ap1)"/>
-            <line x1="290" y1="120" x2="314" y2="120" stroke="#7aa8d0" stroke-opacity="0.7" stroke-width="1.5" marker-end="url(#ap1)"/>
+            <!-- snake turn: arrow down the right side -->
+            <line x1="310" y1="98" x2="310" y2="152" stroke="#7aa8d0" stroke-opacity="0.7" stroke-width="1.5" marker-end="url(#ap1)"/>
+
+            <!-- Row 2 (right → left) -->
+            <rect x="240" y="154" width="140" height="58" rx="6" fill="#111e2f" stroke="#1e3450"/>
+            <text x="310" y="180" fill="#c8dff0" font-family="DM Sans,sans-serif" font-size="9" text-anchor="middle" font-weight="500">PROFITABILITY</text>
+            <text x="310" y="194" fill="#7aa8d0" font-family="DM Sans,sans-serif" font-size="8" text-anchor="middle">METRICS</text>
+
+            <!-- arrow left -->
+            <line x1="238" y1="183" x2="162" y2="183" stroke="#7aa8d0" stroke-opacity="0.7" stroke-width="1.5" marker-end="url(#ap1)"/>
+
+            <rect x="20" y="154" width="140" height="58" rx="6" fill="#111e2f" stroke="#c9a84c" stroke-opacity="0.5"/>
+            <text x="90" y="180" fill="#c8dff0" font-family="DM Sans,sans-serif" font-size="9" text-anchor="middle" font-weight="500">SHAREHOLDER</text>
+            <text x="90" y="194" fill="#c9a84c" font-family="DM Sans,sans-serif" font-size="8" text-anchor="middle">VALUE</text>
 
             <!-- label -->
-            <text x="200" y="200" fill="#3a6080" font-family="DM Mono,monospace" font-size="8" text-anchor="middle" letter-spacing="2">CAUSAL CHAIN · FIRST PRINCIPLES</text>
+            <text x="200" y="235" fill="#3a6080" font-family="DM Mono,monospace" font-size="8" text-anchor="middle" letter-spacing="2">CAUSAL CHAIN · FIRST PRINCIPLES</text>
           </svg>
         </div>
         <div class="about-pillar-content">
@@ -1853,7 +1855,7 @@
         <div class="about-pillar-content">
           <div class="ab-number">02 · Methodology</div>
           <h3 class="ab-title">Qualitative leadership, made quantitative.</h3>
-          <p class="ab-text">We read every DEF 14A proxy filing in the S&amp;P 500. We score boards across eight dimensions. From track record and shareholding to incentive alignment and governance quality, producing a composite 0–10 leadership score for each company.</p>
+          <p class="ab-text">We read every company filing in the S&amp;P 500. We score boards across eight dimensions. From track record and shareholding to incentive alignment and governance quality, producing a composite 0–10 leadership score for each company.</p>
           <div class="ab-accent">
             <div class="ab-accent-line"></div>
             <div class="ab-accent-text">The same analytical rigour applied to credit risk in banking now applied to the people running public companies.</div>
@@ -2014,10 +2016,10 @@
   <div class="section-container" style="max-width:1200px">
     <div class="section-eyebrow">Portfolios</div>
 
-    <div class="portfolio-header" style="margin-bottom: 40px;">
-      <h2 class="portfolio-heading" style="text-align: left;"><em>Leadership-weighted</em> portfolio view.</h2>
-      <div class="holdings-top-label" style="text-align: left; margin-bottom: 20px;">TOP HOLDINGS PER SECTOR</div>
-      <div class="portfolio-sub" style="text-align: left;">
+    <div class="portfolio-header" style="margin-bottom: 40px; text-align: center;">
+      <h2 class="portfolio-heading"><em>Leadership-weighted</em> portfolio view.</h2>
+      <div class="holdings-top-label" style="display: inline-block; margin-bottom: 12px;">TOP HOLDINGS PER SECTOR</div>
+      <div class="portfolio-sub">
         Total Holdings <span class="gold">92</span>
       </div>
     </div>
@@ -2202,76 +2204,10 @@
         </div>
       </div>
     </div>
-
-    <div class="holdings-section" style="margin-bottom: 0;"> <!-- Explicitly zeroed out margin -->
-      <div class="holdings-top-label" style="text-align: left; margin-bottom: 40px;">TOP 10 HOLDINGS</div>
-
-      <div class="holdings-panels">
-        <div class="holdings-panel">
-          <div class="panel-heading"><span class="panel-heading-text">BAMCOR</span></div>
-          <table class="htable">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>CEO</th>
-                <th>Sector</th>
-                <th class="r">Weight</th>
-                <th class="r">Score</th>
-                <th class="r">Avg</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td class="td-name">Alphabet Inc.</td><td class="td-ceo">Sundar Pichai</td><td class="td-sector-cell">Communication</td><td class="td-w r">10.4%</td><td class="td-score r score-hi">8.3</td><td class="td-score r">6.7</td></tr>
-              <tr><td class="td-name">Aptiv PLC</td><td class="td-ceo">Kevin P. Clark</td><td class="td-sector-cell">Consumer Disc.</td><td class="td-w r">8.6%</td><td class="td-score r">7.7</td><td class="td-score r">6.5</td></tr>
-              <tr><td class="td-name">Cadence Design Systems</td><td class="td-ceo">Anirudh Devgan</td><td class="td-sector-cell">Tech</td><td class="td-w r">3.2%</td><td class="td-score r">8.1</td><td class="td-score r">7.2</td></tr>
-              <tr><td class="td-name">Johnson &amp; Johnson</td><td class="td-ceo">Joaquin Duato</td><td class="td-sector-cell">Health Care</td><td class="td-w r">3.1%</td><td class="td-score r">7.9</td><td class="td-score r">6.7</td></tr>
-              <tr><td class="td-name">Adobe Inc.</td><td class="td-ceo">Shantanu Narayen</td><td class="td-sector-cell">Tech</td><td class="td-w r">2.8%</td><td class="td-score r">8.0</td><td class="td-score r">7.2</td></tr>
-              <tr><td class="td-name">NetApp, Inc.</td><td class="td-ceo">George Kurian</td><td class="td-sector-cell">Tech</td><td class="td-w r">2.7%</td><td class="td-score r">8.0</td><td class="td-score r">7.2</td></tr>
-              <tr><td class="td-name">ServiceNow, Inc.</td><td class="td-ceo">Bill McDermott</td><td class="td-sector-cell">Tech</td><td class="td-w r">2.4%</td><td class="td-score r">7.9</td><td class="td-score r">7.2</td></tr>
-              <tr><td class="td-name">Vertex Pharmaceuticals</td><td class="td-ceo">Reshma Kewalramani</td><td class="td-sector-cell">Health Care</td><td class="td-w r">2.3%</td><td class="td-score r">7.7</td><td class="td-score r">6.7</td></tr>
-              <tr><td class="td-name">PTC Inc.</td><td class="td-ceo">Neil Barua</td><td class="td-sector-cell">Tech</td><td class="td-w r">2.3%</td><td class="td-score r">7.9</td><td class="td-score r">7.2</td></tr>
-              <tr><td class="td-name">Analog Devices, Inc.</td><td class="td-ceo">Vincent Roche</td><td class="td-sector-cell">Tech</td><td class="td-w r">2.2%</td><td class="td-score r">7.8</td><td class="td-score r">7.2</td></tr>
-              <tr class="total-row"><td class="td-name">TOTAL</td><td></td><td></td><td class="td-w r">40.1%</td><td class="td-score r">7.9</td><td class="td-score r">7.0</td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="holdings-panel">
-          <div class="panel-heading"><span class="panel-heading-text">Merqube US Large Cap</span></div>
-          <table class="htable">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>CEO</th>
-                <th>Sector</th>
-                <th class="r">Weight</th>
-                <th class="r">Score</th>
-                <th class="r">Avg</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td class="td-name">NVIDIA Corp</td><td class="td-ceo">Jensen Huang</td><td class="td-sector-cell">Tech</td><td class="td-w r">7.6%</td><td class="td-score r">7.4</td><td class="td-score r">7.2</td></tr>
-              <tr><td class="td-name">Apple Inc</td><td class="td-ceo">Tim Cook</td><td class="td-sector-cell">Tech</td><td class="td-w r">6.6%</td><td class="td-score r">7.4</td><td class="td-score r">7.2</td></tr>
-              <tr><td class="td-name">Microsoft Corp</td><td class="td-ceo">Satya Nadella</td><td class="td-sector-cell">Tech</td><td class="td-w r">4.9%</td><td class="td-score r">7.4</td><td class="td-score r">7.2</td></tr>
-              <tr><td class="td-name">Amazon.com Inc</td><td class="td-ceo">Andy Jassy</td><td class="td-sector-cell">Consumer Disc.</td><td class="td-w r">3.6%</td><td class="td-score r">7.7</td><td class="td-score r">6.5</td></tr>
-              <tr><td class="td-name">Alphabet Inc Class A</td><td class="td-ceo">Sundar Pichai</td><td class="td-sector-cell">Communication</td><td class="td-w r">3.1%</td><td class="td-score r score-hi">8.3</td><td class="td-score r">6.7</td></tr>
-              <tr><td class="td-name">Broadcom Inc</td><td class="td-ceo">Hock E. Tan</td><td class="td-sector-cell">Tech</td><td class="td-w r">2.6%</td><td class="td-score r">7.3</td><td class="td-score r">7.2</td></tr>
-              <tr><td class="td-name">Alphabet Inc Class C</td><td class="td-ceo">Sundar Pichai</td><td class="td-sector-cell">Communication</td><td class="td-w r">2.4%</td><td class="td-score r score-hi">8.3</td><td class="td-score r">6.7</td></tr>
-              <tr><td class="td-name">Meta Platforms Inc</td><td class="td-ceo">Mark Zuckerberg</td><td class="td-sector-cell">Communication</td><td class="td-w r">2.2%</td><td class="td-score r">7.6</td><td class="td-score r">6.7</td></tr>
-              <tr><td class="td-name">Tesla Inc</td><td class="td-ceo">Elon Musk</td><td class="td-sector-cell">Consumer Disc.</td><td class="td-w r">1.9%</td><td class="td-score r">7.8</td><td class="td-score r">6.5</td></tr>
-              <tr><td class="td-name">Berkshire Hathaway B</td><td class="td-ceo">Greg Abel</td><td class="td-sector-cell">Financials</td><td class="td-w r">1.6%</td><td class="td-score r">6.5</td><td class="td-score r">6.4</td></tr>
-              <tr class="total-row"><td class="td-name">TOTAL</td><td></td><td></td><td class="td-w r">36.5%</td><td class="td-score r">7.6</td><td class="td-score r">6.8</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
   </div>
 </section>
 
 <!-- Company Popup Logic remains here -->
-
-<div class="section-rule" style="margin-top: 0; height: 1px;"></div> <!-- Tightened Rule -->
 
 <!-- CONTACT -->
 <section id="contact" class="section-wrap">
@@ -2292,6 +2228,38 @@
 </section>
 
 <!-- FOOTER -->
+<div class="company-popup" id="companyPopup">
+  <div class="popup-header">
+    <div>
+      <div class="popup-company-name" id="popupName"></div>
+      <div class="popup-sector-tag" id="popupSector"></div>
+    </div>
+    <span class="popup-ticker" id="popupTicker"></span>
+  </div>
+  <div class="popup-body">
+    <div class="popup-intro" id="popupIntro"></div>
+    <div class="popup-stats">
+      <div class="popup-stat">
+        <div class="popup-stat-label">Portfolio Weight</div>
+        <div class="popup-stat-value" id="popupWeight"></div>
+      </div>
+      <div class="popup-stat">
+        <div class="popup-stat-label">CEO</div>
+        <div class="popup-stat-value" id="popupCEO"></div>
+      </div>
+      <div class="popup-stat">
+        <div class="popup-stat-label">Mgmt Score</div>
+        <div class="popup-stat-value" id="popupMgmt"></div>
+      </div>
+      <div class="popup-stat">
+        <div class="popup-stat-label">Sector Avg</div>
+        <div class="popup-stat-value" id="popupAvg"></div>
+      </div>
+    </div>
+  </div>
+  <div class="popup-corner"></div>
+</div>
+
 <footer>
   <div class="footer-wordmark">Board<span>AM</span></div>
   <div class="footer-copy">© 2026 Board Assessment Management. All rights reserved.</div>
