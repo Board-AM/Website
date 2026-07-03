@@ -5,13 +5,17 @@
 }
 
 :root {
-  --bg-dark: #0a0a0f;
-  --text-primary: #ffffff;
-  --text-secondary: #b0b0c0;
-  --accent-blue: #4a9eff;
-  --accent-cyan: #00d4ff;
-  --card-bg: rgba(20, 20, 30, 0.8);
-  --card-border: rgba(74, 158, 255, 0.2);
+  --navy: #1F2A44;      /* was 0a1220 - now matches new Navy */
+  --card: #24304d;       /* slightly lighter navy for cards */
+  --border: #2c3a5c;
+  --border2: #3e4c6d;    /* Slate Blue from expanded palette */
+  --blue: #8fa8c9;        /* muted blue-grey, replaces bright blue accent */
+  --blue2: #6b7ea3;
+  --blue3: #4a5a7a;
+  --dim: #6B7280;         /* blue-grey muted text */
+  --text: #a9b3c4;
+  --bright: #E8DCC8;      /* Warm Beige as bright text/highlight */
+  --gold: #C6A75E;        /* Soft Gold, kept as accent */
 }
 
 html {
