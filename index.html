@@ -90,6 +90,22 @@
     }
     .nav-links a:hover { color: var(--blue); }
 
+    .nav-cta {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--navy) !important;
+      background: var(--gold);
+      padding: 0.5rem 1.1rem;
+      border: 1px solid var(--gold);
+      border-radius: 2px;
+      text-decoration: none;
+      transition: background 0.3s, color 0.3s;
+    }
+    .nav-cta:hover { background: transparent; color: var(--gold) !important; }
+
     .nav-hamburger {
       display: none;
       flex-direction: column;
@@ -1535,6 +1551,7 @@
     <li><a href="#team">Team</a></li>
     <li><a href="#portfolios">Portfolios</a></li>
     <li><a href="#contact">Contact</a></li>
+    <li><a href="https://external-dashboard-324024657987.europe-west1.run.app/" target="_blank" rel="noopener noreferrer" class="nav-cta">Dashboard</a></li>
   </ul>
   <button class="nav-hamburger" id="hamburger" aria-label="Menu">
     <span></span><span></span><span></span>
@@ -1547,6 +1564,7 @@
   <a href="#team" onclick="closeMobileNav()">Team</a>
   <a href="#portfolios" onclick="closeMobileNav()">Portfolios</a>
   <a href="#contact" onclick="closeMobileNav()">Contact</a>
+  <a href="https://external-dashboard-324024657987.europe-west1.run.app/" target="_blank" rel="noopener noreferrer" onclick="closeMobileNav()">Dashboard →</a>
 </div>
 
 <!-- HERO -->
