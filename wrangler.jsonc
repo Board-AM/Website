@@ -1,0 +1,30 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "boardam-site",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-11-01",
+
+  // The built site (npm run build → ./dist). Static requests are served without running the Worker.
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "none",
+    "run_worker_first": ["/api/*"]
+  },
+
+  // Contact form email. Locked to one inbox so the endpoint can never be used as an open relay.
+  // CONTACT_TO must be a verified destination address in Cloudflare Email Routing.
+  // CONTACT_FROM must be on a domain/subdomain with Email Routing enabled (see tasks/cloudflare-setup.md).
+  "send_email": [
+    { "name": "EMAIL", "destination_address": "info@boardam.com" }
+  ],
+  "vars": {
+    "CONTACT_TO": "info@boardam.com",
+    "CONTACT_FROM": "website@forms.boardam.com"
+  },
+
+  // Optional spam protection: `npx wrangler secret put TURNSTILE_SECRET`
+  // and set the site key in index.html (meta name="turnstile-sitekey").
+
+  "observability": { "enabled": true }
+}

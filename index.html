@@ -4,1627 +4,632 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Board Assessment Management</title>
+  <meta name="turnstile-sitekey" content="">
   <link rel="icon" type="image/svg+xml" href="./static/BoardAM_Icon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=Public+Sans:wght@400;600&display=swap" rel="stylesheet">
   <style>
+    /* ════════════════════════════════════════════
+       BoardAM — light alternatives: shared base.
+       Every colour, face and radius comes from the
+       direction tokens defined after this block.
+       ════════════════════════════════════════════ */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-
-    :root {
-      --navy:    #1F2A44;
-      --card:    #111e2f;
-      --border:  #0f1e30;
-      --border2: #1e3450;
-      --blue:    #7aa8d0;
-      --blue2:   #4a7a9a;
-      --blue3:   #2e5070;
-      --dim:     #3a6080;
-      --text:    #6a8aa8;
-      --bright:  #E8DCC8;
-      --gold:    #C6A75E;
-    }
-
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
     body {
-      background: var(--navy);
-      font-family: 'DM Sans', sans-serif;
-      color: var(--bright);
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-body);
+      font-size: 1rem;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      font-feature-settings: "kern" 1;
       overflow-x: hidden;
-      min-height: 100vh;
     }
-
-    body::after {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-      opacity: 0.3;
-      pointer-events: none;
-      z-index: 9999;
-    }
+    img, svg { display: block; max-width: 100%; }
+    a { color: inherit; }
+    ::selection { background: var(--selection); color: var(--ink); }
+    :focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+    .num, .sector-pct, .sc-val, .port-pct, .product-facts dd, .holding-meta b, .popup-stat-value { font-variant-numeric: tabular-nums; }
 
     /* ── NAV ── */
     nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 500;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 2rem;
-      height: 60px;
-      border-bottom: 1px solid var(--border);
-      background: rgba(10,18,32,0.92);
-      backdrop-filter: blur(20px);
+      position: fixed; inset: 0 0 auto 0; z-index: 500;
+      height: var(--nav-h);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 clamp(1.25rem, 4vw, 3rem);
+      background: var(--nav-bg);
+      border-bottom: 1px solid var(--nav-rule);
+      color: var(--nav-ink);
     }
-
-    .nav-logo {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      text-decoration: none;
-    }
-    .nav-logo img { height: 32px; width: auto; }
-    .nav-logo-text {
-      font-family: 'DM Sans', sans-serif;
-      font-size: 18px;
-      font-weight: 400;
-      letter-spacing: 0.08em;
-      color: var(--gold);
-    }
-    .nav-logo-text span { color: var(--bright); }
-    .nav-links {
-      display: flex;
-      gap: 2rem;
-      list-style: none;
-    }
-    .nav-links a {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.85rem;
-      font-weight: 400;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--gold);
-      text-decoration: none;
-      transition: color 0.3s;
-    }
-    .nav-links a:hover { color: var(--blue); }
-
+    .nav-logo { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; }
+    .nav-logo img { width: 28px; height: 28px; }
+    .nav-logo-text { font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; letter-spacing: -0.01em; }
+    .nav-logo-text span { color: var(--nav-accent); }
+    .nav-links { display: flex; align-items: center; gap: clamp(1.25rem, 2.5vw, 2.25rem); list-style: none; }
+    .nav-links a { font-size: 0.9rem; text-decoration: none; color: var(--nav-ink-2); transition: color 0.2s; }
+    .nav-links a:hover { color: var(--nav-ink); }
     .nav-cta {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.8rem;
-      font-weight: 400;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--navy) !important;
-      background: var(--gold);
-      padding: 0.5rem 1.1rem;
-      border: 1px solid var(--gold);
-      border-radius: 2px;
-      text-decoration: none;
-      transition: background 0.3s, color 0.3s;
+      color: var(--nav-ink) !important;
+      border: 1px solid var(--nav-cta-rule);
+      border-radius: var(--radius-sm);
+      padding: 0.45rem 0.9rem;
     }
-    .nav-cta:hover { background: transparent; color: var(--gold) !important; }
-
-    .nav-hamburger {
-      display: none;
-      flex-direction: column;
-      gap: 5px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 4px;
-    }
-    .nav-hamburger span {
-      display: block;
-      width: 22px;
-      height: 1.5px;
-      background: var(--dim);
-      transition: background 0.3s;
-    }
-    .nav-hamburger:hover span { background: var(--blue); }
-
+    .nav-cta:hover { border-color: var(--nav-ink); }
+    .nav-hamburger { display: none; background: none; border: 0; cursor: pointer; padding: 0.5rem; flex-direction: column; gap: 5px; }
+    .nav-hamburger span { display: block; width: 22px; height: 1.5px; background: var(--nav-ink); }
     .nav-mobile {
       display: none;
-      position: fixed;
-      top: 60px; left: 0; right: 0;
-      background: rgba(10,18,32,0.98);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border);
-      padding: 1.5rem 2rem;
-      z-index: 499;
+      position: fixed; top: var(--nav-h); left: 0; right: 0; z-index: 499;
       flex-direction: column;
-      gap: 1.2rem;
+      background: var(--surface);
+      border-bottom: 1px solid var(--rule);
+      padding: 0.5rem clamp(1.25rem, 4vw, 3rem) 1.25rem;
     }
     .nav-mobile.open { display: flex; }
-    .nav-mobile a {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.75rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--text);
-      text-decoration: none;
-      transition: color 0.3s;
-    }
-    .nav-mobile a:hover { color: var(--blue); }
+    .nav-mobile a { padding: 0.85rem 0; border-bottom: 1px solid var(--rule); text-decoration: none; color: var(--ink); font-size: 1rem; }
+    .nav-mobile a:last-child { border-bottom: 0; color: var(--accent-text); }
 
-    /* ── HERO ── */
-    #hero {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      overflow: hidden;
-      padding-top: 60px;
+    /* ── LAYOUT ── */
+    .section-wrap { padding: var(--section-y) clamp(1.25rem, 4vw, 3rem); }
+    .section-container { max-width: var(--container); margin: 0 auto; }
+    .section-rule { max-width: var(--container); margin: 0 auto; height: 1px; background: var(--rule); }
+    .section-title, .process-title {
+      font-family: var(--font-display);
+      font-weight: var(--title-weight);
+      font-size: var(--title-size);
+      line-height: 1.1;
+      letter-spacing: var(--title-tracking);
+      color: var(--title-ink);
+      margin-bottom: clamp(2rem, 4vw, 3rem);
     }
 
-    .hero-grid {
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(122,168,208,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(122,168,208,0.04) 1px, transparent 1px);
-      background-size: 70px 70px;
-      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 100%);
-      animation: gridDrift 24s linear infinite;
-    }
-    @keyframes gridDrift {
-      0%   { transform: translateY(0); }
-      100% { transform: translateY(70px); }
-    }
-
-    .hero-radial {
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse 60% 70% at 50% 55%, rgba(122,168,208,0.06) 0%, transparent 70%);
-    }
-
-    .hero-logo-wrap {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1.1rem;
-      animation: heroFadeUp 1s ease both;
-      max-width: 760px;
-      padding: 0 2rem;
-      gap: 1.4rem;
-    }
-    @keyframes heroFadeUp {
-      from { opacity: 0; transform: translateY(28px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .hero-logo { width: clamp(280px, 35vw, 420px); height: auto; filter: brightness(0) invert(1); opacity: 0.82; }
-    
-    .hero-divider {
-      width: clamp(60px, 15%, 120px);
-      height: 1px;
-      background: linear-gradient(to right, transparent, var(--border2), transparent);
-      margin: 0.2rem auto;
-    }
-
-    /* ── Hero statement ── */
-    .hero-tag {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.58rem;
-      letter-spacing: 0.38em;
-      text-transform: uppercase;
-      color: var(--blue3);
-      animation: heroFadeUp 1s 0.45s ease both;
-    }
-
-    .hero-statement {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2.8rem, 6.5vw, 5rem);
-      font-weight: 300;
-      line-height: 1.12;
-      color: var(--bright);
-      text-align: center;
-      letter-spacing: -0.02em;
-      animation: heroFadeUp 1s 0s ease both;
-    }
-
-    .hero-statement em {
-      font-style: italic;
-      color: var(--gold);
-    }
-
-    .hero-body {
-      font-size: 1.05rem; 
-      line-height: 1.8;
-      color: var(--bright);
-      font-weight: 400; 
-      text-align: center;
-      max-width: 560px;
-      animation: heroFadeUp 1s 0.2s ease both;
-    }
-
-    .scroll-indicator {
-      position: absolute;
-      bottom: 2rem;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      z-index: 1;
-      animation: heroFadeUp 1s 0.6s ease both;
-    }
-    .scroll-indicator span {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.58rem;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      color: var(--border2);
-    }
-    .scroll-line {
-      width: 1px;
-      height: 36px;
-      background: linear-gradient(to bottom, var(--border2), transparent);
-      animation: scrollPulse 2s ease-in-out infinite;
-    }
-    @keyframes scrollPulse {
-      0%, 100% { opacity: 0.4; }
-      50%       { opacity: 1; }
-    }
-
-    /* ── PROCESS SECTION ── */
-    #process { position: relative; }
-
-    .process-sticky {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 60px 20px;
-    }
-
-    .process-inner {
-      width: 100%;
-      max-width: 1140px;
-      background: transparent;
-      padding: 0 0 24px;
-    }
-
-    .process-header {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-bottom: 0;
-    }
-    .process-title {
-      font-family: 'DM Mono', monospace;
-      font-size: 1.5rem;
-      font-weight: 500;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 2rem;
-      text-align: center;
-    }
-
-    .step-label {
-      text-align: center;
-      margin-top: 24px;
-      margin-bottom: 0;
-      min-height: 40px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-    }
-    .step-name { font-size: 16px; font-weight: 500; color: var(--bright); letter-spacing: 0.04em; transition: opacity 0.4s; }
-    .step-desc { font-size: 11px; color: var(--dim); font-family: 'DM Mono', monospace; letter-spacing: 0.06em; transition: opacity 0.4s; }
-
-    /* ── PIPELINE ── */
-    .pipeline {
-      display: grid;
-      grid-template-columns: 1fr 48px 1fr 48px 1fr 48px 1fr;
-      align-items: center;
-      gap: 0;
-      margin-bottom: 0;
-      padding: 12px 0;
-    }
-
+    /* ── PROCESS ── */
+    #process { padding: var(--section-y) clamp(1.25rem, 4vw, 3rem); }
+    .process-inner { max-width: var(--container); margin: 0 auto; }
+    .pipeline { display: grid; grid-template-columns: 1fr 40px 1fr 40px 1fr 40px 1fr; align-items: stretch; }
     .arrow-col { display: flex; align-items: center; justify-content: center; }
-    .arrow {
-      width: 36px; height: 2px;
-      background: var(--border2);
-      position: relative;
-      transition: background 0.4s;
-    }
+    .arrow { position: relative; width: 26px; height: 1px; background: var(--rule-strong); transition: background 0.3s; }
     .arrow::after {
-      content: '';
-      position: absolute;
-      right: -1px; top: -4px;
-      border: 5px solid transparent;
-      border-left: 7px solid var(--border2);
-      transition: border-left-color 0.4s;
+      content: ''; position: absolute; right: 0; top: -3px; width: 6px; height: 6px;
+      border-top: 1px solid var(--rule-strong); border-right: 1px solid var(--rule-strong);
+      transform: rotate(45deg); transition: border-color 0.3s;
     }
-    .arrow.active { background: var(--blue); }
-    .arrow.active::after { border-left-color: var(--blue); }
-
+    .arrow.active { background: var(--accent); }
+    .arrow.active::after { border-color: var(--accent); }
     .stage {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 11px;
-      padding: 26px 18px 22px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 12px;
+      display: flex; flex-direction: column; align-items: center; gap: 1rem;
+      min-height: 330px;
+      padding: 1.75rem 1.1rem 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: var(--radius);
       cursor: pointer;
-      transition: border-color 0.4s, box-shadow 0.4s, background 0.4s;
-      min-height: 260px;
+      transition: border-color 0.3s, background 0.3s;
     }
-    .stage.active {
-      border-color: var(--blue2);
-      box-shadow: 0 0 36px rgba(122,168,208,0.14), inset 0 0 24px rgba(122,168,208,0.05);
-      background: #131f32;
-    }
-    .stage-icon { width: 68px; height: 68px; opacity: 0.45; transition: opacity 0.4s; }
+    .stage:hover { border-color: var(--rule-strong); }
+    .stage.active { border-color: var(--stage-active); background: var(--stage-active-bg); }
+    .stage-icon { width: 60px; height: 60px; opacity: 0.55; transition: opacity 0.3s; }
     .stage.active .stage-icon { opacity: 1; }
     .stage-title {
-      font-family: 'DM Mono', monospace;
-      font-size: 8.5px;
-      font-weight: 600;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--blue3);
+      min-height: 2.6em;
+      display: flex; align-items: center; justify-content: center;
       text-align: center;
-      transition: color 0.4s;
-    }
-    .stage.active .stage-title { color: var(--blue); }
-    .stage-content {
-      width: 100%;
-      opacity: 0;
-      transform: translateY(6px);
-      transition: opacity 0.5s 0.2s, transform 0.5s 0.2s;
-    }
-    .stage.active .stage-content { opacity: 1; transform: translateY(0); }
-
-    .filing-lines { display: flex; flex-direction: column; gap: 5px; }
-    .filing-line { height: 5px; border-radius: 2px; background: var(--border2); animation: none; }
-    .stage.active .filing-line { animation: fillLine 0.4s ease forwards; }
-    .filing-line:nth-child(1) { width: 90%; animation-delay: 0.1s; }
-    .filing-line:nth-child(2) { width: 75%; animation-delay: 0.2s; }
-    .filing-line:nth-child(3) { width: 85%; animation-delay: 0.3s; }
-    .filing-line:nth-child(4) { width: 60%; animation-delay: 0.4s; }
-    .filing-line:nth-child(5) { width: 80%; animation-delay: 0.5s; }
-    .filing-line:nth-child(6) { width: 55%; animation-delay: 0.6s; }
-    @keyframes fillLine { from { background: var(--border2); } to { background: var(--blue2); } }
-    .filing-tag {
-      display: inline-block;
-      font-family: 'DM Mono', monospace;
-      font-size: 8px;
-      color: var(--blue3);
-      letter-spacing: 0.08em;
-      border: 1px solid var(--border2);
-      border-radius: 3px;
-      padding: 2px 6px;
-      margin-top: 4px;
-    }
-    .stage.active .filing-tag { color: var(--blue); border-color: var(--blue2); }
-
-    .model-nodes { position: relative; width: 80px; height: 80px; margin: 0 auto; }
-    .model-nodes svg { width: 100%; height: 100%; }
-    .stage.active .model-nodes svg { animation: spinSlow 4s linear infinite; }
-    @keyframes spinSlow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-    .model-badge { text-align: center; font-family: 'DM Mono', monospace; font-size: 8px; color: var(--blue3); letter-spacing: 0.06em; line-height: 1.5; }
-    .stage.active .model-badge { color: var(--blue2); }
-
-    .scorecard { background: #0c1828; border: 1px solid var(--border2); border-radius: 5px; overflow: hidden; width: 100%; }
-    .scorecard-header { background: var(--blue2); padding: 4px 8px; display: flex; justify-content: space-between; align-items: center; }
-    .sc-name { font-family: 'DM Mono', monospace; font-size: 7.5px; font-weight: 600; letter-spacing: 0.06em; color: #fff; }
-    .sc-sector { font-family: 'DM Mono', monospace; font-size: 7px; color: rgba(255,255,255,0.7); letter-spacing: 0.08em; }
-    .scorecard-body { padding: 6px 8px; }
-    .sc-row { display: flex; justify-content: space-between; align-items: center; padding: 2.5px 0; border-bottom: 1px solid rgba(122,168,208,0.08); }
-    .sc-row:last-child { border-bottom: none; }
-    .sc-metric { font-family: 'DM Mono', monospace; font-size: 7.5px; color: var(--dim); letter-spacing: 0.04em; text-transform: uppercase; }
-    .sc-val { font-family: 'DM Mono', monospace; font-size: 8.5px; font-weight: 600; color: var(--blue); min-width: 22px; text-align: right; transition: color 0.3s; }
-    .sc-bar-wrap { width: 40px; height: 3px; background: var(--border); border-radius: 2px; margin-left: 6px; overflow: hidden; }
-    .sc-bar { height: 100%; border-radius: 2px; background: var(--blue2); width: 0; transition: width 0.8s ease; }
-    .stage.active .sc-bar { width: var(--w); }
-
-    .pie-wrap { width: 80px; height: 80px; margin: 0 auto; position: relative; }
-    .pie-wrap svg { width: 100%; height: 100%; }
-    .pie-seg { transition: stroke-dasharray 0.8s ease, opacity 0.5s; opacity: 0; }
-    .stage.active .pie-seg { opacity: 1; }
-    .port-legend { display: flex; flex-direction: column; gap: 3px; width: 100%; }
-    .port-row { display: flex; align-items: center; gap: 5px; font-family: 'DM Mono', monospace; font-size: 7.5px; color: var(--dim); letter-spacing: 0.04em; }
-    .port-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-    .port-pct { margin-left: auto; color: var(--blue2); font-size: 8px; }
-
-    .progress { display: flex; justify-content: center; gap: 10px; margin-bottom: 0; margin-top: 4px; }
-    .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border2); transition: background 0.3s, transform 0.3s; cursor: pointer; }
-    .dot.active { background: var(--blue); transform: scale(1.25); }
-
-    .process-scroll-hint { text-align: center; font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--border2); margin-bottom: 8px; }
-    .disclaimer { font-size: 9px; color: #2a4a68; font-style: italic; text-align: center; }
-
-    /* ── COMMON SECTIONS ── */
-    .section-wrap { padding: 3.5rem 2rem; }
-    .section-container { max-width: 900px; margin: 0 auto; }
-    .section-eyebrow {
-      font-family: 'DM Mono', monospace;
-      font-size: 1.5rem;
-      font-weight: 500; 
-      letter-spacing: 0.25em; 
-      text-transform: uppercase;
-      color: var(--gold); 
-      margin-bottom: 1.5rem; 
-      text-align: center; 
-    }
-    .section-rule { width: 100%; height: 1px; background: linear-gradient(to right, transparent, var(--border), transparent); }
-
-    /* ── ABOUT ── */
-    .about-manifesto {
-      text-align: center;
-      padding: 3.5rem 0 4rem;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 0;
-    }
-    .about-manifesto-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.7rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 1.4rem;
-    }
-    .about-manifesto-heading {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2rem, 4vw, 3.2rem);
-      font-weight: 300;
-      color: var(--bright);
-      line-height: 1.25;
-      letter-spacing: 0.01em;
-      margin: 0 auto 1.5rem;
-      max-width: 640px;
-    }
-    .about-manifesto-sub {
-      font-size: 0.93rem;
-      color: var(--text);
-      line-height: 1.85;
-      max-width: 560px;
-      margin: 0 auto;
-      font-weight: 300;
-    }
-
-    /* pillars */
-    .about-pillars { margin: 0; }
-    .about-pillar {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      min-height: 440px;
-      border-top: 1px solid var(--border);
-      opacity: 0;
-      transform: translateY(36px);
-      transition: opacity 0.75s ease, transform 0.75s ease;
-    }
-    .about-pillar.visible { opacity: 1; transform: translateY(0); }
-    .about-pillar:nth-child(even) { direction: rtl; }
-    .about-pillar:nth-child(even) > * { direction: ltr; }
-
-    .about-pillar-visual {
-      background: var(--card);
-      border-right: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2.5rem;
-      min-height: 380px;
-    }
-    .about-pillar:nth-child(even) .about-pillar-visual { border-right: none; border-left: 1px solid var(--border); }
-    .about-pillar:first-child .about-pillar-svg {
-      max-width: 520px;
-    }
-
-    .about-pillar-content {
-      padding: 3rem 3.5rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 1rem;
-    }
-    .ab-number {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.68rem;
-      letter-spacing: 0.2em;
-      color: var(--gold);
-      text-transform: uppercase;
-    }
-    .ab-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(1.5rem, 2.5vw, 2.1rem);
-      font-weight: 300;
-      color: var(--bright);
-      line-height: 1.2;
-    }
-    .ab-text {
-      font-size: 0.91rem;
-      line-height: 1.85;
-      color: var(--text);
-      font-weight: 300;
-      max-width: 380px;
-    }
-    .ab-accent {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.9rem;
-      margin-top: 0.5rem;
-    }
-    .ab-accent-line {
-      width: 2px;
-      min-height: 3rem;
-      background: var(--gold);
-      flex-shrink: 0;
-      margin-top: 3px;
-      opacity: 0.7;
-    }
-    .ab-accent-text {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.05rem;
-      font-weight: 400;
-      color: var(--blue);
-      line-height: 1.55;
-      font-style: italic;
-    }
-
-    /* dimensions grid */
-    .about-dims {
-      border-top: 1px solid var(--border);
-      padding: 3.5rem 0 2rem;
-    }
-    .about-dims-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.7rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 2rem;
-    }
-    .about-dims-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      overflow: hidden;
-    }
-    .dim-card {
-      background: var(--card);
-      padding: 1.6rem 1.4rem;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.6s ease, transform 0.6s ease;
-    }
-    .dim-card.visible { opacity: 1; transform: translateY(0); }
-    .dim-card:nth-child(2) { transition-delay: 0.07s; }
-    .dim-card:nth-child(3) { transition-delay: 0.14s; }
-    .dim-card:nth-child(4) { transition-delay: 0.21s; }
-    .dim-card:nth-child(5) { transition-delay: 0.28s; }
-    .dim-card:nth-child(6) { transition-delay: 0.35s; }
-    .dim-card:nth-child(7) { transition-delay: 0.42s; }
-    .dim-card:nth-child(8) { transition-delay: 0.49s; }
-    .dim-num {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.65rem;
-      letter-spacing: 0.15em;
-      color: var(--gold);
-      margin-bottom: 0.5rem;
-      opacity: 0.8;
-    }
-    .dim-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.05rem;
-      font-weight: 600;
-      color: var(--bright);
-      margin-bottom: 0.45rem;
-      line-height: 1.2;
-    }
-    .dim-desc {
-      font-size: 0.8rem;
-      color: var(--text);
-      line-height: 1.65;
-      font-weight: 300;
-    }
-
-    /* closing quote */
-    .about-closing {
-      border-top: 1px solid var(--border);
-      padding: 4rem 0 2rem;
-      text-align: center;
-    }
-    .about-closing-quote {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(1.3rem, 2.5vw, 1.9rem);
-      font-weight: 300;
-      color: var(--bright);
-      line-height: 1.4;
-      max-width: 640px;
-      margin: 0 auto 1.2rem;
-      font-style: italic;
-    }
-    .about-closing-sub {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.7rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--gold);
-      opacity: 0.7;
-    }
-
-    /* about responsive */
-    @media (max-width: 768px) {
-      .about-pillar { grid-template-columns: 1fr; direction: ltr; min-height: auto; }
-      .about-pillar:nth-child(even) { direction: ltr; }
-      .about-pillar-visual { border-right: none !important; border-left: none !important; border-bottom: 1px solid var(--border); min-height: 240px; }
-      .about-pillar-content { padding: 2rem 1.5rem; }
-      .about-dims-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-
-    /* ── TEAM ── */
-    .team-leader {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      border: 1px solid rgba(201,168,76,0.2);
-      margin-bottom: 2px;
-      opacity: 0;
-      transform: translateY(32px);
-      transition: opacity 0.7s ease, transform 0.7s ease, border-color 0.3s;
-    }
-    .team-leader.visible { opacity: 1; transform: translateY(0); }
-    .team-leader:hover { border-color: rgba(201,168,76,0.45); }
-
-    .card-visual {
-      position: relative;
-      background: #0d1428;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      min-height: 280px;
-    }
-    .card-visual svg { width: 100%; height: 100%; min-height: 280px; }
-
-    .card-content {
-      padding: 2.5rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 0.75rem;
-      border-left: 1px solid rgba(201,168,76,0.2);
-    }
-    .card-number { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.3em; color: var(--gold); opacity: 0.6; }
-    .card-name { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 300; line-height: 1.1; color: #E8DCC8; }
-    .card-role { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); }
-    .card-credentials { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.12em; color: #8a8578; font-style: italic; }
-    .card-divider { width: 40px; height: 1px; background: var(--gold); opacity: 0.4; margin: 0.3rem 0; }
-    .card-bio { font-size: 0.88rem; line-height: 1.85; color: #8a8578; }
-    .card-linkedin {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.6rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--blue3);
-      text-decoration: none;
-      margin-top: 0.3rem;
+      font-family: var(--font-display);
+      font-size: 1rem; font-weight: 600; line-height: 1.3;
+      color: var(--ink-3);
       transition: color 0.3s;
     }
-    .card-linkedin:hover { color: var(--blue); }
-    .card-linkedin svg { width: 13px; height: 13px; }
+    .stage.active .stage-title { color: var(--ink); }
+    .stage-content { width: 100%; opacity: 0; transform: translateY(6px); transition: opacity 0.45s 0.15s, transform 0.45s 0.15s; }
+    .stage.active .stage-content { opacity: 1; transform: none; }
+    .filing-lines { display: flex; flex-direction: column; gap: 6px; }
+    .filing-line { height: 5px; border-radius: 2px; background: var(--rule); }
+    .filing-line:nth-child(1) { width: 90%; } .filing-line:nth-child(2) { width: 75%; } .filing-line:nth-child(3) { width: 85%; }
+    .filing-line:nth-child(4) { width: 60%; } .filing-line:nth-child(5) { width: 80%; } .filing-line:nth-child(6) { width: 55%; }
+    .stage.active .filing-line { animation: fillLine 0.4s ease forwards; }
+    .filing-line:nth-child(2) { animation-delay: 0.1s; } .filing-line:nth-child(3) { animation-delay: 0.2s; }
+    .filing-line:nth-child(4) { animation-delay: 0.3s; } .filing-line:nth-child(5) { animation-delay: 0.4s; } .filing-line:nth-child(6) { animation-delay: 0.5s; }
+    @keyframes fillLine { to { background: var(--chart-2); } }
+    .filing-tag, .model-badge { display: block; text-align: center; margin-top: 0.75rem; font-size: 0.78rem; line-height: 1.5; color: var(--ink-3); }
+    .stage.active .filing-tag, .stage.active .model-badge { color: var(--ink-2); }
+    .model-nodes { width: 76px; height: 76px; margin: 0 auto; }
+    .model-nodes svg { width: 100%; height: 100%; }
+    .stage.active .model-nodes svg { animation: spinSlow 6s linear infinite; }
+    @keyframes spinSlow { to { transform: rotate(360deg); } }
+    .scorecard { width: 100%; border: 1px solid var(--rule); border-radius: var(--radius-sm); overflow: hidden; background: var(--surface); }
+    .scorecard-header { display: flex; justify-content: space-between; align-items: center; padding: 0.45rem 0.65rem; background: var(--brand); color: var(--on-brand); }
+    .sc-name { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.04em; }
+    .sc-sector { font-size: 0.72rem; opacity: 0.85; }
+    .scorecard-body { padding: 0.35rem 0.65rem; }
+    .sc-row { display: flex; align-items: center; gap: 0.5rem; padding: 0.32rem 0; border-bottom: 1px solid var(--rule); }
+    .sc-row:last-child { border-bottom: 0; }
+    .sc-metric { flex: 1; font-size: 0.72rem; color: var(--ink-2); }
+    .sc-bar-wrap { width: 40px; height: 3px; border-radius: 2px; background: var(--rule); overflow: hidden; }
+    .sc-bar { width: 0; height: 100%; background: var(--chart-1); transition: width 0.8s ease; }
+    .stage.active .sc-bar { width: var(--w); }
+    .sc-val { min-width: 2.2em; text-align: right; font-size: 0.75rem; font-weight: 600; color: var(--ink); }
+    .pie-wrap { width: 92px; height: 92px; margin: 0.25rem auto 0.6rem; }
+    .pie-wrap svg { width: 100%; height: 100%; }
+    .pie-wrap.pie-in svg { animation: pieIn 1s cubic-bezier(0.16, 1, 0.3, 1); }
+    @keyframes pieIn { from { transform: rotate(-70deg) scale(0.86); opacity: 0.3; } to { transform: none; opacity: 1; } }
+    .port-legend { display: flex; flex-direction: column; gap: 0.3rem; }
+    .port-row { display: flex; align-items: center; gap: 0.45rem; font-size: 0.75rem; color: var(--ink-2); }
+    .port-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+    .port-pct { margin-left: auto; color: var(--ink); font-weight: 600; }
+    .read-line { fill: var(--accent); transform-box: fill-box; transform-origin: left center; transform: scaleX(0); opacity: 0; }
+    .stage.active .read-line { animation: readLine 3.2s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
+    .stage.active .read-line:nth-child(2) { animation-delay: 0.35s; } .stage.active .read-line:nth-child(3) { animation-delay: 0.7s; }
+    .stage.active .read-line:nth-child(4) { animation-delay: 1.05s; } .stage.active .read-line:nth-child(5) { animation-delay: 1.4s; }
+    @keyframes readLine { 0% { transform: scaleX(0); opacity: 0; } 4% { opacity: 1; } 22% { transform: scaleX(1); opacity: 1; } 42%, 100% { transform: scaleX(1); opacity: 0; } }
+    .progress { display: flex; justify-content: center; gap: 0.7rem; margin-top: 1.5rem; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--rule-strong); cursor: pointer; transition: background 0.3s, transform 0.3s; }
+    .dot.active { background: var(--accent); transform: scale(1.2); }
+    .step-label { text-align: center; margin-top: 1.25rem; min-height: 4.5rem; }
+    .step-name { font-family: var(--font-display); font-size: clamp(1.35rem, 2.2vw, 1.7rem); font-weight: var(--title-weight); color: var(--ink); letter-spacing: var(--title-tracking); }
+    .step-desc { margin-top: 0.25rem; color: var(--ink-2); }
+    .disclaimer { margin-top: 1rem; text-align: center; font-size: 0.78rem; color: var(--ink-3); }
 
-    .team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
-    .team-card {
-      border: 1px solid rgba(201,168,76,0.2);
-      display: flex;
-      flex-direction: column;
-      opacity: 0;
-      transform: translateY(32px);
-      transition: opacity 0.7s ease, transform 0.7s ease, border-color 0.3s;
+    /* ── ABOUT ── */
+    .about-steps { list-style: none; }
+    .about-step {
+      display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: clamp(2rem, 5vw, 5rem);
+      padding: clamp(2.5rem, 5vw, 4rem) 0;
+      border-top: 1px solid var(--rule);
     }
-    .team-card.visible { opacity: 1; transform: translateY(0); }
-    .team-card:hover { border-color: rgba(201,168,76,0.45); }
-    .team-card:nth-child(2) { transition-delay: 0.1s; }
-    .team-card:nth-child(3) { transition-delay: 0.2s; }
-    .team-card .card-visual { min-height: 200px; border-bottom: 1px solid rgba(201,168,76,0.2); }
-    .team-card .card-visual svg { min-height: 200px; }
-    .team-card .card-content { border-left: none; padding: 1.8rem; gap: 0.6rem; }
-    .team-card .card-name { font-size: 1.6rem; }
-    .team-card .card-bio { font-size: 0.82rem; }
+    .about-step:first-child { border-top: 0; padding-top: 0; }
+    .about-rail { display: none; }
+    .about-copy { max-width: 34rem; }
+    .about-stage { font-size: 0.85rem; font-weight: 600; color: var(--accent-text); margin-bottom: 0.75rem; }
+    .about-heading {
+      font-family: var(--font-display); font-weight: var(--title-weight);
+      font-size: clamp(1.7rem, 3vw, 2.35rem); line-height: 1.15; letter-spacing: var(--title-tracking);
+      color: var(--ink); margin-bottom: 1.1rem; text-wrap: balance;
+    }
+    .about-text { color: var(--ink-2); line-height: 1.75; margin-bottom: 1.5rem; }
+    .about-quote {
+      font-family: var(--font-quote); font-size: 1.15rem; line-height: 1.5; color: var(--ink);
+      padding-left: 1.1rem; border-left: 1px solid var(--accent);
+    }
+    .about-visual {
+      align-self: start;
+      border-top: 2px solid var(--ink);
+      padding-top: 1.25rem;
+    }
+    .visual-caption { font-size: 0.8rem; font-weight: 600; color: var(--ink-3); text-align: left; }
+    .visual-note { margin-top: 0.9rem; font-size: 0.78rem; color: var(--ink-3); }
+    .chain { list-style: none; margin-bottom: 1.1rem; }
+    .chain-item {
+      position: relative; display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
+      padding: 0.85rem 0 0.85rem 1.6rem; border-bottom: 1px solid var(--rule);
+    }
+    .chain-item:last-child { border-bottom: 0; }
+    .chain-item::before { content: ''; position: absolute; left: 0; top: 50%; width: 8px; height: 8px; margin-top: -4px; border-radius: 50%; border: 1px solid var(--rule-strong); background: var(--surface); }
+    .chain-item:not(:last-child)::after { content: ''; position: absolute; left: 4px; top: calc(50% + 5px); height: calc(100% - 10px); width: 1px; background: var(--rule-strong); }
+    .chain-name { font-weight: 600; color: var(--ink); }
+    .chain-sub { font-size: 0.8rem; color: var(--ink-3); }
+    .chain-item--end::before { background: var(--accent); border-color: var(--accent); }
+    .chain-item--end .chain-sub { color: var(--accent-text); }
+    .scorecard-table { width: 100%; border-collapse: collapse; }
+    .scorecard-table caption { caption-side: top; margin-bottom: 1rem; }
+    .scorecard-table th, .scorecard-table td { padding: 0.65rem 0; text-align: left; font-weight: 400; }
+    .scorecard-table thead th { font-size: 0.78rem; color: var(--ink-3); border-bottom: 1px solid var(--rule-strong); padding-top: 0; }
+    .scorecard-table tbody th { font-size: 0.92rem; color: var(--ink); }
+    .scorecard-table tbody tr + tr > * { border-top: 1px solid var(--rule); }
+    .scorecard-table .num { text-align: right; font-size: 0.92rem; color: var(--ink); white-space: nowrap; }
+    .scorecard-table thead .num { font-size: 0.78rem; color: var(--ink-3); }
+    .scorecard-table .bar {
+      display: inline-block; vertical-align: middle; width: clamp(4rem, 9vw, 7rem); height: 4px; margin-right: 0.9rem; border-radius: 2px;
+      background: linear-gradient(var(--chart-1), var(--chart-1)) no-repeat 0 0 / 0% 100%, var(--rule);
+      transition: background-size 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
+    }
+    .about-step.in .scorecard-table .bar { background-size: calc(var(--v) * 100%) 100%, auto; }
+    .scorecard-table tfoot > tr > * { border-top: 1px solid var(--ink); padding-top: 0.9rem; font-weight: 600; color: var(--ink); }
+    .scorecard-table tfoot .num { font-size: 1.3rem; color: var(--accent-text); }
+    .chart-legend { display: flex; flex-wrap: wrap; gap: 0.4rem 1.4rem; margin-bottom: 1rem; }
+    .legend-item { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--ink-2); }
+    .legend-item strong { color: var(--ink); font-weight: 600; }
+    .legend-swatch { width: 18px; border-top: 2px solid var(--chart-1); }
+    .legend-item--bmk .legend-swatch { border-top: 1.5px dashed var(--ink-3); }
+    .outcome-chart { width: 100%; height: clamp(150px, 18vw, 200px); overflow: visible; }
+    .outcome-chart .grid { stroke: var(--rule); stroke-width: 1; vector-effect: non-scaling-stroke; }
+    .outcome-chart .axis { stroke: var(--rule-strong); stroke-width: 1; vector-effect: non-scaling-stroke; }
+    .outcome-chart polyline { fill: none; vector-effect: non-scaling-stroke; stroke-linejoin: round; stroke-linecap: round; }
+    .outcome-chart .line-bam { stroke: var(--chart-1); stroke-width: 2; stroke-dasharray: 600; stroke-dashoffset: 600; }
+    .outcome-chart .line-bmk { stroke: var(--ink-3); stroke-width: 1.5; stroke-dasharray: 4 4; }
+    .about-step.in .outcome-chart .line-bam { animation: drawLine 1.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards; }
+    @keyframes drawLine { to { stroke-dashoffset: 0; } }
+    .chart-axis { display: flex; justify-content: space-between; margin-top: 0.4rem; font-size: 0.78rem; color: var(--ink-3); }
+
+    /* ── BUTTONS ── */
+    .btn-row { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 0.8rem 1.35rem; border-radius: var(--radius-sm); border: 1px solid transparent;
+      font-weight: 600; font-size: 0.95rem; text-decoration: none; line-height: 1.2;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+    .btn-primary { background: var(--btn-bg); color: var(--btn-ink); border-color: var(--btn-bg); }
+    .btn-primary:hover { background: var(--btn-bg-hover); border-color: var(--btn-bg-hover); }
+    .btn-secondary { background: transparent; color: var(--btn2-ink); border-color: var(--btn2-rule); }
+    .btn-secondary:hover { border-color: var(--btn2-ink); }
+
+    /* ── TEAM ── */
+    .team-leader, .team-card { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; }
+    .team-leader { display: grid; grid-template-columns: minmax(220px, 0.8fr) 2fr; margin-bottom: 1.5rem; }
+    .team-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; }
+    .team-card { display: flex; flex-direction: column; }
+    .card-visual { position: relative; display: flex; align-items: center; justify-content: center; background: var(--surface-2); min-height: 0; }
+    .team-card .card-visual { height: 320px; }
+    .team-leader .card-visual { min-height: 260px; }
+    .card-logo-overlay { width: 56px; height: 56px; opacity: 0.35; }
+    .card-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
+    .card-content { padding: 1.5rem 1.6rem 1.6rem; display: flex; flex-direction: column; flex: 1; }
+    .card-number { font-size: 0.8rem; font-weight: 600; color: var(--accent-text); margin-bottom: 0.4rem; }
+    .card-name { font-family: var(--font-display); font-weight: var(--title-weight); font-size: 1.45rem; line-height: 1.2; letter-spacing: var(--title-tracking); color: var(--ink); }
+    .card-role { margin-top: 0.2rem; font-size: 0.95rem; color: var(--ink-2); }
+    .card-credentials { margin-top: 0.35rem; font-size: 0.82rem; color: var(--ink-3); }
+    .card-divider { height: 1px; background: var(--rule); margin: 1rem 0; }
+    .card-bio { font-size: 0.92rem; line-height: 1.65; color: var(--ink-2); flex: 1; }
+    .card-linkedin { display: inline-flex; align-items: center; gap: 0.4rem; margin-top: 1.1rem; font-size: 0.85rem; font-weight: 600; color: var(--accent-text); text-decoration: none; }
+    .card-linkedin svg { width: 14px; height: 14px; }
+    .card-linkedin:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+    /* ── PRODUCTS ── */
+    .product-tabs { position: relative; display: flex; gap: 2rem; border-bottom: 1px solid var(--rule); margin-bottom: clamp(2rem, 4vw, 3rem); }
+    .product-tab {
+      position: relative; z-index: 1; background: none; border: 0; cursor: pointer;
+      padding: 0 0 0.85rem; font-family: var(--font-display); font-size: 1.15rem; font-weight: 600; color: var(--ink-3);
+      transition: color 0.2s;
+    }
+    .product-tab:hover { color: var(--ink-2); }
+    .product-tab[aria-selected="true"] { color: var(--ink); }
+    .product-tab sup { font-size: 0.65em; }
+    .product-tab-indicator { position: absolute; left: 0; bottom: -1px; height: 2px; background: var(--accent); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), width 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+    .product-panel[hidden] { display: none; }
+    .product-intro { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(1.5rem, 4vw, 4rem); align-items: start; margin-bottom: 2.5rem; }
+    .product-name { font-family: var(--font-display); font-weight: var(--title-weight); font-size: clamp(2.2rem, 4.5vw, 3.2rem); line-height: 1; letter-spacing: var(--title-tracking); color: var(--ink); margin-bottom: 1rem; }
+    .product-name sup { font-size: 0.5em; }
+    .product-desc { color: var(--ink-2); max-width: 36rem; }
+    .product-facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--rule); }
+    .product-facts > div { padding: 0.9rem 0; border-bottom: 1px solid var(--rule); }
+    .product-facts > div:nth-child(odd) { padding-right: 1.5rem; }
+    .product-facts dt { font-size: 0.8rem; color: var(--ink-3); margin-bottom: 0.2rem; }
+    .product-facts dd { font-size: 1rem; font-weight: 600; color: var(--ink); }
+    .is-placeholder { color: var(--placeholder) !important; font-style: italic; outline: 1px dashed var(--placeholder); outline-offset: 4px; }
+    .treemap-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 0.5rem 2rem; margin-bottom: 0.9rem; }
+    .treemap-title { font-family: var(--font-display); font-weight: var(--title-weight); font-size: 1.35rem; color: var(--ink); }
+    .treemap-legend { font-size: 0.8rem; color: var(--ink-3); }
+    .treemap {
+      display: grid; grid-template-columns: 3fr 2fr 2fr; gap: 1px;
+      background: var(--rule); border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden;
+      min-height: clamp(560px, 70vh, 700px);
+    }
+    .col-left, .col-mid, .col-right, .col-right-row3 { display: grid; gap: 1px; }
+    .col-left  { grid-template-rows: minmax(min-content, 3fr) minmax(min-content, 1.5fr); }
+    .col-mid   { grid-template-rows: repeat(3, minmax(min-content, 1fr)); }
+    .col-right { grid-template-rows: minmax(min-content, 1.4fr) minmax(min-content, 1fr) minmax(min-content, 1fr) minmax(min-content, 0.6fr); }
+    .col-right-row3 { grid-template-columns: repeat(3, 1fr); }
+    .sector-cell {
+      position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between;
+      padding: 1.15rem 1.25rem; background: var(--cell-bg); transition: background 0.2s;
+    }
+    .sector-cell:hover { background: var(--cell-hover); }
+    .cell-header, .cell-footer { position: relative; z-index: 1; }
+    .sector-name { font-size: 0.78rem; font-weight: 600; color: var(--ink-2); }
+    .sector-pct { display: block; margin-top: 0.2rem; font-family: var(--font-display); font-size: 1.4rem; font-weight: var(--title-weight); color: var(--ink); line-height: 1.1; }
+    .sector-cell.large .sector-pct { font-size: 2.6rem; }
+    .sector-cell.medium .sector-pct { font-size: 1.9rem; }
+    .sector-cell.tiny { padding: 0.85rem 0.9rem; }
+    .sector-cell.tiny .sector-pct { font-size: 1.1rem; }
+    .company-logo-area { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+    .sector-cell.small .company-logo-area { justify-content: flex-end; align-items: flex-start; padding: 1.15rem 1.25rem; }
+    .company-logo-text { font-size: 2.3rem; color: var(--watermark); white-space: nowrap; user-select: none; letter-spacing: -0.02em; }
+    .sector-cell.large .company-logo-text { font-size: 3.6rem; }
+    .sector-cell.medium .company-logo-text { font-size: 2.8rem; }
+    .sector-cell.small .company-logo-text { font-size: 1.3rem; }
+    .sector-cell.tiny .company-logo-text { font-size: 1rem; white-space: normal; }
+    .logo-micron, .logo-adp, .logo-sysco, .logo-citigroup { font-weight: 700; }
+    .logo-chevron { font-weight: 600; }
+    .logo-aptiv { letter-spacing: 0.2em; font-weight: 600; }
+    .logo-jnj { font-style: italic; }
+    .holding-name { font-size: 0.85rem; font-weight: 600; color: var(--ink); }
+    .holding-meta { display: flex; flex-wrap: wrap; gap: 0.1rem 0.8rem; margin-top: 0.2rem; font-size: 0.75rem; color: var(--ink-3); }
+    .holding-meta b { font-weight: 600; color: var(--ink-2); }
+    .product-note { margin-top: 0.9rem; font-size: 0.8rem; color: var(--ink-3); max-width: 48rem; }
+    .product-empty { padding: clamp(3rem, 8vw, 5rem) 2rem; text-align: center; border: 1px dashed var(--rule-strong); border-radius: var(--radius); }
+    .product-empty-title { font-family: var(--font-display); font-weight: var(--title-weight); font-size: 1.4rem; color: var(--ink); margin-bottom: 0.4rem; }
+    .product-empty-text { color: var(--ink-2); }
+    .company-popup {
+      position: fixed; z-index: 800; width: 360px; pointer-events: none;
+      background: var(--surface); color: var(--ink);
+      border: 1px solid var(--rule-strong); border-radius: var(--radius);
+      box-shadow: 0 12px 32px -12px rgba(15, 25, 45, 0.25);
+      opacity: 0; transform: translateY(4px); transition: opacity 0.18s, transform 0.18s;
+    }
+    .company-popup.visible { opacity: 1; transform: none; }
+    .popup-header { display: flex; justify-content: space-between; gap: 1rem; padding: 1rem 1.1rem 0.8rem; border-bottom: 1px solid var(--rule); }
+    .popup-company-name { font-family: var(--font-display); font-weight: var(--title-weight); font-size: 1.1rem; }
+    .popup-sector-tag { font-size: 0.78rem; color: var(--ink-3); margin-top: 0.15rem; }
+    .popup-ticker { align-self: flex-start; font-size: 0.75rem; font-weight: 600; padding: 0.15rem 0.45rem; border-radius: var(--radius-sm); background: var(--brand); color: var(--on-brand); }
+    .popup-body { padding: 0.9rem 1.1rem 1.1rem; }
+    .popup-intro { font-size: 0.85rem; line-height: 1.55; color: var(--ink-2); margin-bottom: 0.9rem; }
+    .popup-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem 1rem; }
+    .popup-stat-label { font-size: 0.75rem; color: var(--ink-3); }
+    .popup-stat-value { font-size: 0.9rem; font-weight: 600; }
+    .popup-corner { display: none; }
 
     /* ── CONTACT ── */
-    .contact-box {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 9px;
-      padding: 2.5rem;
-      max-width: 560px;
-      margin: 0 auto;
+    .contact-box { max-width: 560px; margin: 0 auto; padding: clamp(1.75rem, 4vw, 2.5rem); background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); }
+    .contact-intro { font-family: var(--font-display); font-weight: var(--title-weight); font-size: 1.6rem; letter-spacing: var(--title-tracking); color: var(--ink); margin-bottom: 1.25rem; }
+    .contact-form { display: flex; flex-direction: column; gap: 0.85rem; }
+    .form-group input, .form-group textarea {
+      width: 100%; padding: 0.8rem 0.95rem; font: inherit; color: var(--ink);
+      background: var(--input-bg); border: 1px solid var(--rule-strong); border-radius: var(--radius-sm);
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
-    .contact-intro { font-size: 0.88rem; color: var(--text); margin-bottom: 1.5rem; font-weight: 300; }
-    .contact-form { display: flex; flex-direction: column; gap: 0.8rem; }
-    .form-group input,
-    .form-group textarea {
-      width: 100%;
-      background: var(--navy);
-      border: 1px solid var(--border2);
-      border-radius: 5px;
-      padding: 10px 14px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.88rem;
-      color: var(--bright);
-      outline: none;
-      transition: border-color 0.3s;
-    }
-    .form-group input::placeholder,
-    .form-group textarea::placeholder { color: var(--dim); }
-    .form-group input:focus,
-    .form-group textarea:focus { border-color: var(--blue2); }
-    .form-group textarea { resize: vertical; }
+    .form-group textarea { resize: vertical; min-height: 130px; }
+    .form-group input::placeholder, .form-group textarea::placeholder { color: var(--ink-3); }
+    .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--focus-ring); }
     .submit-btn {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.68rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      background: none;
-      border: 1px solid var(--blue2);
-      color: var(--blue);
-      padding: 10px 22px;
-      border-radius: 5px;
-      cursor: pointer;
-      align-self: flex-start;
-      transition: background 0.3s;
+      align-self: flex-start; margin-top: 0.3rem; padding: 0.8rem 1.4rem; cursor: pointer;
+      font: inherit; font-weight: 600; color: var(--on-brand); background: var(--brand);
+      border: 1px solid var(--brand); border-radius: var(--radius-sm); transition: background 0.2s, color 0.2s;
     }
-    .submit-btn:hover { background: rgba(122,168,208,0.08); }
-    #formStatus { font-size: 0.78rem; color: var(--blue); margin-top: 0.5rem; font-family: 'DM Mono', monospace; letter-spacing: 0.08em; }
+    .submit-btn:hover { background: transparent; color: var(--brand); }
+    .submit-btn:disabled { opacity: 0.55; cursor: progress; }
+    .form-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+    .form-turnstile:empty { display: none; }
+    #formStatus { min-height: 1.2em; font-size: 0.9rem; }
+    #formStatus.pending { color: var(--ink-3); }
+    #formStatus.success { color: #1f7a45; }
+    #formStatus.error { color: #b3261e; }
 
     /* ── FOOTER ── */
     footer {
-      border-top: 1px solid var(--border);
-      padding: 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;
+      padding: 2rem clamp(1.25rem, 4vw, 3rem);
+      background: var(--footer-bg); color: var(--footer-ink); border-top: 1px solid var(--rule);
     }
-    .footer-wordmark { font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 300; letter-spacing: 0.08em; color: var(--dim); }
-    .footer-wordmark span { color: var(--blue2); }
-    .footer-copy { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.12em; color: var(--dim); opacity: 0.5; }
+    .footer-wordmark { font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; }
+    .footer-wordmark span { color: var(--footer-accent); }
+    .footer-copy { font-size: 0.8rem; opacity: 0.8; }
 
     /* ── RESPONSIVE ── */
-    @media (max-width: 768px) {
+    @media (max-width: 1000px) {
       .nav-links { display: none; }
       .nav-hamburger { display: flex; }
+      .team-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 900px) {
+      .pipeline { grid-template-columns: 1fr; gap: 0; }
+      .arrow-col { padding: 0.4rem 0; }
+      .arrow { width: 1px; height: 22px; }
+      .arrow::after { right: auto; left: -3px; top: auto; bottom: 0; transform: rotate(135deg); }
+      .stage { min-height: 300px; }
+      .about-step { grid-template-columns: 1fr; }
+      .product-intro { grid-template-columns: 1fr; }
+      .treemap { grid-template-columns: 1fr; min-height: 0; }
+      .sector-cell { min-height: 150px; }
+      .sector-cell.tiny { min-height: 90px; }
       .team-leader { grid-template-columns: 1fr; }
-      .team-grid { grid-template-columns: 1fr; }
-      .card-content { border-left: none; border-top: 1px solid rgba(201,168,76,0.15); padding: 1.5rem; }
-      footer { flex-direction: column; gap: 1rem; text-align: center; }
-      .pipeline {
-        grid-template-columns: 1fr;
-      }
-      .arrow-col { padding: 4px 0; }
-      .arrow {
-        width: 2px;
-        height: 22px;
-        margin: 0 auto;
-      }
-      .arrow::after {
-        right: auto;
-        left: 50%;
-        transform: translateX(-50%);
-        top: auto;
-        bottom: -6px;
-        border: 5px solid transparent;
-        border-top: 7px solid var(--border2);
-        border-left: none;
-      }
-      .arrow.active::after { border-top-color: var(--blue); border-left-color: transparent; }
-      .stage { min-height: auto; }
-      .process-inner { padding: 0 0 16px; }
     }
-
-    @media (max-width: 480px) {
-      .hero-logo { width: clamp(220px, 65vw, 300px); }
-      .hero-statement { font-size: clamp(2rem, 8.5vw, 3rem); }
-      .hero-body { font-size: 0.88rem; line-height: 1.75; }
-      .hero-logo-wrap { gap: 0.9rem; padding: 0 1rem; }
-      .section-wrap { padding: 2.5rem 1.2rem; }
-      .process-inner { padding: 0 0 14px; }
-      .step-name { font-size: 13px; }
-      .step-desc { font-size: 10px; }
-    }
-
-    /* ── PROCESS CONTROLS ── */
-    .controls {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-    .btn {
-      font-family: 'DM Mono', monospace;
-      font-size: 9px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--blue3);
-      border: 1px solid var(--border2);
-      background: none;
-      padding: 6px 14px;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: color 0.2s, border-color 0.2s, background 0.2s;
-    }
-    .btn:hover, .btn.active-btn {
-      color: var(--blue);
-      border-color: var(--blue2);
-      background: rgba(122,168,208,0.06);
-    }
-
-    /* ── HERO NEURAL-NET CANVAS ── */
-    #heroCanvas {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      display: block;
-      pointer-events: none;
-    }
-    /* ── PORTFOLIOS ── */
-    .portfolio-header {
-      margin-bottom: 1rem;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .portfolio-heading {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2rem, 4vw, 3.2rem);
-      font-weight: 300;
-      color: var(--bright);
-      line-height: 1.15;
-      margin-bottom: 0.7rem;
-    }
-
-    .portfolio-heading em {
-      color: var(--gold);
-      font-style: italic;
-    }
-
-    .portfolio-sub {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.62rem;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--dim);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 0.8rem;
-      flex-wrap: wrap;
-    }
-
-    .portfolio-sub .gold { color: var(--gold); }
-
-    .portfolio-sub-sep {
-      width: 3px;
-      height: 3px;
-      border-radius: 50%;
-      background: var(--gold);
-      opacity: 0.45;
-    }
-
-    .treemap {
-      display: grid;
-      grid-template-columns: 3fr 2fr 2fr;
-      gap: 3px;
-      background: rgba(201,168,76,0.08);
-      border: 1px solid rgba(201,168,76,0.2);
-      height: 62vh;
-      min-height: 420px;
-      margin-top: 2rem;
-    }
-
-    .col-left {
-      display: grid;
-      grid-template-rows: 3fr 1.5fr;
-      gap: 3px;
-    }
-
-    .col-mid {
-      display: grid;
-      grid-template-rows: 1fr 1fr 1fr;
-      gap: 3px;
-    }
-
-    .col-right {
-      display: grid;
-      grid-template-rows: 1.5fr 1fr 1fr 0.55fr;
-      gap: 3px;
-    }
-
-    .col-right-row3 {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 3px;
-    }
-
-    .sector-cell {
-      background: var(--card);
-      padding: 1.3rem 1.4rem;
-      position: relative;
-      overflow: hidden;
-      cursor: default;
-      transition: background 0.3s, border-color 0.3s;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      border: 1px solid transparent;
-    }
-
-    .sector-cell::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(201,168,76,0.04) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .sector-cell:hover {
-      background: #131f32;
-      border-color: rgba(201,168,76,0.28);
-    }
-
-    .cell-header,
-    .cell-footer {
-      position: relative;
-      z-index: 1;
-    }
-
-    .sector-name {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.58rem;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--gold);
-      opacity: 0.75;
-    }
-
-    .sector-pct {
-      display: block;
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.6rem;
-      font-weight: 300;
-      color: var(--bright);
-      line-height: 1.1;
-      margin-top: 0.15rem;
-    }
-
-    .sector-cell.large .sector-pct { font-size: 2.7rem; }
-    .sector-cell.medium .sector-pct { font-size: 2rem; }
-
-    .company-logo-area {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1;
-      pointer-events: none;
-    }
-
-    .company-logo-text {
-      font-size: 2.4rem;
-      font-weight: 300;
-      color: rgba(200,223,240,0.14);
-      letter-spacing: -0.03em;
-      text-align: center;
-      white-space: nowrap;
-      user-select: none;
-    }
-
-    .sector-cell.large .company-logo-text { font-size: 3.6rem; }
-    .sector-cell.medium .company-logo-text { font-size: 2.8rem; }
-    .sector-cell.small .company-logo-text { font-size: 1.6rem; }
-    .sector-cell.tiny .company-logo-text { font-size: 1.05rem; white-space: normal; }
-
-    .logo-micron { font-family: 'DM Sans', sans-serif; font-weight: 600; letter-spacing: -0.02em; }
-    .logo-citigroup { font-family: 'DM Sans', sans-serif; font-weight: 700; letter-spacing: -0.02em; }
-    .logo-aptiv { font-family: 'DM Mono', monospace; font-weight: 500; letter-spacing: 0.25em; }
-    .logo-alphabet { font-family: 'DM Sans', sans-serif; font-weight: 400; }
-    .logo-jnj { font-family: 'Cormorant Garamond', serif; letter-spacing: 0.05em; }
-    .logo-adp { font-family: 'DM Sans', sans-serif; font-weight: 700; letter-spacing: 0.08em; }
-    .logo-sysco { font-family: 'DM Sans', sans-serif; font-weight: 700; }
-    .logo-chevron { font-family: 'DM Sans', sans-serif; font-weight: 600; letter-spacing: 0.04em; }
-
-    .holding-name {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.58rem;
-      color: var(--bright);
-      letter-spacing: 0.05em;
-    }
-
-    .holding-meta {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.55rem;
-      color: var(--dim);
-      opacity: 0.8;
-      margin-top: 0.18rem;
-      line-height: 1.45;
-    }
-
-    .sector-only .cell-footer { display: none; }
-
-    .company-popup {
-      position: fixed;
-      z-index: 800;
-      width: 360px;
-      background: #0b1222;
-      border: 1px solid rgba(201,168,76,0.35);
-      box-shadow: 0 24px 60px rgba(0,0,0,0.7);
-      opacity: 0;
-      pointer-events: none;
-      transform: translateY(6px);
-      transition: opacity 0.22s ease, transform 0.22s ease;
-      overflow: hidden;
-    }
-
-    .company-popup.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .popup-header {
-      background: rgba(201,168,76,0.07);
-      border-bottom: 1px solid rgba(201,168,76,0.2);
-      padding: 1.1rem 1.4rem 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-    }
-
-    .popup-company-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.4rem;
-      font-weight: 300;
-      color: var(--bright);
-      line-height: 1.1;
-    }
-
-    .popup-ticker {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.6rem;
-      letter-spacing: 0.2em;
-      color: var(--gold);
-      background: rgba(201,168,76,0.1);
-      border: 1px solid rgba(201,168,76,0.25);
-      padding: 0.2rem 0.5rem;
-      white-space: nowrap;
-    }
-
-    .popup-sector-tag {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.55rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--dim);
-      margin-top: 0.2rem;
-    }
-
-    .popup-body {
-      padding: 1.2rem 1.4rem 1.4rem;
-    }
-
-    .popup-intro {
-      font-size: 0.85rem;
-      line-height: 1.75;
-      color: var(--text);
-      margin-bottom: 1rem;
-    }
-
-    .popup-stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.7rem;
-      border-top: 1px solid rgba(201,168,76,0.12);
-      padding-top: 1rem;
-    }
-
-    .popup-stat {
-      display: flex;
-      flex-direction: column;
-      gap: 0.15rem;
-    }
-
-    .popup-stat-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.52rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--dim);
-    }
-
-    .popup-stat-value {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.72rem;
-      color: var(--gold);
-      letter-spacing: 0.05em;
-    }
-
-    .popup-corner {
-      position: absolute;
-      bottom: 0;
-      right: 0;
-      width: 28px;
-      height: 28px;
-      border-top: 1px solid rgba(201,168,76,0.2);
-      border-left: 1px solid rgba(201,168,76,0.2);
-    }
-
-    .holdings-section {
-      margin-top: 3px;
-    }
-
-    .holdings-top-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.58rem;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      color: var(--gold);
-      opacity: 0.65;
-      padding: 0.4rem 1.2rem;
-      border: 1px solid rgba(201,168,76,0.18);
-    }
-
-    .holdings-panels {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 3px;
-      margin-top: 3px;
-    }
-
-    .holdings-panel {
-      background: var(--card);
-      overflow: hidden;
-      border: 1px solid var(--border);
-    }
-
-    .panel-heading {
-      padding: 0.7rem 0.9rem 0.5rem;
-      border-bottom: 1px solid rgba(201,168,76,0.18);
-      background: rgba(201,168,76,0.05);
-    }
-
-    .panel-heading-text {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--bright);
-    }
-
-    .htable {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    .htable thead tr {
-      border-bottom: 1px solid rgba(201,168,76,0.12);
-    }
-
-    .htable th {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.48rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--gold);
-      font-weight: 400;
-      opacity: 0.65;
-      padding: 0.35rem 0.6rem;
-      text-align: left;
-      white-space: nowrap;
-    }
-
-    .htable th.r,
-    .htable td.r {
-      text-align: right;
-    }
-
-    .htable tbody tr {
-      border-bottom: 1px solid rgba(201,168,76,0.05);
-      transition: background 0.15s;
-    }
-
-    .htable tbody tr:last-child { border-bottom: none; }
-    .htable tbody tr:hover { background: rgba(201,168,76,0.04); }
-
-    .htable tbody tr.total-row {
-      border-top: 1px solid rgba(201,168,76,0.18);
-      background: rgba(201,168,76,0.03);
-    }
-
-    .htable td {
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.7rem;
-      font-weight: 300;
-      color: var(--text);
-      padding: 0.32rem 0.6rem;
-      line-height: 1.25;
-      white-space: nowrap;
-    }
-
-    .td-name { color: var(--bright) !important; }
-    .td-ceo { color: var(--dim) !important; font-size: 0.65rem !important; }
-
-    .td-sector-cell {
-      color: var(--dim) !important;
-      font-family: 'DM Mono', monospace !important;
-      font-size: 0.58rem !important;
-    }
-
-    .td-w {
-      font-family: 'DM Mono', monospace !important;
-      font-size: 0.68rem !important;
-      color: var(--gold) !important;
-    }
-
-    .td-score {
-      font-family: 'DM Mono', monospace !important;
-      font-size: 0.64rem !important;
-      color: var(--dim) !important;
-    }
-
-    .score-hi { color: var(--gold) !important; }
-
-    @media (max-width: 900px) {
-      .treemap {
-        grid-template-columns: 1fr;
-        height: auto;
-      }
-
-      .col-left,
-      .col-mid,
-      .col-right {
-        grid-template-rows: none;
-      }
-
-      .sector-cell {
-        min-height: 190px;
-      }
-
-      .col-right-row3 {
-        grid-template-columns: 1fr;
-      }
-
-      .holdings-panels {
-        grid-template-columns: 1fr;
-      }
-
-      .holdings-panel {
-        overflow-x: auto;
-      }
-
-      .company-popup {
-        display: none;
-      }
-    }
-
     @media (max-width: 600px) {
-      .portfolio-sub {
-        font-size: 0.55rem;
-        gap: 0.55rem;
-      }
-
-      .sector-cell {
-        padding: 1rem;
-        min-height: 170px;
-      }
-
-      .company-logo-text {
-        font-size: 1.9rem !important;
-      }
+      .team-grid { grid-template-columns: 1fr; }
+      .team-card .card-visual { height: 380px; }
+      .product-facts { grid-template-columns: 1fr 1fr; }
+      .company-popup { display: none; }
     }
-
-
-    /* ── DESIGN HARMONIZATION LAYER ──
-       Principle: one line language across the site.
-       Structural lines = quiet blue. Signal lines = restrained gold. */
-    :root {
-      --line-soft: rgba(122,168,208,0.10);
-      --line: rgba(122,168,208,0.18);
-      --line-strong: rgba(122,168,208,0.28);
-      --signal-soft: rgba(201,168,76,0.12);
-      --signal: rgba(201,168,76,0.28);
-      --signal-strong: rgba(201,168,76,0.52);
-      --surface-glow: rgba(122,168,208,0.035);
-    }
-
-    body {
-      position: relative;
-      background:
-        radial-gradient(ellipse 70% 42% at 50% 0%, rgba(122,168,208,0.055), transparent 65%),
-        linear-gradient(180deg, #1F2A44 0%, #08111f 45%, #1F2A44 100%);
-    }
-
-    body > section,
-    body > footer,
-    body > .section-rule {
-      position: relative;
-      z-index: 1;
-    }
-
-    #signalCanvas {
-      position: fixed;
-      inset: 0;
-      width: 100vw;
-      height: 100vh;
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.82;
-      mix-blend-mode: screen;
-    }
-
-    nav,
-    .nav-mobile { border-color: var(--line); }
-
-    .section-rule {
-      height: 1px;
-      background: linear-gradient(to right, transparent, var(--line-soft), var(--signal), var(--line-soft), transparent);
-      opacity: 0.9;
-    }
-
-    .hero-divider,
-    .title-rule {
-      background: linear-gradient(to right, transparent, var(--line), var(--signal), var(--line), transparent);
-    }
-
-    .process-inner,
-    .stage,
-    .scorecard,
-    .about-pillar,
-    .about-pillar-visual,
-    .about-dims,
-    .about-dims-grid,
-    .dim-card,
-    .team-leader,
-    .team-card,
-    .team-card .card-visual,
-    .card-content,
-    .contact-box,
-    .treemap,
-    .sector-cell,
-    .holdings-panel,
-    .panel-heading,
-    footer {
-      border-color: var(--line) !important;
-    }
-
-    .process-inner,
-    .contact-box,
-    .sector-cell,
-    .holdings-panel,
-    .dim-card,
-    .team-card,
-    .team-leader {
-      background-image: radial-gradient(ellipse 85% 70% at 50% 50%, var(--surface-glow), transparent 72%);
-    }
-
-    .stage.active,
-    .sector-cell:hover,
-    .team-card:hover,
-    .team-leader:hover,
-    .contact-box:focus-within {
-      border-color: var(--signal) !important;
-      box-shadow: 0 0 28px rgba(201,168,76,0.045), inset 0 0 22px rgba(122,168,208,0.035);
-    }
-
-    .arrow,
-    .filing-line,
-    .sc-bar-wrap,
-    .alloc-bar-wrap,
-    .dot {
-      background: var(--line-strong) !important;
-    }
-
-    .arrow::after { border-left-color: var(--line-strong) !important; }
-    .arrow.active,
-    .dot.active { background: var(--signal-strong) !important; }
-    .arrow.active::after { border-left-color: var(--signal-strong) !important; }
-
-    .stage.active .filing-line,
-    .sc-bar,
-    .alloc-bar {
-      background: linear-gradient(90deg, var(--blue2), var(--gold)) !important;
-    }
-
-    .form-group input,
-    .form-group textarea,
-    .submit-btn,
-    .filing-tag,
-    .popup-ticker {
-      border-color: var(--line-strong) !important;
-    }
-
-    .form-group input:focus,
-    .form-group textarea:focus,
-    .submit-btn:hover {
-      border-color: var(--signal) !important;
-      box-shadow: 0 0 0 1px rgba(201,168,76,0.08);
-    }
-
-    .about-pillar-svg {
-      width: 100%;
-      max-width: 420px;
-      overflow: visible;
-      filter: drop-shadow(0 18px 34px rgba(0,0,0,0.18));
-    }
-
-    .about-pillar:first-child .about-pillar-svg { max-width: 540px; }
-
-    .about-pillar-svg rect,
-    .about-pillar-svg circle {
-      stroke: var(--line-strong);
-      vector-effect: non-scaling-stroke;
-    }
-
-    .about-pillar-svg line,
-    .about-pillar-svg polyline {
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      vector-effect: non-scaling-stroke;
-    }
-
-    .about-pillar:first-child .about-pillar-svg line {
-      stroke: var(--signal-strong);
-      stroke-width: 1.4;
-    }
-
-    .about-pillar:first-child .about-pillar-svg rect:last-of-type {
-      stroke: var(--signal-strong);
-    }
-
-    .about-pillar-svg text {
-      paint-order: stroke;
-      stroke: rgba(10,18,32,0.5);
-      stroke-width: 0.7px;
-    }
-
-    .treemap,
-    .holdings-panels,
-    .col-left,
-    .col-mid,
-    .col-right,
-    .col-right-row3 {
-      gap: 1px;
-    }
-
-    .treemap {
-      background: linear-gradient(135deg, var(--line-soft), var(--signal-soft));
-      border-color: var(--signal) !important;
-    }
-
-    .sector-cell::after {
-      background:
-        linear-gradient(135deg, rgba(122,168,208,0.03), transparent 38%),
-        radial-gradient(ellipse 80% 60% at 50% 50%, rgba(201,168,76,0.035) 0%, transparent 70%);
-    }
-
-    .htable thead tr,
-    .htable tbody tr,
-    .htable tbody tr.total-row,
-    .popup-header,
-    .popup-stats {
-      border-color: var(--signal-soft) !important;
-    }
-
     @media (prefers-reduced-motion: reduce) {
-      #signalCanvas { display: none; }
+      *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+      .outcome-chart .line-bam { stroke-dashoffset: 0; }
     }
 
-    /* ══════════════════════════════════════════════
-       MOBILE POLISH LAYER
-       Refines spacing, type scale, and layout so the
-       site stays elegant on phones — without touching
-       the desktop composition.
-       ══════════════════════════════════════════════ */
-
-    /* Use the small-viewport unit so the hero isn't
-       overlapped by mobile browser toolbars. */
-    @supports (min-height: 100svh) {
-      #hero { min-height: 100svh; }
+    /* ── DIRECTION 3 · BOARDROOM ──
+       White pages with full-bleed BAM navy bands. Serif headings, light blue as the highlight. */
+    :root {
+      --font-display: 'Source Serif 4', Georgia, serif;
+      --font-body: 'Public Sans', system-ui, sans-serif;
+      --font-quote: 'Source Serif 4', Georgia, serif;
+      --bg: #ffffff; --surface: #ffffff; --surface-2: #f1f3f7; --input-bg: #ffffff;
+      --ink: #1F2A44; --ink-2: #435069; --ink-3: #5f6b80;
+      --rule: #e1e5ec; --rule-strong: #c5ccd8;
+      --brand: #1F2A44; --on-brand: #ffffff;
+      --accent: #5aaee8; --accent-text: #1d6aa6;
+      --chart-1: #1F2A44; --chart-2: #8f9bb3;
+      --title-ink: #1F2A44; --title-weight: 600; --title-size: clamp(2.1rem, 3.6vw, 3rem); --title-tracking: -0.01em;
+      --stage-active: #1F2A44; --stage-active-bg: #f6f7fa;
+      --cell-bg: #ffffff; --cell-hover: #f6f7fa; --watermark: rgba(31, 42, 68, 0.08);
+      --placeholder: #835a00; --selection: #cfe6f8; --focus: #1F2A44; --focus-ring: rgba(31, 42, 68, 0.12);
+      --nav-bg: #1F2A44; --nav-rule: #1F2A44; --nav-ink: #ffffff; --nav-ink-2: #c9d0dd; --nav-accent: #8fd0ff; --nav-cta-rule: rgba(255,255,255,0.4);
+      --footer-bg: #1F2A44; --footer-ink: #c9d0dd; --footer-accent: #8fd0ff;
+      --radius: 0px; --radius-sm: 0px;
+      --nav-h: 68px; --container: 1140px; --section-y: clamp(4.5rem, 8vw, 7rem);
+      --sky: #8fd0ff;
+      --btn-bg: #1F2A44; --btn-ink: #ffffff; --btn-bg-hover: #2e3d61; --btn2-ink: #1F2A44; --btn2-rule: #c5ccd8;
     }
+    .nav-logo img { filter: brightness(0) invert(1); }
 
-    @media (max-width: 768px) {
-      /* Nav sits tighter to the edges on phones */
-      nav { padding: 0 1.2rem; }
-      .nav-logo-text { font-size: 16px; }
-      .nav-logo img { height: 28px; }
+    /* Hero: one navy band, brand lockup and statement set large */
+    #hero { background: var(--brand); color: #fff; padding: calc(var(--nav-h) + clamp(4rem, 10vw, 8rem)) clamp(1.25rem, 4vw, 3rem) clamp(4rem, 9vw, 7rem); }
+    .hero-inner { max-width: var(--container); margin: 0 auto; }
+    .hero-logo { width: clamp(200px, 26vw, 300px); filter: brightness(0) invert(1); margin-bottom: clamp(2.5rem, 6vw, 4rem); }
+    .hero-statement { font-family: var(--font-display); font-weight: 400; font-size: clamp(2.8rem, 6.4vw, 5.5rem); line-height: 1.02; letter-spacing: -0.02em; max-width: 14ch; }
+    .hero-statement em { font-style: normal; color: inherit; }
+    .hero-foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 1.5rem; margin-top: clamp(2.5rem, 6vw, 4rem); padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.22); }
+    .hero-body { font-size: 1.15rem; color: #d5dbe6; max-width: 32rem; }
+    #hero { --btn-bg: #8fd0ff; --btn-ink: #13203a; --btn-bg-hover: #b5e0ff; --btn2-ink: #ffffff; --btn2-rule: rgba(255,255,255,0.45); }
 
-      /* Roomier, easier-to-tap mobile menu */
-      .nav-mobile { padding: 1.6rem 1.5rem; gap: 0.4rem; }
-      .nav-mobile a { font-size: 0.82rem; padding: 0.7rem 0; }
+    /* The products section becomes the second navy band */
+    #products { background: var(--brand); color: #fff;
+      --ink: #ffffff; --ink-2: #d5dbe6; --ink-3: #aab4c6; --title-ink: #ffffff;
+      --rule: rgba(255,255,255,0.16); --rule-strong: rgba(255,255,255,0.32);
+      --accent: var(--sky); --accent-text: var(--sky);
+      --btn-bg: #8fd0ff; --btn-ink: #13203a; --btn-bg-hover: #b5e0ff;
+      --cell-bg: #ffffff; --cell-hover: #f6f7fa; --placeholder: #e9c46a; }
+    #products .treemap { --ink: #1F2A44; --ink-2: #435069; --ink-3: #5f6b80; border-color: transparent; background: rgba(31,42,68,0.25); }
+    #products .product-empty { border-color: rgba(255,255,255,0.32); }
+    #products + .section-rule, .section-rule:has(+ #products) { display: none; }
+    #contact { background: var(--surface-2); }
+    .about-quote { font-style: italic; }
+    .hero-statement { max-width: none; }
 
-      /* Consistent, calmer section rhythm */
-      .section-wrap { padding: 3rem 1.4rem; }
-      .section-eyebrow {
-        font-size: 1.1rem;
-        letter-spacing: 0.2em;
-        margin-bottom: 1.3rem;
-      }
-      .process-title {
-        font-size: 1.1rem;
-        letter-spacing: 0.2em;
-        margin-bottom: 1.5rem;
-      }
+    /* Team as a roster, not cards */
+    .team-leader, .team-card { background: none; border: 0; border-radius: 0; border-top: 1px solid var(--rule); }
+    .team-leader, .team-card { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: clamp(1.5rem, 4vw, 3rem); padding: 2rem 0; margin: 0; }
+    .team-grid { display: block; }
+    .team-card:last-child { border-bottom: 1px solid var(--rule); }
+    .team-card .card-visual, .team-leader .card-visual { height: 220px; min-height: 0; }
+    .card-content { padding: 0; display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr); column-gap: clamp(1.5rem, 4vw, 3rem); align-content: start; }
+    .card-content > :not(.card-bio):not(.card-linkedin):not(.card-divider) { grid-column: 1; }
+    .card-divider { display: none; }
+    .card-bio { grid-column: 2; grid-row: 1 / span 5; margin: 0; }
+    .card-linkedin { grid-column: 1; margin-top: 1rem; }
+    .card-number { color: var(--ink-3); }
 
-      /* Process pipeline — tighter frame, slightly smaller icons */
-      .process-sticky { padding: 46px 16px; }
-      .stage { padding: 22px 16px 20px; gap: 10px; }
-      .stage-icon { width: 58px; height: 58px; }
-
-      /* About pillar visuals: the inline scale()+fixed heights
-         overflow narrow screens. Let the SVG size to its own
-         aspect ratio inside a contained, centred frame. */
-      .about-pillar-visual {
-        padding: 2rem 1.25rem;
-        min-height: 0;
-        overflow: hidden;
-      }
-      .about-pillar-svg {
-        transform: none !important;
-        height: auto !important;
-        max-width: 360px;
-      }
-      .about-pillar:first-child .about-pillar-svg { max-width: 360px; }
-      .about-pillar-content { gap: 0.85rem; }
-
-      /* Contact card breathes on small screens */
-      .contact-box { padding: 1.75rem 1.4rem; }
-
-      /* Portfolio heading spacing */
-      .portfolio-header { margin-bottom: 28px !important; }
-    }
-
-    /* Keep the small "tiny" sector tiles as a neat 3-across
-       strip on mobile instead of three tall stacked blocks. */
     @media (max-width: 900px) {
-      .col-right-row3 { grid-template-columns: repeat(3, 1fr); }
-      .sector-cell.tiny,
-      .sector-cell.sector-only { min-height: 84px; }
-      .sector-cell.tiny .sector-name { font-size: 0.5rem; letter-spacing: 0.12em; }
+      .team-leader, .team-card { grid-template-columns: 1fr; }
+      .card-content { grid-template-columns: 1fr; }
+      .card-bio { grid-column: 1; grid-row: auto; margin-top: 1rem; }
     }
 
-    @media (max-width: 480px) {
-      nav { height: 56px; }
-      .nav-mobile { top: 56px; }
-      #hero { padding-top: 56px; }
-      .section-wrap { padding: 2.6rem 1.15rem; }
-      .section-eyebrow, .process-title { font-size: 1rem; letter-spacing: 0.16em; }
-      .stage { min-height: auto; }
-      .sector-cell { padding: 1rem 1.1rem; }
-      .sector-cell.large .sector-pct { font-size: 2.1rem; }
-      .sector-cell.medium .sector-pct { font-size: 1.7rem; }
-      .contact-box { padding: 1.5rem 1.2rem; }
-      .footer-wordmark { font-size: 0.85rem; }
+    /* ── HOLDINGS: logo in the block, details on hover ── */
+    .company-logo { max-width: 46%; max-height: 24%; width: auto; height: auto; object-fit: contain; }
+    .sector-cell.small .company-logo { max-height: 30px; max-width: 42%; }
+    .sector-cell.small .company-logo[src$="CVX.svg"] { max-height: 52px; }
+    .company-logo-area:has(.company-logo) .company-logo-text { display: none; }
+    @media (hover: hover) {
+      .holding-meta { display: none; }   /* CEO, score and sector average live in the hover card */
     }
+
+    /* Graph lines and bars in P4's blue */
+    :root { --chart-1: #2c6cb0; --chart-2: #9db8d6; }
+
+    /* Investment Process, refined after P4: pale sky band, soft rounded cards */
+    #process { background: #eef3f8; --rule: #d6e0ea; --rule-strong: #b6c6d8; --stage-active: #2c6cb0; --stage-active-bg: #ffffff; }
+    #process .stage { border-radius: 12px; box-shadow: 0 1px 2px rgba(15, 37, 64, 0.05); }
+    #process .stage.active { box-shadow: 0 6px 20px -10px rgba(23, 64, 111, 0.35); }
+    #process .scorecard { border-radius: 8px; }
+    #process .scorecard-header { background: #17406f; }
+    #process + .section-rule { display: none; }
+
+    /* ── R2: hero accent, centred logos, always-on process ── */
+    .hero-statement em { color: #d9b45f; }
+    .company-logo-area, .sector-cell.small .company-logo-area { justify-content: center; align-items: center; padding: 0; }
+    .company-logo { max-width: 50%; max-height: 26%; }
+    .sector-cell.small .company-logo { max-height: 34px; max-width: 46%; }
+    .sector-cell.small .company-logo[src$="CVX.svg"] { max-height: 56px; }
+
+    #process .pipeline { padding: 0.75rem 0; }
+    #process .stage { transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s, border-color 0.3s; }
+    #process .stage.active { transform: scale(1.045); z-index: 1; box-shadow: 0 18px 36px -18px rgba(23, 64, 111, 0.45); }
+    #process .stage-content { opacity: 0.72; transform: none; transition: opacity 0.4s; }
+    #process .stage.active .stage-content { opacity: 1; }
+    #process .stage-icon { opacity: 0.75; }
+    #process .stage-title { color: var(--ink-2); }
+    #process .sc-bar { width: var(--w); }
+    #process .stage.active .sc-bar { animation: barGrow 0.9s cubic-bezier(0.16, 1, 0.3, 1); }
+    @keyframes barGrow { from { width: 0; } }
+    #process .stage:not(.active) .filing-line { background: var(--rule-strong); }
+
+    /* The filings page is read: a beam passes down, each line lights as it is read */
+    .doc-scan { opacity: 0; filter: drop-shadow(0 0 2px rgba(90, 174, 232, 0.9)); }
+    .doc-read rect { transform-box: fill-box; transform-origin: left center; transform: scaleX(0); }
+    .stage.active .doc-scan { animation: docScan 3.2s linear infinite; }
+    .stage.active .doc-read rect { animation: docRead 3.2s cubic-bezier(0.16, 1, 0.3, 1) infinite; }
+    .stage.active .doc-read rect:nth-child(1) { animation-delay: 0.44s; }
+    .stage.active .doc-read rect:nth-child(2) { animation-delay: 0.87s; }
+    .stage.active .doc-read rect:nth-child(3) { animation-delay: 1.29s; }
+    .stage.active .doc-read rect:nth-child(4) { animation-delay: 1.72s; }
+    .stage.active .doc-read rect:nth-child(5) { animation-delay: 2.15s; }
+    @keyframes docScan {
+      0% { transform: translateY(0); opacity: 0; }
+      6% { opacity: 1; }
+      75% { transform: translateY(36px); opacity: 1; }
+      85%, 100% { transform: translateY(36px); opacity: 0; }
+    }
+    @keyframes docRead {
+      0% { transform: scaleX(0); opacity: 1; }
+      10% { transform: scaleX(1); opacity: 1; }
+      60% { transform: scaleX(1); opacity: 1; }
+      75%, 100% { transform: scaleX(1); opacity: 0; }
+    }
+    @media (max-width: 900px) { #process .stage.active { transform: none; } }
+    @media (prefers-reduced-motion: reduce) { #process .stage.active { transform: none; } .doc-read rect { transform: none; } }
+
+    /* ── Shared by all three flowing variants: fewer hard edges ── */
+    .section-rule { display: none; }
+    .treemap { gap: 8px; background: transparent !important; border: 0 !important; overflow: visible; }
+    .col-left, .col-mid, .col-right, .col-right-row3 { gap: 8px; }
+    .sector-cell { border-radius: 14px; box-shadow: 0 1px 2px rgba(15, 37, 64, 0.06); transition: background 0.2s, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s; }
+    .sector-cell:hover { transform: translateY(-2px); box-shadow: 0 10px 24px -14px rgba(15, 37, 64, 0.35); }
+    .btn { border-radius: 999px; padding: 0.8rem 1.5rem; }
+    .form-group input, .form-group textarea { border-radius: 12px; }
+    .submit-btn { border-radius: 999px; }
+    .contact-box { border-radius: 20px; border: 0; box-shadow: 0 20px 40px -24px rgba(15, 37, 64, 0.3); }
+    .team-leader .card-visual, .team-card .card-visual { border-radius: 16px; overflow: hidden; }
+    .team-leader, .team-card { border-top: 0; }
+    .team-card:last-child { border-bottom: 0; }
+    #process .stage { border-radius: 18px; }
+    .about-step { border-top: 0; }
+    @media (max-width: 900px) { .treemap { gap: 8px; } }
+    /* ── R3 · PROPOSAL 1 ──
+       Proposal 3 base + Thread team cards + Layers holdings, About and Process. Straight section edges. */
+
+    /* Team: soft white cards (from Thread) */
+    #team { background: #f6f8fb; }
+    .team-leader, .team-card { padding: 1.5rem; margin-bottom: 1rem; background: #ffffff; border-radius: 20px; box-shadow: 0 1px 2px rgba(15, 37, 64, 0.05), 0 10px 24px -18px rgba(15, 37, 64, 0.22); }
+
+    /* Investment Process: a white panel that rises into the hero (from Layers) */
+    #hero { padding-bottom: calc(clamp(4rem, 9vw, 7rem) + 140px); }
+    #process { background: transparent; margin-top: -170px; position: relative; z-index: 2; padding-top: 0; }
+    #process .process-inner { background: #ffffff; border-radius: 28px; padding: clamp(2rem, 4vw, 3.25rem) clamp(1.25rem, 3vw, 2.75rem); box-shadow: 0 30px 60px -30px rgba(15, 37, 64, 0.35); }
+    #process .stage { background: #f4f7fb; border-color: transparent; }
+    #process .stage.active { background: #ffffff; border-color: #2c6cb0; }
+
+    /* About: steps swing left and right, figures in soft panels (from Layers) */
+    .about-step:nth-child(even) .about-copy { order: 2; }
+    .about-visual { border-top: 0; background: #f4f7fb; border-radius: 22px; padding: clamp(1.4rem, 3vw, 2rem); }
+
+    /* About: stage labels read as headings, not captions */
+    .about-stage { font-family: var(--font-display); font-size: clamp(1.5rem, 2.4vw, 1.9rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.01em; margin-bottom: 0.9rem; }
+
+    /* Holdings: the three small sectors carry their largest company */
+    .col-right { grid-template-rows: minmax(min-content, 1.4fr) minmax(min-content, 1fr) minmax(min-content, 1fr) auto; }
+    .sector-cell.tiny { justify-content: flex-start; gap: 0.5rem; }
+    .tiny-logo { display: flex; align-items: center; justify-content: center; height: 34px; margin-top: 0.35rem; }
+    .tiny-logo img { max-height: 100%; max-width: 96%; object-fit: contain; }
+    .tiny-name { font-size: 0.72rem; font-weight: 600; color: var(--ink-2); text-align: center; line-height: 1.25; }
+
+    @media (max-width: 900px) {
+      #process { margin-top: -120px; }
+      #hero { padding-bottom: calc(4rem + 110px); }
+      .about-step:nth-child(even) .about-copy { order: 0; }
+      /* holdings: keep the logo clear of the weight figure */
+      .company-logo-area, .sector-cell.small .company-logo-area { justify-content: flex-end; padding-right: 1.1rem; }
+      .sector-cell .company-logo, .sector-cell.small .company-logo, .ai2-map .sector-cell .company-logo, .ai2-map .sector-cell.small .company-logo { max-width: 46% !important; max-height: 36px !important; }
+    }
+    .card-credentials .cred { white-space: nowrap; }
+
+    /* AI² holdings: United States | China, each split into four AI tiers */
+    .ai2-map { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    #products .ai2-map .sector-cell { --ink: #1F2A44; --ink-2: #435069; --ink-3: #5f6b80; }
+    .ai2-region { display: grid; grid-template-rows: auto minmax(260px, auto) minmax(220px, auto); gap: 8px; }
+    .ai2-region-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding: 0 0.15rem 0.35rem; border-bottom: 2px solid #5aaee8; margin-bottom: 0.35rem; }
+    .ai2-region-name { font-family: var(--font-display); font-size: 1.15rem; color: #fff; }
+    .ai2-region-meta { font-size: 0.8rem; color: rgba(255,255,255,0.7); }
+    .ai2-row { display: grid; gap: 8px; }
+    .ai2-row .sector-cell { padding: 0.95rem 0.9rem; }
+    .ai2-row .sector-pct { font-size: 1.35rem; }
+    .ai2-row .holding-name { font-size: 0.74rem; }
+    .ai2-map .sector-cell.small .company-logo { max-width: 78%; max-height: 40px; }
+    .ai2-map .sector-cell .company-logo[src$="ANTA.svg"], .ai2-map .sector-cell .company-logo[src$="SMIC.svg"], .ai2-map .sector-cell .company-logo[src$="INS.png"] { max-height: 56px; }
+    @media (max-width: 900px) { .ai2-map { grid-template-columns: 1fr; gap: 2rem; } .ai2-row { grid-template-columns: 1fr !important; } .ai2-region { grid-template-rows: auto; } }
 
   </style>
 </head>
 <body>
-<canvas id="signalCanvas" aria-hidden="true" role="presentation"></canvas>
 
 <!-- NAV -->
 <nav id="navbar">
@@ -1633,10 +638,10 @@
     <span class="nav-logo-text">Board<span>AM</span></span>
   </a>
   <ul class="nav-links">
-    <li><a href="#about">About</a></li>
     <li><a href="#process">Process</a></li>
+    <li><a href="#about">About</a></li>
     <li><a href="#team">Team</a></li>
-    <li><a href="#portfolios">Portfolios</a></li>
+    <li><a href="#products">Products</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="https://external-dashboard-324024657987.us-central1.run.app/" target="_blank" rel="noopener noreferrer" class="nav-cta">Live Returns</a></li>
   </ul>
@@ -1646,27 +651,23 @@
 </nav>
 
 <div class="nav-mobile" id="navMobile">
-  <a href="#about" onclick="closeMobileNav()">About</a>
   <a href="#process" onclick="closeMobileNav()">Process</a>
+  <a href="#about" onclick="closeMobileNav()">About</a>
   <a href="#team" onclick="closeMobileNav()">Team</a>
-  <a href="#portfolios" onclick="closeMobileNav()">Portfolios</a>
+  <a href="#products" onclick="closeMobileNav()">Products</a>
   <a href="#contact" onclick="closeMobileNav()">Contact</a>
   <a href="https://external-dashboard-324024657987.europe-west1.run.app/" target="_blank" rel="noopener noreferrer" onclick="closeMobileNav()">Live Returns →</a>
 </div>
 
 <!-- HERO -->
 <section id="hero">
-  <div class="hero-grid"></div>
-  <div class="hero-radial"></div>
-  <canvas id="heroCanvas" aria-hidden="true" role="presentation"></canvas>
-  <div class="hero-logo-wrap">
-    <img src="static/BoardAM_Logo.svg" class="hero-logo" alt="BoardAM">
-    <div class="hero-divider"></div>
-    <h1 class="hero-statement">We measure the people<br>behind <em>performance.</em></h1>
-    <p class="hero-body">Every great company is a reflection of its leadership.</p>
-  </div>
-    <div class="scroll-indicator">
-    <div class="scroll-line"></div>
+  <div class="hero-inner">
+    <img src="static/BoardAM_Logo.svg" class="hero-logo" alt="BoardAM, first principles investing">
+    <h1 class="hero-statement">We measure the people<br> behind <em>performance.</em></h1>
+    <div class="hero-foot">
+      <p class="hero-body">Every great company is a reflection of its leadership.</p>
+      <div class="btn-row"><a class="btn btn-primary" href="#process">Our process</a><a class="btn btn-secondary" href="#products">Investment products</a></div>
+    </div>
   </div>
 </section>
 
@@ -1675,22 +676,20 @@
   <div class="process-sticky">
     <div class="process-inner">
       <div class="process-header">
-        <div class="process-title">Investment Process</div>
+        <h2 class="process-title">Investment Process</h2>
       </div>
 
       <div class="pipeline">
 
         <!-- STAGE 0 -->
         <div class="stage active" id="stage-0" onclick="goTo(0)">
-          <svg class="stage-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="10" y="6" width="38" height="48" rx="3" fill="#1e3450" stroke="#7aa8d0" stroke-width="1.5"/>
-            <rect x="14" y="12" width="30" height="4" rx="1.5" fill="#7aa8d0" opacity="0.7"/>
-            <rect x="14" y="20" width="24" height="3" rx="1.5" fill="#7aa8d0" opacity="0.5"/>
-            <rect x="14" y="27" width="28" height="3" rx="1.5" fill="#7aa8d0" opacity="0.5"/>
-            <rect x="14" y="34" width="20" height="3" rx="1.5" fill="#7aa8d0" opacity="0.4"/>
-            <rect x="14" y="41" width="26" height="3" rx="1.5" fill="#7aa8d0" opacity="0.4"/>
-            <rect x="15" y="2"  width="38" height="48" rx="3" fill="#162335" stroke="#2e5070" stroke-width="1" opacity="0.6"/>
-            <rect x="12" y="4"  width="38" height="48" rx="3" fill="#111e2f" stroke="#2e5070" stroke-width="1" opacity="0.8"/>
+          <svg class="stage-icon doc-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="17" y="3" width="36" height="46" rx="3" fill="#e3ebf4" stroke="#b6c6d8"/>
+            <path d="M12 8h26l8 8v39a3 3 0 0 1-3 3H12a3 3 0 0 1-3-3V11a3 3 0 0 1 3-3z" fill="#ffffff" stroke="#17406f" stroke-width="1.5"/>
+            <path d="M38 8v8h8" fill="#e3ebf4" stroke="#17406f" stroke-width="1.5" stroke-linejoin="round"/>
+            <g fill="#c9d9ea"><rect x="14" y="21" width="24" height="2.6" rx="1.3"/><rect x="14" y="28" width="28" height="2.6" rx="1.3"/><rect x="14" y="35" width="20" height="2.6" rx="1.3"/><rect x="14" y="42" width="27" height="2.6" rx="1.3"/><rect x="14" y="49" width="16" height="2.6" rx="1.3"/></g>
+            <g class="doc-read" fill="#2c6cb0"><rect x="14" y="21" width="24" height="2.6" rx="1.3"/><rect x="14" y="28" width="28" height="2.6" rx="1.3"/><rect x="14" y="35" width="20" height="2.6" rx="1.3"/><rect x="14" y="42" width="27" height="2.6" rx="1.3"/><rect x="14" y="49" width="16" height="2.6" rx="1.3"/></g>
+            <rect class="doc-scan" x="11" y="17" width="33" height="2" rx="1" fill="#5aaee8"/>
           </svg>
           <div class="stage-title">Company<br>Filings</div>
           <div class="stage-content">
@@ -1711,37 +710,37 @@
         <!-- STAGE 1 -->
         <div class="stage" id="stage-1" onclick="goTo(1)">
           <svg class="stage-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="32" cy="32" r="8"  fill="#1e3450" stroke="#7aa8d0" stroke-width="1.5"/>
-            <circle cx="32" cy="12" r="5"  fill="#162335" stroke="#7aa8d0" stroke-width="1.2"/>
-            <circle cx="32" cy="52" r="5"  fill="#162335" stroke="#7aa8d0" stroke-width="1.2"/>
-            <circle cx="12" cy="22" r="5"  fill="#162335" stroke="#7aa8d0" stroke-width="1.2"/>
-            <circle cx="52" cy="22" r="5"  fill="#162335" stroke="#7aa8d0" stroke-width="1.2"/>
-            <circle cx="12" cy="42" r="5"  fill="#162335" stroke="#7aa8d0" stroke-width="1.2"/>
-            <circle cx="52" cy="42" r="5"  fill="#162335" stroke="#7aa8d0" stroke-width="1.2"/>
-            <line x1="32" y1="32" x2="32" y2="17" stroke="#7aa8d0" stroke-width="1.2" opacity="0.6"/>
-            <line x1="32" y1="32" x2="32" y2="47" stroke="#7aa8d0" stroke-width="1.2" opacity="0.6"/>
-            <line x1="32" y1="32" x2="17" y2="22" stroke="#7aa8d0" stroke-width="1.2" opacity="0.6"/>
-            <line x1="32" y1="32" x2="47" y2="22" stroke="#7aa8d0" stroke-width="1.2" opacity="0.6"/>
-            <line x1="32" y1="32" x2="17" y2="42" stroke="#7aa8d0" stroke-width="1.2" opacity="0.6"/>
-            <line x1="32" y1="32" x2="47" y2="42" stroke="#7aa8d0" stroke-width="1.2" opacity="0.6"/>
+            <circle cx="32" cy="32" r="8"  fill="#c9d9ea" stroke="#17406f" stroke-width="1.5"/>
+            <circle cx="32" cy="12" r="5"  fill="#e3ebf4" stroke="#17406f" stroke-width="1.2"/>
+            <circle cx="32" cy="52" r="5"  fill="#e3ebf4" stroke="#17406f" stroke-width="1.2"/>
+            <circle cx="12" cy="22" r="5"  fill="#e3ebf4" stroke="#17406f" stroke-width="1.2"/>
+            <circle cx="52" cy="22" r="5"  fill="#e3ebf4" stroke="#17406f" stroke-width="1.2"/>
+            <circle cx="12" cy="42" r="5"  fill="#e3ebf4" stroke="#17406f" stroke-width="1.2"/>
+            <circle cx="52" cy="42" r="5"  fill="#e3ebf4" stroke="#17406f" stroke-width="1.2"/>
+            <line x1="32" y1="32" x2="32" y2="17" stroke="#17406f" stroke-width="1.2" opacity="0.6"/>
+            <line x1="32" y1="32" x2="32" y2="47" stroke="#17406f" stroke-width="1.2" opacity="0.6"/>
+            <line x1="32" y1="32" x2="17" y2="22" stroke="#17406f" stroke-width="1.2" opacity="0.6"/>
+            <line x1="32" y1="32" x2="47" y2="22" stroke="#17406f" stroke-width="1.2" opacity="0.6"/>
+            <line x1="32" y1="32" x2="17" y2="42" stroke="#17406f" stroke-width="1.2" opacity="0.6"/>
+            <line x1="32" y1="32" x2="47" y2="42" stroke="#17406f" stroke-width="1.2" opacity="0.6"/>
           </svg>
           <div class="stage-title">Proprietary<br>Model</div>
           <div class="stage-content">
             <div class="model-nodes">
               <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="40" cy="40" r="8" fill="#1e3450" stroke="#7aa8d0" stroke-width="1.5"/>
-                <circle cx="40" cy="14" r="5" fill="#162335" stroke="#7aa8d0" stroke-width="1"/>
-                <circle cx="40" cy="66" r="5" fill="#162335" stroke="#7aa8d0" stroke-width="1"/>
-                <circle cx="14" cy="27" r="5" fill="#162335" stroke="#7aa8d0" stroke-width="1"/>
-                <circle cx="66" cy="27" r="5" fill="#162335" stroke="#7aa8d0" stroke-width="1"/>
-                <circle cx="14" cy="53" r="5" fill="#162335" stroke="#7aa8d0" stroke-width="1"/>
-                <circle cx="66" cy="53" r="5" fill="#162335" stroke="#7aa8d0" stroke-width="1"/>
-                <line x1="40" y1="40" x2="40" y2="19" stroke="#7aa8d0" stroke-width="1" opacity="0.5"/>
-                <line x1="40" y1="40" x2="40" y2="61" stroke="#7aa8d0" stroke-width="1" opacity="0.5"/>
-                <line x1="40" y1="40" x2="19" y2="27" stroke="#7aa8d0" stroke-width="1" opacity="0.5"/>
-                <line x1="40" y1="40" x2="61" y2="27" stroke="#7aa8d0" stroke-width="1" opacity="0.5"/>
-                <line x1="40" y1="40" x2="19" y2="53" stroke="#7aa8d0" stroke-width="1" opacity="0.5"/>
-                <line x1="40" y1="40" x2="61" y2="53" stroke="#7aa8d0" stroke-width="1" opacity="0.5"/>
+                <circle cx="40" cy="40" r="8" fill="#c9d9ea" stroke="#17406f" stroke-width="1.5"/>
+                <circle cx="40" cy="14" r="5" fill="#e3ebf4" stroke="#17406f" stroke-width="1"/>
+                <circle cx="40" cy="66" r="5" fill="#e3ebf4" stroke="#17406f" stroke-width="1"/>
+                <circle cx="14" cy="27" r="5" fill="#e3ebf4" stroke="#17406f" stroke-width="1"/>
+                <circle cx="66" cy="27" r="5" fill="#e3ebf4" stroke="#17406f" stroke-width="1"/>
+                <circle cx="14" cy="53" r="5" fill="#e3ebf4" stroke="#17406f" stroke-width="1"/>
+                <circle cx="66" cy="53" r="5" fill="#e3ebf4" stroke="#17406f" stroke-width="1"/>
+                <line x1="40" y1="40" x2="40" y2="19" stroke="#17406f" stroke-width="1" opacity="0.5"/>
+                <line x1="40" y1="40" x2="40" y2="61" stroke="#17406f" stroke-width="1" opacity="0.5"/>
+                <line x1="40" y1="40" x2="19" y2="27" stroke="#17406f" stroke-width="1" opacity="0.5"/>
+                <line x1="40" y1="40" x2="61" y2="27" stroke="#17406f" stroke-width="1" opacity="0.5"/>
+                <line x1="40" y1="40" x2="19" y2="53" stroke="#17406f" stroke-width="1" opacity="0.5"/>
+                <line x1="40" y1="40" x2="61" y2="53" stroke="#17406f" stroke-width="1" opacity="0.5"/>
               </svg>
             </div>
             <div class="model-badge">AI Scoring Engine<br>Insurance &amp; Banking<br>Risk Framework</div>
@@ -1753,18 +752,18 @@
         <!-- STAGE 2 -->
         <div class="stage" id="stage-2" onclick="goTo(2)">
           <svg class="stage-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="16" y="8"  width="32" height="42" rx="3" fill="#162335" stroke="#2e5070" stroke-width="1" opacity="0.6"/>
-            <rect x="12" y="12" width="32" height="42" rx="3" fill="#1a2d44" stroke="#2e5070" stroke-width="1" opacity="0.8"/>
-            <rect x="8"  y="16" width="32" height="42" rx="3" fill="#1e3450" stroke="#7aa8d0" stroke-width="1.5"/>
-            <rect x="10" y="18" width="28" height="18" rx="2" fill="#0f1e30" opacity="0.6"/>
-            <circle cx="24" cy="27" r="7" fill="#162335" stroke="#7aa8d0" stroke-width="1" opacity="0.5"/>
-            <rect x="10" y="38" width="28" height="3" rx="1" fill="#7aa8d0" opacity="0.8"/>
-            <rect x="10" y="43" width="20" height="2" rx="1" fill="#2e5070"/>
-            <rect x="32" y="43" width="6"  rx="1" height="2" fill="#7aa8d0" opacity="0.7"/>
-            <rect x="10" y="47" width="20" height="2" rx="1" fill="#2e5070"/>
-            <rect x="32" y="47" width="6"  rx="1" height="2" fill="#7aa8d0" opacity="0.7"/>
-            <rect x="10" y="51" width="20" height="2" rx="1" fill="#2e5070"/>
-            <rect x="32" y="51" width="6"  rx="1" height="2" fill="#7aa8d0" opacity="0.7"/>
+            <rect x="16" y="8"  width="32" height="42" rx="3" fill="#e3ebf4" stroke="#7fa3c9" stroke-width="1" opacity="0.6"/>
+            <rect x="12" y="12" width="32" height="42" rx="3" fill="#b6c6d8" stroke="#7fa3c9" stroke-width="1" opacity="0.8"/>
+            <rect x="8"  y="16" width="32" height="42" rx="3" fill="#c9d9ea" stroke="#17406f" stroke-width="1.5"/>
+            <rect x="10" y="18" width="28" height="18" rx="2" fill="#ffffff" opacity="0.6"/>
+            <circle cx="24" cy="27" r="7" fill="#e3ebf4" stroke="#17406f" stroke-width="1" opacity="0.5"/>
+            <rect x="10" y="38" width="28" height="3" rx="1" fill="#17406f" opacity="0.8"/>
+            <rect x="10" y="43" width="20" height="2" rx="1" fill="#7fa3c9"/>
+            <rect x="32" y="43" width="6"  rx="1" height="2" fill="#17406f" opacity="0.7"/>
+            <rect x="10" y="47" width="20" height="2" rx="1" fill="#7fa3c9"/>
+            <rect x="32" y="47" width="6"  rx="1" height="2" fill="#17406f" opacity="0.7"/>
+            <rect x="10" y="51" width="20" height="2" rx="1" fill="#7fa3c9"/>
+            <rect x="32" y="51" width="6"  rx="1" height="2" fill="#17406f" opacity="0.7"/>
           </svg>
           <div class="stage-title">Scorecards</div>
           <div class="stage-content">
@@ -1776,23 +775,23 @@
               <div class="scorecard-body">
                 <div class="sc-row">
                   <div class="sc-metric">Experience</div>
-                  <div class="sc-bar-wrap"><div class="sc-bar" style="--w:95%"></div></div>
-                  <div class="sc-val" data-target="95">0</div>
+                  <div class="sc-bar-wrap"><div class="sc-bar" style="--w:98%"></div></div>
+                  <div class="sc-val" data-target="9.8">9.8</div>
                 </div>
                 <div class="sc-row">
                   <div class="sc-metric">Track Record</div>
-                  <div class="sc-bar-wrap"><div class="sc-bar" style="--w:85%"></div></div>
-                  <div class="sc-val" data-target="85">0</div>
+                  <div class="sc-bar-wrap"><div class="sc-bar" style="--w:99%"></div></div>
+                  <div class="sc-val" data-target="9.9">9.9</div>
                 </div>
                 <div class="sc-row">
                   <div class="sc-metric">Shareholding</div>
-                  <div class="sc-bar-wrap"><div class="sc-bar" style="--w:10%"></div></div>
-                  <div class="sc-val" data-target="10">0</div>
+                  <div class="sc-bar-wrap"><div class="sc-bar" style="--w:94%"></div></div>
+                  <div class="sc-val" data-target="9.4">9.4</div>
                 </div>
                 <div class="sc-row">
                   <div class="sc-metric">BAM Rating</div>
-                  <div class="sc-bar-wrap"><div class="sc-bar" style="--w:71%"></div></div>
-                  <div class="sc-val" data-target="71">0</div>
+                  <div class="sc-bar-wrap"><div class="sc-bar" style="--w:97%"></div></div>
+                  <div class="sc-val" data-target="9.7">9.7</div>
                 </div>
               </div>
             </div>
@@ -1804,30 +803,28 @@
         <!-- STAGE 3 -->
         <div class="stage" id="stage-3" onclick="goTo(3)">
           <svg class="stage-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="32" cy="32" r="22" fill="#0f1e30" stroke="#2e5070" stroke-width="1"/>
-            <path d="M32 32 L32 10 A22 22 0 0 1 51 43 Z" fill="#7aa8d0" opacity="0.8"/>
-            <path d="M32 32 L51 43 A22 22 0 0 1 18 52 Z" fill="#4a7a9a" opacity="0.7"/>
-            <path d="M32 32 L18 52 A22 22 0 0 1 14 22 Z" fill="#2e5070" opacity="0.6"/>
-            <path d="M32 32 L14 22 A22 22 0 0 1 32 10 Z" fill="#1e3450" opacity="0.8"/>
-            <circle cx="32" cy="32" r="8" fill="#1F2A44"/>
+            <circle cx="32" cy="32" r="21" fill="none" stroke="#7fa3c9" stroke-width="1" opacity="0.35"/>
+            <circle cx="32" cy="32" r="15" pathLength="100" fill="none" stroke="#17406f" stroke-width="9" stroke-dasharray="37.6 62.4" stroke-dashoffset="-0.70" transform="rotate(-90 32 32)" data-len="37.6"/>
+            <circle cx="32" cy="32" r="15" pathLength="100" fill="none" stroke="#2c6cb0" stroke-width="9" stroke-dasharray="10.6 89.4" stroke-dashoffset="-39.70" transform="rotate(-90 32 32)" data-len="10.6"/>
+            <circle cx="32" cy="32" r="15" pathLength="100" fill="none" stroke="#7fa3c9" stroke-width="9" stroke-dasharray="8.6 91.4" stroke-dashoffset="-51.70" transform="rotate(-90 32 32)" data-len="8.6"/>
+            <circle cx="32" cy="32" r="15" pathLength="100" fill="none" stroke="#c9d9ea" stroke-width="9" stroke-dasharray="37.6 62.4" stroke-dashoffset="-61.70" transform="rotate(-90 32 32)" data-len="37.6"/>
           </svg>
           <div class="stage-title">Portfolio<br>Construction</div>
           <div class="stage-content">
             <div class="pie-wrap">
               <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="40" cy="40" r="28" fill="#0f1e30" stroke="#0f1e30" stroke-width="1"/>
-                <circle id="seg1" cx="40" cy="40" r="17" fill="none" stroke="#7aa8d0" stroke-width="12" stroke-dasharray="0 107" stroke-dashoffset="27"  transform="rotate(-90 40 40)"/>
-                <circle id="seg2" cx="40" cy="40" r="17" fill="none" stroke="#4a7a9a" stroke-width="12" stroke-dasharray="0 107" stroke-dashoffset="-8"   transform="rotate(-90 40 40)"/>
-                <circle id="seg3" cx="40" cy="40" r="17" fill="none" stroke="#2e5070" stroke-width="12" stroke-dasharray="0 107" stroke-dashoffset="-21"  transform="rotate(-90 40 40)"/>
-                <circle id="seg4" cx="40" cy="40" r="17" fill="none" stroke="#1e3450" stroke-width="12" stroke-dasharray="0 107" stroke-dashoffset="-35"  transform="rotate(-90 40 40)"/>
-                <circle cx="40" cy="40" r="10" fill="#1F2A44"/>
+                <circle cx="40" cy="40" r="26" fill="none" stroke="#e3ebf4" stroke-width="11"/>
+                <circle id="seg1" class="pie-seg" cx="40" cy="40" r="26" pathLength="100" fill="none" stroke="#17406f" stroke-width="11" stroke-dasharray="37.6 62.4" stroke-dashoffset="-0.70" transform="rotate(-90 40 40)" data-len="37.6"/>
+                <circle id="seg2" class="pie-seg" cx="40" cy="40" r="26" pathLength="100" fill="none" stroke="#2c6cb0" stroke-width="11" stroke-dasharray="10.6 89.4" stroke-dashoffset="-39.70" transform="rotate(-90 40 40)" data-len="10.6"/>
+                <circle id="seg3" class="pie-seg" cx="40" cy="40" r="26" pathLength="100" fill="none" stroke="#7fa3c9" stroke-width="11" stroke-dasharray="8.6 91.4" stroke-dashoffset="-51.70" transform="rotate(-90 40 40)" data-len="8.6"/>
+                <circle id="seg4" class="pie-seg" cx="40" cy="40" r="26" pathLength="100" fill="none" stroke="#c9d9ea" stroke-width="11" stroke-dasharray="37.6 62.4" stroke-dashoffset="-61.70" transform="rotate(-90 40 40)" data-len="37.6"/>
               </svg>
             </div>
             <div class="port-legend">
-              <div class="port-row"><span class="port-dot" style="background:#7aa8d0"></span>Technology<span class="port-pct">39%</span></div>
-              <div class="port-row"><span class="port-dot" style="background:#4a7a9a"></span>Financials<span class="port-pct">12%</span></div>
-              <div class="port-row"><span class="port-dot" style="background:#2e5070"></span>Comm. Services<span class="port-pct">10%</span></div>
-              <div class="port-row"><span class="port-dot" style="background:#1e3450"></span>Other<span class="port-pct">39%</span></div>
+              <div class="port-row"><span class="port-dot" style="background:#17406f"></span>Technology<span class="port-pct">39%</span></div>
+              <div class="port-row"><span class="port-dot" style="background:#2c6cb0"></span>Financials<span class="port-pct">12%</span></div>
+              <div class="port-row"><span class="port-dot" style="background:#7fa3c9"></span>Comm. Services<span class="port-pct">10%</span></div>
+              <div class="port-row"><span class="port-dot" style="background:#c9d9ea"></span>Other<span class="port-pct">39%</span></div>
             </div>
           </div>
         </div>
@@ -1854,174 +851,94 @@
 <!-- ABOUT -->
 <section id="about" class="section-wrap">
   <div class="section-container">
-    <div class="section-eyebrow">About</div>
+    <h2 class="section-title">About</h2>
 
-    <!-- Pillars -->
-    <div class="about-pillars">
+    <ol class="about-steps">
 
-      <!-- Pillar 1: Philosophy -->
-      <div class="about-pillar">
-        <div class="about-pillar-visual">
-          <svg class="about-pillar-svg" viewBox="0 0 400 260" width="100%" height="420px" style="transform: scale(1.2); transform-origin: center;" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <marker id="ap1" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
-                <path d="M0,0 L0,6 L8,3 z" fill="#7aa8d0" opacity="0.7"/>
-              </marker>
-            </defs>
-
-            <!-- Row 1 (left → ight) -->
-            <rect x="20" y="40" width="140" height="58" rx="6" fill="#111e2f" stroke="#1e3450"/>
-            <text x="90" y="66" fill="#E8DCC8" font-family="DM Sans,sans-serif" font-size="9" text-anchor="middle" font-weight="500">MANAGEMENT</text>
-            <text x="90" y="80" fill="#7aa8d0" font-family="DM Sans,sans-serif" font-size="8" text-anchor="middle">DECISIONS</text>
-
-            <!-- arrow right -->
-            <line x1="162" y1="69" x2="238" y2="69" stroke="#7aa8d0" stroke-opacity="0.7" stroke-width="1.5" marker-end="url(#ap1)"/>
-
-            <rect x="240" y="40" width="140" height="58" rx="6" fill="#111e2f" stroke="#1e3450"/>
-            <text x="310" y="66" fill="#E8DCC8" font-family="DM Sans,sans-serif" font-size="9" text-anchor="middle" font-weight="500">PRODUCT</text>
-            <text x="310" y="80" fill="#7aa8d0" font-family="DM Sans,sans-serif" font-size="8" text-anchor="middle">STRATEGY</text>
-
-            
-            <!-- snake turn: arrow down the right side -->
-            <line x1="310" y1="98" x2="310" y2="152" stroke="#7aa8d0" stroke-opacity="0.7" stroke-width="1.5" marker-end="url(#ap1)"/>
-
-            <!-- Row 2 (right → left) -->
-            <rect x="240" y="154" width="140" height="58" rx="6" fill="#111e2f" stroke="#1e3450"/>
-            <text x="310" y="180" fill="#E8DCC8" font-family="DM Sans,sans-serif" font-size="9" text-anchor="middle" font-weight="500">PROFITABILITY</text>
-            <text x="310" y="194" fill="#7aa8d0" font-family="DM Sans,sans-serif" font-size="8" text-anchor="middle">METRICS</text>
-
-            <!-- arrow left -->
-            <line x1="238" y1="183" x2="162" y2="183" stroke="#7aa8d0" stroke-opacity="0.7" stroke-width="1.5" marker-end="url(#ap1)"/>
-
-            <rect x="20" y="154" width="140" height="58" rx="6" fill="#111e2f" stroke="#C6A75E" stroke-opacity="0.5"/>
-            <text x="90" y="180" fill="#E8DCC8" font-family="DM Sans,sans-serif" font-size="9" text-anchor="middle" font-weight="500">SHAREHOLDER</text>
-            <text x="90" y="194" fill="#C6A75E" font-family="DM Sans,sans-serif" font-size="8" text-anchor="middle">VALUE</text>
-
-            <!-- label -->
-            <text x="200" y="235" fill="#3a6080" font-family="DM Mono,monospace" font-size="8" text-anchor="middle" letter-spacing="2">CAUSAL CHAIN · FIRST PRINCIPLES</text>
-          </svg>
+      <!-- Philosophy -->
+      <li class="about-step">
+        <div class="about-rail" aria-hidden="true"><span class="about-node"></span></div>
+        <div class="about-copy">
+          <p class="about-stage">Philosophy</p>
+          <h3 class="about-heading">Management drives outcomes.</h3>
+          <p class="about-text">Every fundamental you can measure, revenue growth, margin expansion, capital efficiency originates in a decision made by a person in a boardroom. We invest at the source, not the symptom.</p>
+          <blockquote class="about-quote">The S&amp;P 500 is not 500 companies. It is 500 leadership teams with 500 distinct decision-making cultures.</blockquote>
         </div>
-        <div class="about-pillar-content">
-          <div class="ab-number">01 · Philosophy</div>
-          <h3 class="ab-title">Management drives outcomes.</h3>
-          <p class="ab-text">Every fundamental you can measure, revenue growth, margin expansion, capital efficiency originates in a decision made by a person in a boardroom. We invest at the source, not the symptom.</p>
-          <div class="ab-accent">
-            <div class="ab-accent-line"></div>
-            <div class="ab-accent-text">The S&amp;P 500 is not 500 companies. It is 500 leadership teams with 500 distinct decision-making cultures.</div>
+        <figure class="about-visual">
+          <ol class="chain">
+            <li class="chain-item"><span class="chain-name">Management</span><span class="chain-sub">Decisions</span></li>
+            <li class="chain-item"><span class="chain-name">Product</span><span class="chain-sub">Strategy</span></li>
+            <li class="chain-item"><span class="chain-name">Profitability</span><span class="chain-sub">Metrics</span></li>
+            <li class="chain-item chain-item--end"><span class="chain-name">Shareholder</span><span class="chain-sub">Value</span></li>
+          </ol>
+          <figcaption class="visual-caption">Causal chain · first principles</figcaption>
+        </figure>
+      </li>
+
+      <!-- Methodology -->
+      <li class="about-step">
+        <div class="about-rail" aria-hidden="true"><span class="about-node"></span></div>
+        <div class="about-copy">
+          <p class="about-stage">Methodology</p>
+          <h3 class="about-heading">Qualitative leadership, made quantitative.</h3>
+          <p class="about-text">We read every company filing in the S&amp;P 500. We score boards across eight dimensions. From track record and shareholding to incentive alignment and governance quality, producing a composite 0–10 leadership score for each company.</p>
+          <blockquote class="about-quote">The same analytical rigour applied to credit risk in banking now applied to the people running public companies.</blockquote>
+        </div>
+        <figure class="about-visual">
+          <table class="scorecard-table">
+            <caption class="visual-caption">Illustrative leadership scorecard</caption>
+            <thead>
+              <tr><th scope="col">Dimension</th><th scope="col" class="num">Score</th></tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">Track Record</th><td class="num"><span class="bar" style="--v:.88"></span>8.8</td></tr>
+              <tr><th scope="row">Shareholding</th><td class="num"><span class="bar" style="--v:.82"></span>8.2</td></tr>
+              <tr><th scope="row">Incentives</th><td class="num"><span class="bar" style="--v:.79"></span>7.9</td></tr>
+              <tr><th scope="row">Experience</th><td class="num"><span class="bar" style="--v:.74"></span>7.4</td></tr>
+              <tr><th scope="row">Qualifications</th><td class="num"><span class="bar" style="--v:.68"></span>6.8</td></tr>
+            </tbody>
+            <tfoot>
+              <tr><th scope="row">Composite score</th><td class="num">7.8</td></tr>
+            </tfoot>
+          </table>
+        </figure>
+      </li>
+
+      <!-- Outcome -->
+      <li class="about-step">
+        <div class="about-rail" aria-hidden="true"><span class="about-node"></span></div>
+        <div class="about-copy">
+          <p class="about-stage">Outcome</p>
+          <h3 class="about-heading">Systematic. Repeatable. Alpha-generating.</h3>
+          <p class="about-text">When you buy great leadership and short poor leadership, the spread compounds. Our process converts a structural edge, access to information the market consistently misprices, into sustained outperformance across market cycles.</p>
+          <blockquote class="about-quote">Leadership quality is persistent. Markets underprice it. That gap is our alpha.</blockquote>
+        </div>
+        <figure class="about-visual">
+          <div class="chart-legend">
+            <span class="legend-item legend-item--bam"><span class="legend-swatch"></span>BAM backtest <strong>14.7%</strong> CAGR</span>
+            <span class="legend-item legend-item--bmk"><span class="legend-swatch"></span>S&amp;P 500 Benchmark <strong>10.6%</strong> CAGR</span>
           </div>
-        </div>
-      </div>
-
-      <!-- Pillar 2: Methodology -->
-      <div class="about-pillar">
-        <div class="about-pillar-visual">
-          <svg class="about-pillar-svg" viewBox="0 0 400 260" width="100%" height="550px" style="transform: scale(1.4); transform-origin: center;" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- scorecard table -->
-            <rect x="40" y="20" width="320" height="36" rx="5" fill="#0f1e30"/>
-            <text x="60" y="43" fill="#C6A75E" font-family="DM Mono,monospace" font-size="9" letter-spacing="1">DIMENSION</text>
-            <text x="290" y="43" fill="#C6A75E" font-family="DM Mono,monospace" font-size="9" letter-spacing="1" text-anchor="middle">SCORE</text>
-
-            <!-- rows -->
-            <rect x="40" y="56" width="320" height="28" rx="0" fill="#111e2f"/>
-            <text x="60" y="74" fill="#E8DCC8" font-family="DM Sans,sans-serif" font-size="10">Track Record</text>
-            <text x="290" y="74" fill="#7aa8d0" font-family="DM Mono,monospace" font-size="11" text-anchor="middle" font-weight="500">88</text>
-            <rect x="300" y="64" width="40" height="8" rx="4" fill="#1e3450"/>
-            <rect x="300" y="64" width="35" height="8" rx="4" fill="#7aa8d0" opacity="0.5"/>
-
-            <rect x="40" y="84" width="320" height="28" rx="0" fill="#0d1928"/>
-            <text x="60" y="102" fill="#E8DCC8" font-family="DM Sans,sans-serif" font-size="10">Shareholding</text>
-            <text x="290" y="102" fill="#7aa8d0" font-family="DM Mono,monospace" font-size="11" text-anchor="middle" font-weight="500">82</text>
-            <rect x="300" y="92" width="40" height="8" rx="4" fill="#1e3450"/>
-            <rect x="300" y="92" width="33" height="8" rx="4" fill="#7aa8d0" opacity="0.5"/>
-
-            <rect x="40" y="112" width="320" height="28" rx="0" fill="#111e2f"/>
-            <text x="60" y="130" fill="#E8DCC8" font-family="DM Sans,sans-serif" font-size="10">Incentives</text>
-            <text x="290" y="130" fill="#7aa8d0" font-family="DM Mono,monospace" font-size="11" text-anchor="middle" font-weight="500">79</text>
-            <rect x="300" y="120" width="40" height="8" rx="4" fill="#1e3450"/>
-            <rect x="300" y="120" width="32" height="8" rx="4" fill="#7aa8d0" opacity="0.5"/>
-
-            <rect x="40" y="140" width="320" height="28" rx="0" fill="#0d1928"/>
-            <text x="60" y="158" fill="#E8DCC8" font-family="DM Sans,sans-serif" font-size="10">Experience</text>
-            <text x="290" y="158" fill="#7aa8d0" font-family="DM Mono,monospace" font-size="11" text-anchor="middle" font-weight="500">74</text>
-            <rect x="300" y="148" width="40" height="8" rx="4" fill="#1e3450"/>
-            <rect x="300" y="148" width="30" height="8" rx="4" fill="#7aa8d0" opacity="0.4"/>
-
-            <rect x="40" y="168" width="320" height="28" rx="0" fill="#111e2f"/>
-            <text x="60" y="186" fill="#E8DCC8" font-family="DM Sans,sans-serif" font-size="10">Qualifications</text>
-            <text x="290" y="186" fill="#7aa8d0" font-family="DM Mono,monospace" font-size="11" text-anchor="middle" font-weight="500">68</text>
-            <rect x="300" y="176" width="40" height="8" rx="4" fill="#1e3450"/>
-            <rect x="300" y="176" width="27" height="8" rx="4" fill="#7aa8d0" opacity="0.4"/>
-
-            <!-- composite -->
-            <rect x="40" y="196" width="320" height="36" rx="0" fill="#0f1e30" stroke="#C6A75E" stroke-opacity="0.3" stroke-width="1"/>
-            <text x="60" y="218" fill="#C6A75E" font-family="DM Sans,sans-serif" font-size="10" font-weight="500">Composite Score</text>
-            <text x="290" y="220" fill="#C6A75E" font-family="DM Mono,monospace" font-size="14" text-anchor="middle" font-weight="500">78.2</text>
-          </svg>
-        </div>
-        <div class="about-pillar-content">
-          <div class="ab-number">02 · Methodology</div>
-          <h3 class="ab-title">Qualitative leadership, made quantitative.</h3>
-          <p class="ab-text">We read every company filing in the S&amp;P 500. We score boards across eight dimensions. From track record and shareholding to incentive alignment and governance quality, producing a composite 0–10 leadership score for each company.</p>
-          <div class="ab-accent">
-            <div class="ab-accent-line"></div>
-            <div class="ab-accent-text">The same analytical rigour applied to credit risk in banking now applied to the people running public companies.</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Pillar 3: Outcome -->
-      <div class="about-pillar">
-        <div class="about-pillar-visual">
-          <svg class="about-pillar-svg" viewBox="0 0 400 240" width="100%" height="480px" style="transform: scale(1.2); transform-origin: center;" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg class="outcome-chart" viewBox="0 0 400 200" preserveAspectRatio="none" aria-label="Illustrative backtest growth of 1 unit, 2005 to 2025: BAM 14.7% CAGR versus S&amp;P 500 benchmark 10.6% CAGR" role="img">
             <defs>
-              <linearGradient id="bamLine" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stop-color="#C6A75E" stop-opacity="0.3"/>
-                <stop offset="100%" stop-color="#C6A75E"/>
-              </linearGradient>
-              <linearGradient id="bmkLine" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stop-color="#3a6080" stop-opacity="0.3"/>
-                <stop offset="100%" stop-color="#3a6080"/>
+              <linearGradient id="bamFill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#2c6cb0" stop-opacity="0.2"/>
+                <stop offset="100%" stop-color="#2c6cb0" stop-opacity="0"/>
               </linearGradient>
             </defs>
-            <!-- axes -->
-            <line x1="50" y1="20" x2="50" y2="185" stroke="#1e3450" stroke-width="1"/>
-            <line x1="50" y1="185" x2="370" y2="185" stroke="#1e3450" stroke-width="1"/>
-
-            <!-- benchmark line -->
-            <polyline points="50,175 110,162 170,148 230,132 290,116 370,95" stroke="url(#bmkLine)" stroke-width="1.5" fill="none" stroke-dasharray="4 3"/>
-
-            <!-- BAM line -->
-            <polyline points="50,175 110,155 170,128 230,100 290,72 370,38" stroke="url(#bamLine)" stroke-width="2.5" fill="none"/>
-
-            <!-- area under BAM -->
-            <polygon points="50,175 50,175 110,155 170,128 230,100 290,72 370,38 370,185" fill="#C6A75E" fill-opacity="0.06"/>
-
-            <!-- labels (Updated: percentages are retained from previous version) -->
-            <text x="375" y="42" fill="#C6A75E" font-family="DM Mono,monospace" font-size="8" font-weight="500">14.7%</text>
-            <text x="375" y="99" fill="#3a6080" font-family="DM Mono,monospace" font-size="8">10.6%</text>
-
-            <!-- y-axis ticks -->
-            <text x="44" y="188" fill="#3a6080" font-family="DM Mono,monospace" font-size="7" text-anchor="end">2005</text>
-            <text x="374" y="196" fill="#3a6080" font-family="DM Mono,monospace" font-size="7" text-anchor="end">2025</text>
-
-            <!-- CAGR callouts (Updated: simplified text retained from previous version) -->
-            <text x="200" y="218" fill="#C6A75E" font-family="DM Mono,monospace" font-size="8.5" text-anchor="middle" font-weight="500">BAM CAGR</text>
-            <text x="200" y="230" fill="#3a6080" font-family="DM Mono,monospace" font-size="8" text-anchor="middle">Benchmark</text>
+            <line class="grid" x1="0" y1="50" x2="400" y2="50"/>
+            <line class="grid" x1="0" y1="100" x2="400" y2="100"/>
+            <line class="grid" x1="0" y1="150" x2="400" y2="150"/>
+            <line class="axis" x1="0" y1="199" x2="400" y2="199"/>
+            <polygon points="0.0,192.0 20.0,190.3 40.0,187.9 60.0,185.6 80.0,183.1 100.0,180.9 120.0,177.6 140.0,172.1 160.0,166.5 180.0,158.7 200.0,151.1 220.0,141.9 240.0,131.8 260.0,126.7 280.0,111.4 300.0,94.7 320.0,75.1 340.0,66.1 360.0,57.0 380.0,41.0 400.0,19.9 400,199 0,199" fill="url(#bamFill)"/>
+            <polyline class="line-bmk" points="0.0,192.0 20.0,190.7 40.0,189.4 60.0,187.8 80.0,186.1 100.0,184.2 120.0,182.2 140.0,179.9 160.0,177.3 180.0,174.5 200.0,171.4 220.0,168.0 240.0,164.2 260.0,160.0 280.0,155.3 300.0,150.2 320.0,144.5 340.0,138.2 360.0,131.2 380.0,123.5 400.0,115.0"/>
+            <polyline class="line-bam" points="0.0,192.0 20.0,190.3 40.0,187.9 60.0,185.6 80.0,183.1 100.0,180.9 120.0,177.6 140.0,172.1 160.0,166.5 180.0,158.7 200.0,151.1 220.0,141.9 240.0,131.8 260.0,126.7 280.0,111.4 300.0,94.7 320.0,75.1 340.0,66.1 360.0,57.0 380.0,41.0 400.0,19.9"/>
           </svg>
-        </div>
-        <div class="about-pillar-content">
-          <div class="ab-number">03 · Outcome</div>
-          <h3 class="ab-title">Systematic. Repeatable. Alpha-generating.</h3>
-          <p class="ab-text">When you buy great leadership and short poor leadership, the spread compounds. Our process converts a structural edge, access to information the market consistently misprices, into sustained outperformance across market cycles.</p>
-          <div class="ab-accent">
-            <div class="ab-accent-line"></div>
-            <div class="ab-accent-text">Leadership quality is persistent. Markets underprice it. That gap is our alpha.</div>
-          </div>
-        </div>
-      </div>
+          <div class="chart-axis"><span>2005</span><span>2025</span></div>
+          <figcaption class="visual-note">Backtest, 2005–2025. Illustrative only; not actual investment returns.</figcaption>
+        </figure>
+      </li>
 
-    </div><!-- /about-pillars -->
-
+    </ol>
   </div>
 </section>
 
@@ -2029,8 +946,8 @@
 
 <!-- TEAM -->
 <section id="team" class="section-wrap">
-  <div class="section-container" style="max-width:1200px">
-    <div class="section-eyebrow">Team</div>
+  <div class="section-container">
+    <h2 class="section-title">Team</h2>
 
     <!-- Johan (CEO leader card) -->
     <div class="team-leader" id="t1">
@@ -2038,10 +955,10 @@
         <img src="./static/BoardAM_Icon.svg" class="card-logo-overlay" alt="BoardAM Logo">
       </div>
       <div class="card-content">
-        <div class="card-number">01 — Founder</div>
-        <div class="card-name">Johan<br>Barkhuysen</div>
+        <div class="card-number">Founder</div>
+        <div class="card-name">Johan Barkhuysen</div>
         <div class="card-role">Chief Executive Officer</div>
-        <div class="card-credentials">Hons BCom · CFA</div>
+        <div class="card-credentials"><span class="cred">Hons BCom</span> · <span class="cred">CFA</span></div>
         <div class="card-divider"></div>
         <p class="card-bio">Founder and CEO of Board Assessment Management and Anomaly Capital. Former Head of Asset Management South Africa at Stonehage Fleming (2023–2025). Previously CEO and Portfolio Manager at Rootstock Investment Management (2008–2023).</p>
         <a href="https://www.linkedin.com/in/johan-barkhuysen-027922172/" target="_blank" rel="noopener noreferrer" class="card-linkedin">
@@ -2056,16 +973,16 @@
 
       <!-- Francois -->
       <div class="team-card" id="t2">
-        <div class="card-visual">
-        <img src="./static/BoardAM_Icon.svg" class="card-logo-overlay" alt="BoardAM Logo">
+        <div class="card-visual card-visual--photo">
+          <img src="./static/team/francois-dercksen.jpg" class="card-photo" alt="Francois Dercksen" width="800" height="1067">
         </div>
         <div class="card-content">
-          <div class="card-number">02 — Co-Founder</div>
-          <div class="card-name">Francois<br>Dercksen</div>
-          <div class="card-role">Data Analyst</div>
-          <div class="card-credentials">BCom Actuarial Science · Stellenbosch</div>
+          <div class="card-number">Co-Founder</div>
+          <div class="card-name">Francois Dercksen</div>
+          <div class="card-role">Quantitative Researcher</div>
+          <div class="card-credentials"><span class="cred">BCom Actuarial Science</span> · <span class="cred">Stellenbosch</span> · <span class="cred">CFA Level I</span></div>
           <div class="card-divider"></div>
-          <p class="card-bio">Co-Founder of Board Assessment Management and Founder of RFX 3D Printing (2025). Currently completing a Bachelor of Commerce in Actuarial Science at Stellenbosch University.</p>
+          <p class="card-bio">Co-Founder of Board Assessment Management and Founder of RFX 3D Printing (2025). Passed CFA Level I (2026). In the final year of a Bachelor of Commerce in Actuarial Science at Stellenbosch University.</p>
           <a href="https://www.linkedin.com/in/francois-dercksen-374828322/" target="_blank" rel="noopener noreferrer" class="card-linkedin">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
             LinkedIn
@@ -2079,12 +996,12 @@
         <img src="./static/BoardAM_Icon.svg" class="card-logo-overlay" alt="BoardAM Logo">
         </div>
         <div class="card-content">
-          <div class="card-number">03 — Analyst</div>
-          <div class="card-name">Rohan van<br>Loggerenberg</div>
+          <div class="card-number">Analyst</div>
+          <div class="card-name">Rohan van Loggerenberg</div>
           <div class="card-role">Data Analyst</div>
-          <div class="card-credentials">BDatSci · Stellenbosch</div>
+          <div class="card-credentials"><span class="cred">BDatSci</span> · <span class="cred">Stellenbosch</span></div>
           <div class="card-divider"></div>
-          <p class="card-bio">Data Analyst at Board Assessment Management. Gold Medal Winner at the Beijing Youth Science Creation Competition for "Optimisation of Artificial Neural Network Training." Currently completing a Bachelor of Data Science at Stellenbosch University.</p>
+          <p class="card-bio">Data Analyst at Board Assessment Management. Gold Medal Winner at the Beijing Youth Science Creation Competition for "Optimisation of Artificial Neural Network Training." In the final year of a Bachelor of Data Science at Stellenbosch University.</p>
           <a href="https://www.linkedin.com/in/rohan-van-loggerenberg-a987b0333/" target="_blank" rel="noopener noreferrer" class="card-linkedin">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
             LinkedIn
@@ -2098,10 +1015,10 @@
         <img src="./static/BoardAM_Icon.svg" class="card-logo-overlay" alt="BoardAM Logo">
         </div>
         <div class="card-content">
-          <div class="card-number">04 — Analyst</div>
-          <div class="card-name">Louis<br>Burger</div>
+          <div class="card-number">Analyst</div>
+          <div class="card-name">Louis Burger</div>
           <div class="card-role">Investment Professional</div>
-          <div class="card-credentials">MEng Ind Eng (Cum Laude) · CFA Level I</div>
+          <div class="card-credentials"><span class="cred">MEng Ind Eng (Cum Laude)</span> · <span class="cred">CFA Level I</span></div>
           <div class="card-divider"></div>
           <p class="card-bio">Data Engineer and Data Scientist at Spatialedge (2024–2026). Led the design and delivery of scalable data pipelines and analytics solutions, ingesting high-volume multi-source data and applying forecasting and classification models to real-world business problems.</p>
           <a href="https://www.linkedin.com/in/louis-willem-burger/" target="_blank" rel="noopener noreferrer" class="card-linkedin">
@@ -2117,217 +1034,401 @@
 
 <div class="section-rule"></div>
 
-<!-- PORTFOLIOS -->
-<section id="portfolios" class="section-wrap" style="padding-bottom: 20px;"> <!-- Reduced padding here -->
-  <div class="section-container" style="max-width:1200px">
-    <div class="section-eyebrow">Portfolios</div>
+<!-- INVESTMENT PRODUCTS -->
+<section id="products" class="section-wrap">
+  <div class="section-container">
+    <h2 class="section-title">Investment Products</h2>
 
-    <div class="portfolio-header" style="margin-bottom: 40px; text-align: center;">
-      <h2 class="portfolio-heading"><em>Leadership-weighted</em> portfolio view.</h2>
-      <div class="holdings-top-label" style="display: inline-block; margin-bottom: 12px;">TOP HOLDINGS PER SECTOR</div>
-      <div class="portfolio-sub">
-        Total Holdings <span class="gold">92</span>
-      </div>
+    <div class="product-tabs" role="tablist" aria-label="Investment products">
+      <button class="product-tab" role="tab" id="tab-bamcor" aria-controls="panel-bamcor" aria-selected="true">BAMCOR</button>
+      <button class="product-tab" role="tab" id="tab-ai2" aria-controls="panel-ai2" aria-selected="false" tabindex="-1">AI<sup>2</sup></button>
+      <span class="product-tab-indicator" aria-hidden="true"></span>
     </div>
 
-    <div class="treemap" style="margin-bottom: 60px;"> <!-- Slightly reduced from 80px -->
-      <div class="col-left">
-        <div class="sector-cell large"
-             data-company="Micron Technology, Inc."
-             data-ticker="MU"
-             data-sector="Information Technology"
-             data-intro="Micron Technology is a leading global producer of memory and storage solutions, including DRAM and NAND flash, critical to computing, mobile, and AI infrastructure demand."
-             data-weight="4.80%" data-mgmt="8.8" data-sector-avg="7.2" data-ceo="Sanjay Mehrotra">
-          <div class="cell-header">
-            <span class="sector-name">Information Technology</span>
-            <span class="sector-pct">39%</span>
+    <!-- BAMCOR -->
+    <div class="product-panel" role="tabpanel" id="panel-bamcor" aria-labelledby="tab-bamcor">
+      <div class="product-intro">
+        <div class="product-intro-copy">
+          <h3 class="product-name">BAMCOR</h3>
+          <p class="product-desc">We invest only in the elite leadership teams of the S&amp;P&nbsp;500. Every company is scored on the people who run it, an analysis guided by state-of-the-art technology and deep industry experience.</p>
+        </div>
+        <dl class="product-facts">
+          <div><dt>Strategy</dt><dd>Best leadership</dd></div>
+          <div><dt>Universe</dt><dd>S&amp;P 500</dd></div>
+          <div><dt>Holdings</dt><dd>≈ 70</dd></div>
+          <div><dt>Region</dt><dd>United States</dd></div>
+          
+        </dl>
+      </div>
+
+      <div class="treemap-head">
+        <h4 class="treemap-title">Top holding per sector</h4>
+        <p class="treemap-legend">Sector weight · holding weight · management score (0–10)</p>
+      </div>
+
+      <div class="treemap">
+        <div class="col-left">
+          <div class="sector-cell large"
+               data-company="Micron Technology, Inc."
+               data-ticker="MU"
+               data-sector="Information Technology"
+               data-intro="Micron Technology is a leading global producer of memory and storage solutions, including DRAM and NAND flash, critical to computing, mobile, and AI infrastructure demand."
+               data-weight="4.80%" data-mgmt="8.8" data-sector-avg="7.2" data-ceo="Sanjay Mehrotra">
+            <div class="cell-header">
+              <span class="sector-name">Information Technology</span>
+              <span class="sector-pct">39%</span>
+            </div>
+            <div class="company-logo-area"><img class="company-logo" src="static/logos/MU.svg" alt="Micron Technology, Inc. logo" onerror="this.remove()">
+              <span class="company-logo-text logo-micron">micron</span>
+            </div>
+            <div class="cell-footer">
+              <div class="holding-name">Micron Technology, Inc. · 4.80%</div>
+              <div class="holding-meta"><span>CEO: <b>Sanjay Mehrotra</b></span><span>Score: <b>8.8</b></span><span>Sector Avg: <b>7.2</b></span></div>
+            </div>
           </div>
-          <div class="company-logo-area">
-            <span class="company-logo-text logo-micron">micron</span>
-          </div>
-          <div class="cell-footer">
-            <div class="holding-name">Micron Technology, Inc. · 4.80%</div>
-            <div class="holding-meta">Sanjay Mehrotra, CEO · Mgmt Score: 8.8 · Sector Avg: 7.2</div>
+
+          <div class="sector-cell medium"
+               data-company="Citigroup Inc."
+               data-ticker="C"
+               data-sector="Financials"
+               data-intro="Citigroup is a global bank offering consumer banking, institutional services, and markets businesses, with an ongoing strategic simplification of its operating structure."
+               data-weight="1.80%" data-mgmt="7.6" data-sector-avg="6.4" data-ceo="Jane N. Fraser">
+            <div class="cell-header">
+              <span class="sector-name">Financials</span>
+              <span class="sector-pct">12%</span>
+            </div>
+            <div class="company-logo-area"><img class="company-logo" src="static/logos/C.svg" alt="Citigroup Inc. logo" onerror="this.remove()">
+              <span class="company-logo-text logo-citigroup">citi</span>
+            </div>
+            <div class="cell-footer">
+              <div class="holding-name">Citigroup Inc. · 1.80%</div>
+              <div class="holding-meta"><span>CEO: <b>Jane N. Fraser</b></span><span>Score: <b>7.6</b></span><span>Sector Avg: <b>6.4</b></span></div>
+            </div>
           </div>
         </div>
 
-        <div class="sector-cell medium"
-             data-company="Citigroup Inc."
-             data-ticker="C"
-             data-sector="Financials"
-             data-intro="Citigroup is a global bank offering consumer banking, institutional services, and markets businesses, with an ongoing strategic simplification of its operating structure."
-             data-weight="1.80%" data-mgmt="7.6" data-sector-avg="6.4" data-ceo="Jane N. Fraser">
-          <div class="cell-header">
-            <span class="sector-name">Financials</span>
-            <span class="sector-pct">12%</span>
+        <div class="col-mid">
+          <div class="sector-cell"
+               data-company="Aptiv PLC"
+               data-ticker="APTV"
+               data-sector="Consumer Discretionary"
+               data-intro="Aptiv develops electrical architectures, software platforms, and autonomous-driving components for major automakers. As vehicles become increasingly software-defined, Aptiv sits near the centre of the EV and autonomy transition."
+               data-weight="7.90%" data-mgmt="7.7" data-sector-avg="6.5" data-ceo="Kevin P. Clark">
+            <div class="cell-header">
+              <span class="sector-name">Consumer Discretionary</span>
+              <span class="sector-pct">9%</span>
+            </div>
+            <div class="company-logo-area"><img class="company-logo" src="static/logos/APTV.svg" alt="Aptiv PLC logo" onerror="this.remove()">
+              <span class="company-logo-text logo-aptiv">·APTIV·</span>
+            </div>
+            <div class="cell-footer">
+              <div class="holding-name">Aptiv PLC · 7.90%</div>
+              <div class="holding-meta"><span>CEO: <b>Kevin P. Clark</b></span><span>Score: <b>7.7</b></span><span>Sector Avg: <b>6.5</b></span></div>
+            </div>
           </div>
-          <div class="company-logo-area">
-            <span class="company-logo-text logo-citigroup">citi</span>
+
+          <div class="sector-cell"
+               data-company="Alphabet Inc."
+               data-ticker="GOOGL"
+               data-sector="Communication Services"
+               data-intro="Alphabet owns Google, Google Cloud, YouTube, Waymo, and other long-duration assets. Its advertising engine produces exceptional cash flow while cloud and AI infrastructure remain major growth vectors."
+               data-weight="10.20%" data-mgmt="8.3" data-sector-avg="6.7" data-ceo="Sundar Pichai">
+            <div class="cell-header">
+              <span class="sector-name">Communication Services</span>
+              <span class="sector-pct">10%</span>
+            </div>
+            <div class="company-logo-area"><img class="company-logo" src="static/logos/GOOGL.svg" alt="Alphabet Inc. logo" onerror="this.remove()">
+              <span class="company-logo-text logo-alphabet">Alphabet</span>
+            </div>
+            <div class="cell-footer">
+              <div class="holding-name">Alphabet Inc. · 10.20%</div>
+              <div class="holding-meta"><span>CEO: <b>Sundar Pichai</b></span><span>Score: <b>8.3</b></span><span>Sector Avg: <b>6.7</b></span></div>
+            </div>
           </div>
-          <div class="cell-footer">
-            <div class="holding-name">Citigroup Inc. · 1.80%</div>
-            <div class="holding-meta">Jane N. Fraser, CEO · Mgmt Score: 7.6 · Sector Avg: 6.4</div>
+
+          <div class="sector-cell"
+               data-company="Johnson & Johnson"
+               data-ticker="JNJ"
+               data-sector="Health Care"
+               data-intro="Johnson & Johnson is a diversified healthcare leader across pharmaceuticals and medical technology. Following the Kenvue separation, the company is more focused on innovative medicine and med-tech execution."
+               data-weight="2.90%" data-mgmt="7.9" data-sector-avg="6.7" data-ceo="Joaquin Duato">
+            <div class="cell-header">
+              <span class="sector-name">Health Care</span>
+              <span class="sector-pct">9%</span>
+            </div>
+            <div class="company-logo-area"><img class="company-logo" src="static/logos/JNJ.svg" alt="Johnson & Johnson logo" onerror="this.remove()">
+              <span class="company-logo-text logo-jnj">Johnson&amp;Johnson</span>
+            </div>
+            <div class="cell-footer">
+              <div class="holding-name">Johnson & Johnson · 2.90%</div>
+              <div class="holding-meta"><span>CEO: <b>Joaquin Duato</b></span><span>Score: <b>7.9</b></span><span>Sector Avg: <b>6.7</b></span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-right">
+          <div class="sector-cell medium"
+               data-company="Automatic Data Processing"
+               data-ticker="ADP"
+               data-sector="Industrials"
+               data-intro="Automatic Data Processing is a leading provider of human capital management, payroll, and workforce solutions, with a scaled, recurring-revenue client base across businesses of all sizes."
+               data-weight="1.20%" data-mgmt="8.1" data-sector-avg="6.5" data-ceo="Maria Black">
+            <div class="cell-header">
+              <span class="sector-name">Industrials</span>
+              <span class="sector-pct">8%</span>
+            </div>
+            <div class="company-logo-area"><img class="company-logo" src="static/logos/ADP.svg" alt="Automatic Data Processing logo" onerror="this.remove()">
+              <span class="company-logo-text logo-adp">ADP</span>
+            </div>
+            <div class="cell-footer">
+              <div class="holding-name">Automatic Data Processing · 1.20%</div>
+              <div class="holding-meta"><span>CEO: <b>Maria Black</b></span><span>Score: <b>8.1</b></span><span>Sector Avg: <b>6.5</b></span></div>
+            </div>
+          </div>
+
+          <div class="sector-cell small"
+               data-company="Sysco Corp"
+               data-ticker="SYY"
+               data-sector="Consumer Staples"
+               data-intro="Sysco is North America's largest foodservice distribution company. Its logistics scale and customer network create durable competitive advantages."
+               data-weight="0.90%" data-mgmt="10.0" data-sector-avg="6.7" data-ceo="Kevin Hourican">
+            <div class="cell-header">
+              <span class="sector-name">Consumer Staples</span>
+              <span class="sector-pct">5%</span>
+            </div>
+            <div class="company-logo-area"><img class="company-logo" src="static/logos/SYY.svg" alt="Sysco Corp logo" onerror="this.remove()">
+              <span class="company-logo-text logo-sysco">Sysco</span>
+            </div>
+            <div class="cell-footer">
+              <div class="holding-name">Sysco Corp · 0.90%</div>
+              <div class="holding-meta"><span>CEO: <b>Kevin Hourican</b></span><span>Score: <b>10.0</b></span><span>Sector Avg: <b>6.7</b></span></div>
+            </div>
+          </div>
+
+          <div class="sector-cell small"
+               data-company="Chevron Corp"
+               data-ticker="CVX"
+               data-sector="Energy"
+               data-intro="Chevron is a major integrated energy company with disciplined capital allocation, a strong balance sheet, and a long history of shareholder returns."
+               data-weight="1.20%" data-mgmt="9.7" data-sector-avg="6.3" data-ceo="Mike Wirth">
+            <div class="cell-header">
+              <span class="sector-name">Energy</span>
+              <span class="sector-pct">3%</span>
+            </div>
+            <div class="company-logo-area"><img class="company-logo" src="static/logos/CVX.svg" alt="Chevron Corp logo" onerror="this.remove()">
+              <span class="company-logo-text logo-chevron">Chevron</span>
+            </div>
+            <div class="cell-footer">
+              <div class="holding-name">Chevron · 1.20%</div>
+              <div class="holding-meta"><span>CEO: <b>Mike Wirth</b></span><span>Score: <b>9.7</b></span><span>Sector Avg: <b>6.3</b></span></div>
+            </div>
+          </div>
+
+          <div class="col-right-row3">
+            <div class="sector-cell tiny sector-only">
+              <div class="cell-header">
+                <span class="sector-name">Utilities</span>
+                <span class="sector-pct">2%</span>
+              </div>
+              <div class="tiny-logo"><img src="static/logos/PCG.svg" alt="PG&amp;E Corporation logo" onerror="this.parentNode.remove()"></div>
+              <div class="tiny-name">PG&amp;E Corporation</div>
+            </div>
+            <div class="sector-cell tiny sector-only">
+              <div class="cell-header">
+                <span class="sector-name">Materials</span>
+                <span class="sector-pct">2%</span>
+              </div>
+              <div class="tiny-logo"><img src="static/logos/CTVA.svg" alt="Corteva, Inc. logo" onerror="this.parentNode.remove()"></div>
+              <div class="tiny-name">Corteva, Inc.</div>
+            </div>
+            <div class="sector-cell tiny sector-only">
+              <div class="cell-header">
+                <span class="sector-name">Real Estate</span>
+                <span class="sector-pct">2%</span>
+              </div>
+              <div class="tiny-logo"><img src="static/logos/REG.svg" alt="Regency Centers logo" onerror="this.parentNode.remove()"></div>
+              <div class="tiny-name">Regency Centers</div>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="col-mid">
-        <div class="sector-cell"
-             data-company="Aptiv PLC"
-             data-ticker="APTV"
-             data-sector="Consumer Discretionary"
-             data-intro="Aptiv develops electrical architectures, software platforms, and autonomous-driving components for major automakers. As vehicles become increasingly software-defined, Aptiv sits near the centre of the EV and autonomy transition."
-             data-weight="7.90%" data-mgmt="7.7" data-sector-avg="6.5" data-ceo="Kevin P. Clark">
-          <div class="cell-header">
-            <span class="sector-name">Consumer Discretionary</span>
-            <span class="sector-pct">9%</span>
+      <p class="product-note">Illustrative portfolio. Weights and management scores are shown to explain the method and are not a recommendation or a record of actual holdings.</p>
+    </div>
+
+    <!-- AI² -->
+    <div class="product-panel" role="tabpanel" id="panel-ai2" aria-labelledby="tab-ai2" hidden>
+      <div class="product-intro">
+        <div class="product-intro-copy">
+          <h3 class="product-name">AI<sup>2</sup></h3>
+          <p class="product-desc">AI-targeted investing, using state-of-the-art AI. We look beyond the AI companies themselves to the impact they have across the wider economy.</p>
+        </div>
+        <dl class="product-facts">
+          <div><dt>Strategy</dt><dd>AI focus, based on leadership, financials and market position</dd></div>
+          <div><dt>Universe</dt><dd>Russell 3000 · Hang Seng Composite (HSCI)</dd></div>
+          <div><dt>Holdings</dt><dd>≈ 100</dd></div>
+          <div><dt>Region</dt><dd>United States &amp; China</dd></div>
+          
+        </dl>
+      </div>
+      <div class="treemap-head">
+        <h4 class="treemap-title">Top holding per AI tier</h4>
+        <p class="treemap-legend">Tier weight · holding weight (within region) · AI score (0–10)</p>
+      </div>
+
+      <div class="ai2-map">
+        <div class="ai2-region">
+          <div class="ai2-region-head"><span class="ai2-region-name">United States</span><span class="ai2-region-meta">Russell 3000 · 67% of portfolio</span></div>
+          <div class="sector-cell large"
+               data-company="EverQuote, Inc." data-ticker="EVER" data-sector="AI Applications · United States"
+               data-intro="EverQuote runs an online insurance marketplace, using data and machine learning to match consumers with auto, home and life insurers."
+               data-weight="3.35%" data-mgmt="9.0" data-sector-avg="8.4" data-ceo="Jayme Mendal"
+               data-score-label="AI Score" data-avg-label="Tier Avg">
+            <div class="cell-header">
+              <span class="sector-name">AI Applications</span>
+              <span class="sector-pct">47%</span>
+            </div>
+            <div class="company-logo-area"><img class="company-logo" src="static/logos/EVER.png" alt="EverQuote, Inc. logo" onerror="this.remove()"></div>
+            <div class="cell-footer">
+              <div class="holding-name">EverQuote, Inc. · 3.35%</div>
+              <div class="holding-meta"><span>CEO: <b>Jayme Mendal</b></span><span>AI Score: <b>9.0</b></span><span>Tier Avg: <b>8.4</b></span></div>
+            </div>
           </div>
-          <div class="company-logo-area">
-            <span class="company-logo-text logo-aptiv">·APTIV·</span>
+          <div class="ai2-row" style="grid-template-columns: 30fr 16fr 12fr">
+          <div class="sector-cell small"
+               data-company="Arista Networks, Inc." data-ticker="ANET" data-sector="AI Infrastructure · United States"
+               data-intro="Arista Networks builds the high-speed Ethernet switching and software that connect AI and cloud data centres."
+               data-weight="2.59%" data-mgmt="8.8" data-sector-avg="8.4" data-ceo="Jayshree Ullal"
+               data-score-label="AI Score" data-avg-label="Tier Avg">
+            <div class="cell-header">
+              <span class="sector-name">AI Infrastructure</span>
+              <span class="sector-pct">30%</span>
+            </div>
+            <div class="company-logo-area"><img class="company-logo" src="static/logos/ANET.svg" alt="Arista Networks, Inc. logo" onerror="this.remove()"></div>
+            <div class="cell-footer">
+              <div class="holding-name">Arista Networks, Inc. · 2.59%</div>
+              <div class="holding-meta"><span>CEO: <b>Jayshree Ullal</b></span><span>AI Score: <b>8.8</b></span><span>Tier Avg: <b>8.4</b></span></div>
+            </div>
           </div>
-          <div class="cell-footer">
-            <div class="holding-name">Aptiv PLC · 7.90%</div>
-            <div class="holding-meta">Kevin P. Clark, CEO · Mgmt Score: 7.7 · Sector Avg: 6.5</div>
+          <div class="sector-cell small"
+               data-company="NetScout Systems, Inc." data-ticker="NTCT" data-sector="AI Enablers · United States"
+               data-intro="NetScout provides network observability, AIOps, service assurance and DDoS protection for carriers and enterprises."
+               data-weight="2.57%" data-mgmt="8.8" data-sector-avg="8.4" data-ceo="Anil Singhal"
+               data-score-label="AI Score" data-avg-label="Tier Avg">
+            <div class="cell-header">
+              <span class="sector-name">AI Enablers</span>
+              <span class="sector-pct">16%</span>
+            </div>
+            <div class="company-logo-area"><img class="company-logo" src="static/logos/NTCT.svg" alt="NetScout Systems, Inc. logo" onerror="this.remove()"></div>
+            <div class="cell-footer">
+              <div class="holding-name">NetScout Systems, Inc. · 2.57%</div>
+              <div class="holding-meta"><span>CEO: <b>Anil Singhal</b></span><span>AI Score: <b>8.8</b></span><span>Tier Avg: <b>8.4</b></span></div>
+            </div>
+          </div>
+          <div class="sector-cell small"
+               data-company="Dave Inc." data-ticker="DAVE" data-sector="AI Adopters · United States"
+               data-intro="Dave is a US digital bank offering everyday banking and short-term cash advances, underwritten with machine-learning models."
+               data-weight="1.16%" data-mgmt="8.2" data-sector-avg="7.9" data-ceo="Jason Wilk"
+               data-score-label="AI Score" data-avg-label="Tier Avg">
+            <div class="cell-header">
+              <span class="sector-name">AI Adopters</span>
+              <span class="sector-pct">7%</span>
+            </div>
+            <div class="company-logo-area"><img class="company-logo" src="static/logos/DAVE.png" alt="Dave Inc. logo" onerror="this.remove()"></div>
+            <div class="cell-footer">
+              <div class="holding-name">Dave Inc. · 1.16%</div>
+              <div class="holding-meta"><span>CEO: <b>Jason Wilk</b></span><span>AI Score: <b>8.2</b></span><span>Tier Avg: <b>7.9</b></span></div>
+            </div>
+          </div>
           </div>
         </div>
-
-        <div class="sector-cell"
-             data-company="Alphabet Inc."
-             data-ticker="GOOGL"
-             data-sector="Communication Services"
-             data-intro="Alphabet owns Google, Google Cloud, YouTube, Waymo, and other long-duration assets. Its advertising engine produces exceptional cash flow while cloud and AI infrastructure remain major growth vectors."
-             data-weight="10.20%" data-mgmt="8.3" data-sector-avg="6.7" data-ceo="Sundar Pichai">
-          <div class="cell-header">
-            <span class="sector-name">Communication Services</span>
-            <span class="sector-pct">10%</span>
+        <div class="ai2-region">
+          <div class="ai2-region-head"><span class="ai2-region-name">China</span><span class="ai2-region-meta">Hang Seng Composite · 33% of portfolio</span></div>
+          <div class="sector-cell large"
+               data-company="Insilico Medicine" data-ticker="3696.HK" data-sector="AI Applications · China"
+               data-intro="Insilico Medicine uses generative AI to discover and develop new drugs, with its lead programmes in clinical trials."
+               data-weight="4.68%" data-mgmt="8.7" data-sector-avg="8.3" data-ceo="Alex Zhavoronkov"
+               data-score-label="AI Score" data-avg-label="Tier Avg">
+            <div class="cell-header">
+              <span class="sector-name">AI Applications</span>
+              <span class="sector-pct">44%</span>
+            </div>
+            <div class="company-logo-area"><img class="company-logo" src="static/logos/INS.png" alt="Insilico Medicine logo" onerror="this.remove()"></div>
+            <div class="cell-footer">
+              <div class="holding-name">Insilico Medicine · 4.68%</div>
+              <div class="holding-meta"><span>CEO: <b>Alex Zhavoronkov</b></span><span>AI Score: <b>8.7</b></span><span>Tier Avg: <b>8.3</b></span></div>
+            </div>
           </div>
-          <div class="company-logo-area">
-            <span class="company-logo-text logo-alphabet">Alphabet</span>
+          <div class="ai2-row" style="grid-template-columns: 17fr 17fr 23fr">
+          <div class="sector-cell small"
+               data-company="SMIC" data-ticker="0981.HK" data-sector="AI Infrastructure · China"
+               data-intro="Semiconductor Manufacturing International Corporation is China’s largest contract chipmaker."
+               data-weight="3.64%" data-mgmt="8.4" data-sector-avg="8.2" data-ceo="Zhao Haijun (Co-CEO)"
+               data-score-label="AI Score" data-avg-label="Tier Avg">
+            <div class="cell-header">
+              <span class="sector-name">AI Infrastructure</span>
+              <span class="sector-pct">17%</span>
+            </div>
+            <div class="company-logo-area"><img class="company-logo" src="static/logos/SMIC.svg" alt="SMIC logo" onerror="this.remove()"></div>
+            <div class="cell-footer">
+              <div class="holding-name">SMIC · 3.64%</div>
+              <div class="holding-meta"><span>CEO: <b>Zhao Haijun (Co-CEO)</b></span><span>AI Score: <b>8.4</b></span><span>Tier Avg: <b>8.2</b></span></div>
+            </div>
           </div>
-          <div class="cell-footer">
-            <div class="holding-name">Alphabet Inc. · 10.20%</div>
-            <div class="holding-meta">Sundar Pichai, CEO · Mgmt Score: 8.3 · Sector Avg: 6.7</div>
+          <div class="sector-cell small"
+               data-company="Tencent Holdings Ltd." data-ticker="0700.HK" data-sector="AI Enablers · China"
+               data-intro="Tencent runs WeChat, a leading games business and a fast-growing cloud and AI platform built on its own models."
+               data-weight="4.73%" data-mgmt="8.7" data-sector-avg="8.3" data-ceo="Ma Huateng"
+               data-score-label="AI Score" data-avg-label="Tier Avg">
+            <div class="cell-header">
+              <span class="sector-name">AI Enablers</span>
+              <span class="sector-pct">17%</span>
+            </div>
+            <div class="company-logo-area"><img class="company-logo" src="static/logos/TCEHY.png" alt="Tencent Holdings Ltd. logo" onerror="this.remove()"></div>
+            <div class="cell-footer">
+              <div class="holding-name">Tencent Holdings Ltd. · 4.73%</div>
+              <div class="holding-meta"><span>CEO: <b>Ma Huateng</b></span><span>AI Score: <b>8.7</b></span><span>Tier Avg: <b>8.3</b></span></div>
+            </div>
           </div>
-        </div>
-
-        <div class="sector-cell"
-             data-company="Johnson & Johnson"
-             data-ticker="JNJ"
-             data-sector="Health Care"
-             data-intro="Johnson & Johnson is a diversified healthcare leader across pharmaceuticals and medical technology. Following the Kenvue separation, the company is more focused on innovative medicine and med-tech execution."
-             data-weight="2.90%" data-mgmt="7.9" data-sector-avg="6.7" data-ceo="Joaquin Duato">
-          <div class="cell-header">
-            <span class="sector-name">Health Care</span>
-            <span class="sector-pct">9%</span>
+          <div class="sector-cell small"
+               data-company="ANTA Sports Products Ltd." data-ticker="2020.HK" data-sector="AI Adopters · China"
+               data-intro="ANTA Sports is a leading multi-brand sportswear group, including ANTA, FILA and Descente, listed in Hong Kong."
+               data-weight="4.38%" data-mgmt="8.6" data-sector-avg="8.2" data-ceo="Lai Shixian (Co-CEO)"
+               data-score-label="AI Score" data-avg-label="Tier Avg">
+            <div class="cell-header">
+              <span class="sector-name">AI Adopters</span>
+              <span class="sector-pct">23%</span>
+            </div>
+            <div class="company-logo-area"><img class="company-logo" src="static/logos/ANTA.svg" alt="ANTA Sports Products Ltd. logo" onerror="this.remove()"></div>
+            <div class="cell-footer">
+              <div class="holding-name">ANTA Sports Products Ltd. · 4.38%</div>
+              <div class="holding-meta"><span>CEO: <b>Lai Shixian (Co-CEO)</b></span><span>AI Score: <b>8.6</b></span><span>Tier Avg: <b>8.2</b></span></div>
+            </div>
           </div>
-          <div class="company-logo-area">
-            <span class="company-logo-text logo-jnj">Johnson&amp;Johnson</span>
-          </div>
-          <div class="cell-footer">
-            <div class="holding-name">Johnson & Johnson · 2.90%</div>
-            <div class="holding-meta">Joaquin Duato, CEO · Mgmt Score: 7.9 · Sector Avg: 6.7</div>
           </div>
         </div>
       </div>
 
-      <div class="col-right">
-        <div class="sector-cell medium"
-             data-company="Automatic Data Processing"
-             data-ticker="ADP"
-             data-sector="Industrials"
-             data-intro="Automatic Data Processing is a leading provider of human capital management, payroll, and workforce solutions, with a scaled, recurring-revenue client base across businesses of all sizes."
-             data-weight="1.20%" data-mgmt="8.1" data-sector-avg="6.5" data-ceo="Maria Black">
-          <div class="cell-header">
-            <span class="sector-name">Industrials</span>
-            <span class="sector-pct">8%</span>
-          </div>
-          <div class="company-logo-area">
-            <span class="company-logo-text logo-adp">ADP</span>
-          </div>
-          <div class="cell-footer">
-            <div class="holding-name">Automatic Data Processing · 1.20%</div>
-            <div class="holding-meta">Maria Black, CEO · Mgmt Score: 8.1 · Sector Avg: 6.5</div>
-          </div>
-        </div>
-
-        <div class="sector-cell small"
-             data-company="Sysco Corp"
-             data-ticker="SYY"
-             data-sector="Consumer Staples"
-             data-intro="Sysco is North America's largest foodservice distribution company. Its logistics scale and customer network create durable competitive advantages."
-             data-weight="0.90%" data-mgmt="10.0" data-sector-avg="6.7" data-ceo="Kevin Hourican">
-          <div class="cell-header">
-            <span class="sector-name">Consumer Staples</span>
-            <span class="sector-pct">5%</span>
-          </div>
-          <div class="company-logo-area">
-            <span class="company-logo-text logo-sysco">Sysco</span>
-          </div>
-          <div class="cell-footer">
-            <div class="holding-name">Sysco Corp · 0.90%</div>
-            <div class="holding-meta">Kevin Hourican, CEO · Mgmt Score: 10.0 · Sector Avg: 6.7</div>
-          </div>
-        </div>
-
-        <div class="sector-cell small"
-             data-company="Chevron Corp"
-             data-ticker="CVX"
-             data-sector="Energy"
-             data-intro="Chevron is a major integrated energy company with disciplined capital allocation, a strong balance sheet, and a long history of shareholder returns."
-             data-weight="1.20%" data-mgmt="9.7" data-sector-avg="6.3" data-ceo="Mike Wirth">
-          <div class="cell-header">
-            <span class="sector-name">Energy</span>
-            <span class="sector-pct">3%</span>
-          </div>
-          <div class="company-logo-area">
-            <span class="company-logo-text logo-chevron">Chevron</span>
-          </div>
-          <div class="cell-footer">
-            <div class="holding-name">Chevron · 1.20%</div>
-            <div class="holding-meta">Mike Wirth, CEO · Mgmt Score: 9.7 · Sector Avg: 6.3</div>
-          </div>
-        </div>
-
-        <div class="col-right-row3">
-          <div class="sector-cell tiny sector-only">
-            <div class="cell-header">
-              <span class="sector-name">Utilities</span>
-              <span class="sector-pct">2%</span>
-            </div>
-          </div>
-          <div class="sector-cell tiny sector-only">
-            <div class="cell-header">
-              <span class="sector-name">Materials</span>
-              <span class="sector-pct">2%</span>
-            </div>
-          </div>
-          <div class="sector-cell tiny sector-only">
-            <div class="cell-header">
-              <span class="sector-name">Real Estate</span>
-              <span class="sector-pct">2%</span>
-            </div>
-          </div>
-        </div>
-      </div>
+      <p class="product-note">Illustrative portfolio. Tier weights, holding weights and AI scores are shown to explain the method and are not a recommendation or a record of actual holdings.</p>
     </div>
   </div>
 </section>
 
-<!-- Company Popup Logic remains here -->
-
 <!-- CONTACT -->
 <section id="contact" class="section-wrap">
   <div class="section-container">
-    <div class="section-eyebrow">Contact</div>
+    <h2 class="section-title">Contact</h2>
     <div class="contact-box">
       <p class="contact-intro">Get in touch.</p>
       <form id="contactForm" class="contact-form">
-        <div class="form-group"><input type="text"  id="name"    name="name"    placeholder="Name"    required></div>
-        <div class="form-group"><input type="email" id="email"   name="email"   placeholder="Email"   required></div>
-        <div class="form-group"><input type="text"  id="subject" name="subject" placeholder="Subject" required></div>
-        <div class="form-group"><textarea id="message" name="message" placeholder="Message" rows="5" required></textarea></div>
-        <button type="submit" class="submit-btn">Send Message</button>
-        <div id="formStatus"></div>
+        <div class="form-group"><input type="text"  id="name"    name="name"    placeholder="Name"    aria-label="Name"    autocomplete="name"  required></div>
+        <div class="form-group"><input type="email" id="email"   name="email"   placeholder="Email"   aria-label="Email"   autocomplete="email" required></div>
+        <div class="form-group"><input type="text"  id="subject" name="subject" placeholder="Subject" aria-label="Subject" required></div>
+        <div class="form-group"><textarea id="message" name="message" placeholder="Message" aria-label="Message" rows="5" maxlength="5000" required></textarea></div>
+        <div class="form-hp" aria-hidden="true"><label for="company">Company</label><input type="text" id="company" name="company" tabindex="-1" autocomplete="off"></div>
+        <div id="turnstile" class="form-turnstile"></div>
+        <button type="submit" class="submit-btn">Send message</button>
+        <div id="formStatus" role="status" aria-live="polite"></div>
       </form>
     </div>
   </div>
@@ -2354,11 +1455,11 @@
         <div class="popup-stat-value" id="popupCEO"></div>
       </div>
       <div class="popup-stat">
-        <div class="popup-stat-label">Mgmt Score</div>
+        <div class="popup-stat-label" id="popupMgmtLabel">Score</div>
         <div class="popup-stat-value" id="popupMgmt"></div>
       </div>
       <div class="popup-stat">
-        <div class="popup-stat-label">Sector Avg</div>
+        <div class="popup-stat-label" id="popupAvgLabel">Sector Avg</div>
         <div class="popup-stat-value" id="popupAvg"></div>
       </div>
     </div>
@@ -2379,7 +1480,6 @@ const steps = [
   { name: 'Scorecards',             desc: 'Each CEO ranked on Experience, Track Record, Shareholding & BAM Rating' },
   { name: 'Portfolio Construction', desc: 'Top 20% of management teams selected; diversification parameters applied' }
 ];
-const C = 106.8;
 const pieData = [
   { id: 'seg1', pct: 0.393 },
   { id: 'seg2', pct: 0.115 },
@@ -2433,12 +1533,12 @@ function toggleAuto() {
 
 function animateScorecard() {
   document.querySelectorAll('#stage-2 .sc-val').forEach(el => {
-    const target = parseInt(el.dataset.target);
+    const target = parseFloat(el.dataset.target);
     let v = 0;
-    el.textContent = '0';
+    el.textContent = '0.0';
     const tick = () => {
-      v = Math.min(v + 3, target);
-      el.textContent = v;
+      v = Math.min(v + 0.3, target);
+      el.textContent = v.toFixed(1);
       if (v < target) requestAnimationFrame(tick);
     };
     setTimeout(() => requestAnimationFrame(tick), 300);
@@ -2446,14 +1546,18 @@ function animateScorecard() {
 }
 
 function animatePie() {
+  const wrap = document.querySelector('#stage-3 .pie-wrap');
+  wrap.classList.remove('pie-in'); void wrap.offsetWidth; wrap.classList.add('pie-in');
   pieData.forEach((d, i) => {
     const el = document.getElementById(d.id);
-    const len = d.pct * C;
-    const gap = C - len;
+    const len = parseFloat(el.dataset.len);
+    el.style.transition = 'none';
+    el.style.strokeDasharray = '0 100';
+    void el.getBoundingClientRect();
     setTimeout(() => {
-      el.style.transition = 'stroke-dasharray 0.7s ease';
-      el.style.strokeDasharray = len + ' ' + gap;
-    }, i * 180);
+      el.style.transition = 'stroke-dasharray 0.9s cubic-bezier(0.16, 1, 0.3, 1)';
+      el.style.strokeDasharray = len + ' ' + (100 - len);
+    }, 250 + i * 160);
   });
 }
 
@@ -2475,407 +1579,108 @@ const revealObserver = new IntersectionObserver((entries) => {
     }
   });
 }, { threshold: 0.1 });
-document.querySelectorAll('.team-leader, .team-card, .about-pillar, .dim-card').forEach(c => revealObserver.observe(c));
+document.querySelectorAll('.team-leader, .team-card').forEach(c => revealObserver.observe(c));
 
 /* ── CONTACT FORM ── */
-document.getElementById('contactForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-  const name    = document.getElementById('name').value;
-  const email   = document.getElementById('email').value;
-  const subject = document.getElementById('subject').value;
-  const message = document.getElementById('message').value;
-  const mailto  = 'mailto:info@boardam.com?subject=' +
-    encodeURIComponent(subject + ' — from ' + name) +
-    '&body=' + encodeURIComponent('From: ' + name + '\nEmail: ' + email + '\n\n' + message);
-  window.location.href = mailto;
-  document.getElementById('formStatus').textContent = 'Opening your email client…';
-});
-
-/* ── HERO NEURAL-NETWORK ANIMATION ── */
 (function () {
-  var REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var CV = document.getElementById('heroCanvas');
-  if (!CV) return;
-  var cx = CV.getContext('2d');
+  var form = document.getElementById('contactForm');
+  if (!form) return;
+  var status = document.getElementById('formStatus');
+  var btn = form.querySelector('.submit-btn');
+  var siteKey = (document.querySelector('meta[name="turnstile-sitekey"]') || {}).content || '';
+  var tsWidget = null;
 
-  /* Mulberry32 seeded PRNG — same deterministic layout every load */
-  function mRng(seed) {
-    var s = seed >>> 0;
-    return function () {
-      s |= 0; s = (s + 0x6D2B79F5) | 0;
-      var t = Math.imul(s ^ (s >>> 15), 1 | s);
-      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  if (siteKey) {
+    window.onTurnstileLoad = function () {
+      tsWidget = window.turnstile.render('#turnstile', { sitekey: siteKey, theme: 'dark', size: 'flexible' });
     };
+    var s = document.createElement('script');
+    s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit';
+    s.async = true; s.defer = true;
+    document.head.appendChild(s);
   }
 
-  var W = 0, H = 0, nodes = [], edges = [], pulsePath = [];
-  var vigGrad = null, raf = 0, resT = 0, pulsePos = 0, prevTs = 0;
-  var TRAVERSE_MS = 15000; /* 15 s for one full left-to-right sweep */
-
-  function build() {
-    var R   = mRng(0xF00DC0DE);
-    var mob = window.innerWidth < 768;
-    W = CV.width  = CV.parentElement.offsetWidth  || window.innerWidth;
-    H = CV.height = CV.parentElement.offsetHeight || window.innerHeight;
-
-    /* Vignette: transparent centre → darkened edges */
-    vigGrad = cx.createRadialGradient(W * .5, H * .5, Math.min(W, H) * .07,
-                                      W * .5, H * .5, Math.max(W, H) * .80);
-    vigGrad.addColorStop(0,    'rgba(10,18,32,0)');
-    vigGrad.addColorStop(0.44, 'rgba(10,18,32,0)');
-    vigGrad.addColorStop(1,    'rgba(10,18,32,0.84)');
-
-    /* Logo exclusion zone */
-    var EX0 = mob ? 0.20 : 0.26, EX1 = mob ? 0.80 : 0.74;
-    var EY0 = mob ? 0.34 : 0.29, EY1 = mob ? 0.70 : 0.68;
-
-    /* Art-directed zones
-       0: Upper canopy  — primary visible constellation band (62 %)
-       1: Left tendril  — descends along left edge, frames logo (13 %)
-       2: Right tendril — descends along right edge (13 %)
-       3: Lower anchors — faint presence at the base (12 %)           */
-    var N = mob ? 30 : 55;
-    var zoneDefs = [
-      { id: 0, share: 0.62, x0: 0.01, x1: 0.99, y0: 0.02, y1: 0.36 },
-      { id: 1, share: 0.13, x0: 0.01, x1: 0.22, y0: 0.22, y1: 0.86 },
-      { id: 2, share: 0.13, x0: 0.78, x1: 0.99, y0: 0.22, y1: 0.86 },
-      { id: 3, share: 0.12, x0: 0.08, x1: 0.92, y0: 0.78, y1: 0.97 }
-    ];
-
-    nodes = [];
-    zoneDefs.forEach(function (z) {
-      var cnt = Math.round(N * z.share), added = 0, tries = 0;
-      while (added < cnt && tries < cnt * 25) {
-        tries++;
-        var rx = z.x0 + R() * (z.x1 - z.x0);
-        var ry = z.y0 + R() * (z.y1 - z.y0);
-        if (rx > EX0 && rx < EX1 && ry > EY0 && ry < EY1) continue;
-        nodes.push({ x: rx * W, y: ry * H, r: 1.4 + R() * 1.4, zone: z.id, edges: [] });
-        added++;
-      }
-    });
-
-    /* Sparse adjacency — nearest-neighbour, capped degree
-       Edge tuple: [nodeA, nodeB, distance] for proximity-based opacity */
-    var MAX_CD = mob ? 145 : 205, MAX_CD2 = MAX_CD * MAX_CD;
-    edges = [];
-    var edgeSet = {};
-
-    for (var i = 0; i < nodes.length; i++) {
-      var ni = nodes[i];
-      var cands = [];
-      for (var j = 0; j < nodes.length; j++) {
-        if (i === j) continue;
-        var dx = ni.x - nodes[j].x, dy = ni.y - nodes[j].y;
-        var d2 = dx * dx + dy * dy;
-        if (d2 < MAX_CD2) cands.push({ j: j, d: Math.sqrt(d2) });
-      }
-      cands.sort(function (a, b) { return a.d - b.d; });
-      var tgt = (ni.zone === 0 && R() < 0.30) ? 3 : 2;
-      var cnt2 = 0;
-      for (var k = 0; k < cands.length && cnt2 < tgt; k++) {
-        var j2 = cands[k].j;
-        if (ni.edges.length >= 3 || nodes[j2].edges.length >= 3) continue;
-        var key = Math.min(i, j2) + '_' + Math.max(i, j2);
-        if (edgeSet[key]) continue;
-        edgeSet[key] = true;
-        edges.push([i, j2, cands[k].d]);
-        ni.edges.push(j2);
-        nodes[j2].edges.push(i);
-        cnt2++;
-      }
-    }
-
-    /* Pulse route — deterministic L→R sweep through evenly-spaced canopy nodes.
-       Sorted by x, evenly sampled, route edges force-added to the edge list.
-       Guaranteed non-empty regardless of graph connectivity.              */
-    var canopy = [];
-    nodes.forEach(function (n, idx) { if (n.zone === 0) canopy.push(idx); });
-    canopy.sort(function (a, b) { return nodes[a].x - nodes[b].x; });
-
-    var routeCount = mob ? 5 : 10;
-    var route = [];
-    if (canopy.length > 1) {
-      var step2 = (canopy.length - 1) / (routeCount - 1);
-      for (var ri = 0; ri < routeCount && ri < canopy.length; ri++) {
-        route.push(canopy[Math.round(ri * step2)]);
-      }
-    } else {
-      route = canopy.slice();
-    }
-
-    pulsePath = [];
-    for (var p = 0; p < route.length - 1; p++) {
-      var ra = route[p], rb = route[p + 1];
-      var rkey = Math.min(ra, rb) + '_' + Math.max(ra, rb);
-      if (!edgeSet[rkey]) {
-        var rdx = nodes[ra].x - nodes[rb].x, rdy = nodes[ra].y - nodes[rb].y;
-        edgeSet[rkey] = true;
-        edges.push([ra, rb, Math.sqrt(rdx * rdx + rdy * rdy)]);
-        nodes[ra].edges.push(rb);
-        nodes[rb].edges.push(ra);
-      }
-      pulsePath.push([ra, rb]);
-    }
-
-    pulsePos = 0;
+  function setStatus(msg, kind) {
+    status.textContent = msg;
+    status.className = kind || '';
   }
 
-  /* drawEdges / drawNodes split so pulse trail layers between
-     base edges (bottom) and nodes (top) for correct visual depth. */
-  function drawEdges() {
-    for (var i = 0; i < edges.length; i++) {
-      var e = edges[i];
-      var ea = nodes[e[0]], eb = nodes[e[1]];
-      var prox = Math.max(0, 1 - e[2] / 160) * 0.06;
-      var base = (ea.zone === 0 && eb.zone === 0) ? 0.12 : 0.07;
-      cx.strokeStyle = 'rgba(112,138,168,' + (base + prox) + ')';
-      cx.lineWidth   = (ea.zone === 0 && eb.zone === 0) ? 0.75 : 0.55;
-      cx.beginPath(); cx.moveTo(ea.x, ea.y); cx.lineTo(eb.x, eb.y); cx.stroke();
-    }
-  }
-
-  function drawNodes() {
-    for (var i = 0; i < nodes.length; i++) {
-      var n = nodes[i];
-      cx.beginPath(); cx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-      cx.fillStyle = n.zone === 0 ? 'rgba(135,162,195,0.36)' : 'rgba(135,162,195,0.22)';
-      cx.fill();
-    }
-  }
-
-  build();
-
-  /* Reduced motion: draw an elegant static network, no animation */
-  if (REDUCED) {
-    var drawStatic = function () {
-      build();
-      cx.clearRect(0, 0, W, H);
-      drawEdges(); drawNodes();
-      if (vigGrad) { cx.fillStyle = vigGrad; cx.fillRect(0, 0, W, H); }
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var data = {
+      name: form.elements['name'].value, email: form.elements['email'].value,
+      subject: form.elements['subject'].value, message: form.elements['message'].value,
+      company: form.elements['company'].value,
+      turnstile: siteKey && window.turnstile && tsWidget !== null ? window.turnstile.getResponse(tsWidget) : ''
     };
-    drawStatic();
-    window.addEventListener('resize', function () {
-      clearTimeout(resT); resT = setTimeout(drawStatic, 250);
-    });
-    return;
-  }
+    if (siteKey && !data.turnstile) { setStatus('Please complete the spam check.', 'error'); return; }
 
-  window.addEventListener('resize', function () { clearTimeout(resT); resT = setTimeout(build, 250); });
-
-  function frame(ts) {
-    var dt = prevTs ? Math.min(ts - prevTs, 50) : 0;
-    prevTs = ts;
-    var P = pulsePath.length;
-    if (P > 0) pulsePos = (pulsePos + P / TRAVERSE_MS * dt) % P;
-
-    cx.clearRect(0, 0, W, H);
-    var ci = Math.floor(pulsePos);
-    var cf = pulsePos - ci;
-
-    /* Layer 1: base edges */
-    drawEdges();
-
-    /* Layer 2: vignette fades the base network at the periphery.
-       Drawn here so the gold pulse layers on top, undiminished. */
-    if (vigGrad) { cx.fillStyle = vigGrad; cx.fillRect(0, 0, W, H); }
-
-    /* Layer 3: pulse trail — gold, above vignette so edges never mute it */
-    if (P > 0) {
-      var trail = [
-        { back: 3, a: 0.09, lw: 0.65, f: 1.0 },
-        { back: 2, a: 0.20, lw: 0.80, f: 1.0 },
-        { back: 1, a: 0.36, lw: 0.95, f: 1.0 },
-        { back: 0, a: 0.54, lw: 1.15, f: cf  }
-      ];
-      for (var ti = 0; ti < trail.length; ti++) {
-        var tr  = trail[ti];
-        var tei = (ci - tr.back + P) % P;
-        var tep = pulsePath[tei];
-        var ta  = nodes[tep[0]], tb = nodes[tep[1]];
-        cx.strokeStyle = 'rgba(201,168,76,' + tr.a + ')';
-        cx.lineWidth   = tr.lw;
-        cx.beginPath(); cx.moveTo(ta.x, ta.y);
-        cx.lineTo(ta.x + (tb.x - ta.x) * tr.f, ta.y + (tb.y - ta.y) * tr.f);
-        cx.stroke();
+    btn.disabled = true;
+    setStatus('Sending…', 'pending');
+    try {
+      var r = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      var out = await r.json().catch(function () { return {}; });
+      if (r.ok && out.ok) {
+        form.reset();
+        setStatus('Thank you. Your message has been sent.', 'success');
+      } else {
+        setStatus(out.error || 'Something went wrong. Please email info@boardam.com directly.', 'error');
       }
+    } catch (err) {
+      setStatus('Could not reach the server. Please email info@boardam.com directly.', 'error');
+    } finally {
+      btn.disabled = false;
+      if (siteKey && window.turnstile && tsWidget !== null) window.turnstile.reset(tsWidget);
     }
-
-    /* Layer 4: base nodes */
-    drawNodes();
-
-    /* Layer 5: pulse head glow and node highlights */
-    if (P > 0) {
-      var ce  = pulsePath[ci];
-      var pna = nodes[ce[0]], pnb = nodes[ce[1]];
-
-      cx.beginPath(); cx.arc(pnb.x, pnb.y, pnb.r + 6, 0, Math.PI * 2);
-      cx.fillStyle = 'rgba(201,168,76,' + (0.05 + cf * 0.09) + ')'; cx.fill();
-      cx.beginPath(); cx.arc(pnb.x, pnb.y, pnb.r + 1.2, 0, Math.PI * 2);
-      cx.fillStyle = 'rgba(201,168,76,' + (0.26 + cf * 0.50) + ')'; cx.fill();
-
-      cx.beginPath(); cx.arc(pna.x, pna.y, pna.r + 0.5, 0, Math.PI * 2);
-      cx.fillStyle = 'rgba(201,168,76,' + (0.28 * (1 - cf)) + ')'; cx.fill();
-
-      var hx = pna.x + (pnb.x - pna.x) * cf;
-      var hy = pna.y + (pnb.y - pna.y) * cf;
-      cx.beginPath(); cx.arc(hx, hy, 5.5, 0, Math.PI * 2);
-      cx.fillStyle = 'rgba(201,168,76,0.13)'; cx.fill();
-      cx.beginPath(); cx.arc(hx, hy, 3.2, 0, Math.PI * 2);
-      cx.fillStyle = 'rgba(201,168,76,0.84)'; cx.fill();
-    }
-
-    raf = requestAnimationFrame(frame);
-  }
-
-  raf = requestAnimationFrame(frame);
-  document.addEventListener('visibilitychange', function () {
-    if (document.hidden) { cancelAnimationFrame(raf); raf = 0; prevTs = 0; }
-    else if (!raf) { raf = requestAnimationFrame(frame); }
   });
 }());
 
-
-
-/* ── PAGE-WIDE SIGNAL FIELD ── */
+/* ── INVESTMENT PRODUCT TABS ── */
 (function () {
-  var REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var CV = document.getElementById('signalCanvas');
-  if (!CV || REDUCED) return;
-
-  var cx = CV.getContext('2d');
-  var W = 0, H = 0, DPR = 1, nodes = [], links = [], raf = 0, last = 0, phase = 0, resizeT = 0;
-  var TRAVEL_MS = 13500;
-
-  function rng(seed) {
-    var s = seed >>> 0;
-    return function () {
-      s = (s + 0x6D2B79F5) | 0;
-      var t = Math.imul(s ^ (s >>> 15), 1 | s);
-      t ^= t + Math.imul(t ^ (t >>> 7), 61 | t);
-      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-    };
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.product-tab'));
+  var bar = document.querySelector('.product-tab-indicator');
+  if (!tabs.length) return;
+  function place(t) {
+    if (!bar) return;
+    bar.style.width = t.offsetWidth + 'px';
+    bar.style.transform = 'translateX(' + t.offsetLeft + 'px)';
   }
-
-  function resize() {
-    DPR = Math.min(window.devicePixelRatio || 1, 2);
-    W = window.innerWidth;
-    H = window.innerHeight;
-    CV.width = Math.floor(W * DPR);
-    CV.height = Math.floor(H * DPR);
-    CV.style.width = W + 'px';
-    CV.style.height = H + 'px';
-    cx.setTransform(DPR, 0, 0, DPR, 0, 0);
-    build();
+  function select(t, focus) {
+    tabs.forEach(function (o) {
+      var on = o === t;
+      o.setAttribute('aria-selected', on ? 'true' : 'false');
+      o.tabIndex = on ? 0 : -1;
+      document.getElementById(o.getAttribute('aria-controls')).hidden = !on;
+    });
+    place(t);
+    if (focus) t.focus();
   }
-
-  function build() {
-    var R = rng(0xB0A2D5);
-    var count = W < 768 ? 34 : 62;
-    nodes = [];
-    links = [];
-
-    for (var i = 0; i < count; i++) {
-      nodes.push({
-        x: R() * W,
-        y: R() * H,
-        r: 0.8 + R() * 1.4,
-        drift: 0.25 + R() * 0.45
-      });
-    }
-
-    for (var a = 0; a < nodes.length; a++) {
-      var near = [];
-      for (var b = 0; b < nodes.length; b++) {
-        if (a === b) continue;
-        var dx = nodes[a].x - nodes[b].x;
-        var dy = nodes[a].y - nodes[b].y;
-        var d = Math.sqrt(dx * dx + dy * dy);
-        if (d < (W < 768 ? 130 : 185)) near.push({ i: b, d: d });
-      }
-      near.sort(function (u, v) { return u.d - v.d; });
-      for (var k = 0; k < Math.min(2, near.length); k++) {
-        if (a < near[k].i) links.push([a, near[k].i, near[k].d]);
-      }
-    }
-  }
-
-  function drawSignal(t) {
-    var p = (phase % 1);
-    var sx = -W * 0.18 + p * W * 1.36;
-    var sy = H * 0.12 + Math.sin(p * Math.PI * 2) * H * 0.10 + p * H * 0.72;
-    var angle = Math.atan2(H * 0.72, W * 1.36);
-    var tx = Math.cos(angle), ty = Math.sin(angle);
-
-    for (var i = 7; i >= 0; i--) {
-      var back = i * 22;
-      var alpha = Math.max(0, 0.34 - i * 0.038);
-      cx.strokeStyle = 'rgba(201,168,76,' + alpha + ')';
-      cx.lineWidth = Math.max(0.65, 2.2 - i * 0.18);
-      cx.beginPath();
-      cx.moveTo(sx - tx * back, sy - ty * back);
-      cx.lineTo(sx - tx * (back + 18), sy - ty * (back + 18));
-      cx.stroke();
-    }
-
-    var glow = cx.createRadialGradient(sx, sy, 0, sx, sy, 18);
-    glow.addColorStop(0, 'rgba(201,168,76,0.58)');
-    glow.addColorStop(0.35, 'rgba(201,168,76,0.16)');
-    glow.addColorStop(1, 'rgba(201,168,76,0)');
-    cx.fillStyle = glow;
-    cx.beginPath();
-    cx.arc(sx, sy, 18, 0, Math.PI * 2);
-    cx.fill();
-
-    cx.fillStyle = 'rgba(201,168,76,0.9)';
-    cx.beginPath();
-    cx.arc(sx, sy, 2.4, 0, Math.PI * 2);
-    cx.fill();
-  }
-
-  function frame(ts) {
-    var dt = last ? Math.min(ts - last, 50) : 0;
-    last = ts;
-    phase = (phase + dt / TRAVEL_MS) % 1;
-
-    cx.clearRect(0, 0, W, H);
-
-    for (var i = 0; i < links.length; i++) {
-      var l = links[i], a = nodes[l[0]], b = nodes[l[1]];
-      var proximity = Math.max(0, 1 - l[2] / 190);
-      cx.strokeStyle = 'rgba(122,168,208,' + (0.022 + proximity * 0.045) + ')';
-      cx.lineWidth = 0.55;
-      cx.beginPath();
-      cx.moveTo(a.x, a.y);
-      cx.lineTo(b.x, b.y);
-      cx.stroke();
-    }
-
-    for (var n = 0; n < nodes.length; n++) {
-      var node = nodes[n];
-      var pulse = 0.5 + Math.sin(ts * 0.00035 + n) * 0.5;
-      cx.fillStyle = 'rgba(122,168,208,' + (0.08 + pulse * 0.06) + ')';
-      cx.beginPath();
-      cx.arc(node.x, node.y, node.r, 0, Math.PI * 2);
-      cx.fill();
-    }
-
-    drawSignal(ts);
-    raf = requestAnimationFrame(frame);
-  }
-
-  resize();
+  tabs.forEach(function (t, i) {
+    t.addEventListener('click', function () { select(t); });
+    t.addEventListener('keydown', function (e) {
+      var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+      if (d) { e.preventDefault(); select(tabs[(i + d + tabs.length) % tabs.length], true); }
+    });
+  });
   window.addEventListener('resize', function () {
-    clearTimeout(resizeT);
-    resizeT = setTimeout(resize, 180);
+    place(tabs.filter(function (t) { return t.getAttribute('aria-selected') === 'true'; })[0]);
   });
-  raf = requestAnimationFrame(frame);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { place(tabs[0]); });
+  place(tabs[0]);
+}());
 
-  document.addEventListener('visibilitychange', function () {
-    if (document.hidden) { cancelAnimationFrame(raf); raf = 0; last = 0; }
-    else if (!raf) { raf = requestAnimationFrame(frame); }
-  });
+/* ── ABOUT REVEAL ── */
+(function () {
+  var steps = document.querySelectorAll('.about-step');
+  if (!('IntersectionObserver' in window)) { steps.forEach(function (s) { s.classList.add('in'); }); return; }
+  var io = new IntersectionObserver(function (es) {
+    es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.25 });
+  steps.forEach(function (s) { io.observe(s); });
 }());
 
 
@@ -2920,6 +1725,8 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
       document.getElementById('popupCEO').textContent = cell.dataset.ceo;
       document.getElementById('popupMgmt').textContent = cell.dataset.mgmt;
       document.getElementById('popupAvg').textContent = cell.dataset.sectorAvg;
+      document.getElementById('popupMgmtLabel').textContent = cell.dataset.scoreLabel || 'Score';
+      document.getElementById('popupAvgLabel').textContent = cell.dataset.avgLabel || 'Sector Avg';
 
       positionPopup();
       popup.classList.add('visible');
