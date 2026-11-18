@@ -1600,6 +1600,13 @@ document.querySelectorAll('.team-leader, .team-card').forEach(c => revealObserve
     document.head.appendChild(s);
   }
 
+  function openMail(d) {
+    var body = d.message + '\n\n— ' + d.name + (d.email ? ' <' + d.email + '>' : '');
+    window.location.href = 'mailto:info@boardam.com?subject=' + encodeURIComponent(d.subject || 'Website enquiry') +
+      '&body=' + encodeURIComponent(body);
+    setStatus('Opening your email app with your message. If nothing opens, email info@boardam.com directly.', 'success');
+  }
+
   function setStatus(msg, kind) {
     status.textContent = msg;
     status.className = kind || '';
@@ -1623,6 +1630,8 @@ document.querySelectorAll('.team-leader, .team-card').forEach(c => revealObserve
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       });
+      // No form server on this host (e.g. GitHub Pages): hand the message to the visitor's email app instead.
+      if (r.status === 404 || r.status === 405 || r.status === 501) { openMail(data); return; }
       var out = await r.json().catch(function () { return {}; });
       if (r.ok && out.ok) {
         form.reset();
