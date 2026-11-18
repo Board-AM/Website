@@ -628,6 +628,61 @@
     .ai2-map .sector-cell .company-logo[src$="ANTA.svg"], .ai2-map .sector-cell .company-logo[src$="SMIC.svg"], .ai2-map .sector-cell .company-logo[src$="INS.png"] { max-height: 56px; }
     @media (max-width: 900px) { .ai2-map { grid-template-columns: 1fr; gap: 2rem; } .ai2-row { grid-template-columns: 1fr !important; } .ai2-region { grid-template-rows: auto; } }
 
+    /* ── MOBILE REFINEMENTS (≤ 700px) ── */
+    @media (max-width: 700px) {
+      :root { --section-y: 3.25rem; }
+
+      /* Hero: let the headline wrap naturally */
+      .hero-statement br { display: none; }
+
+      /* Investment Process: swipeable, one stage at a time */
+      #process .pipeline { display: flex; position: relative; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory;
+        margin: 0 calc(-1 * clamp(1.25rem, 3vw, 2.75rem)); padding: 0.25rem clamp(1.25rem, 3vw, 2.75rem) 0.75rem;
+        scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+      #process .pipeline::-webkit-scrollbar { display: none; }
+      #process .arrow-col { display: none; }
+      #process .stage { flex: 0 0 84%; scroll-snap-align: center; transform: none !important; }
+      #process .stage-title br { display: none; }
+      #process .progress { margin-top: 0.5rem; }
+
+      /* Team: portrait beside name, bio below */
+      #team .team-leader, #team .team-card { display: grid; grid-template-columns: 104px 1fr; column-gap: 1rem; align-items: start; padding: 1.25rem; }
+      #team .team-leader, #team .team-card { grid-template-rows: auto auto auto 1fr auto auto auto; row-gap: 0; }
+      #team .card-content { display: contents; }
+      #team .card-number, #team .card-name, #team .card-role { margin: 0 0 0.2rem; }
+      #team .card-credentials { margin: 0.15rem 0 0; align-self: start; }
+      #team .card-visual, #team .team-leader .card-visual, #team .team-card .card-visual { grid-column: 1; grid-row: 1 / span 4; width: 104px; height: 130px; min-height: 0; border-radius: 12px; }
+      #team .card-number, #team .card-name, #team .card-role, #team .card-credentials { grid-column: 2; }
+      #team .card-number { margin-top: 0.15rem; }
+      #team .card-name { font-size: 1.2rem; }
+      #team .card-role { font-size: 0.9rem; }
+      #team .card-credentials { font-size: 0.78rem; }
+      #team .card-divider, #team .card-bio, #team .card-linkedin { grid-column: 1 / -1; }
+      #team .card-divider { margin: 1rem 0 0.85rem; }
+
+      /* BAMCOR holdings: two per row, Technology full width, small sectors three across */
+      #products .treemap { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; min-height: 0; }
+      #products .treemap .col-left, #products .treemap .col-mid, #products .treemap .col-right, #products .treemap .col-right-row3 { display: contents; }
+      #products .treemap .sector-cell { grid-column: span 3; min-height: 150px; padding: 0.9rem; }
+      #products .treemap .sector-cell.large { grid-column: span 6; min-height: 190px; }
+      #products .treemap .sector-cell.tiny { grid-column: span 2; min-height: 0; }
+      #products .treemap .sector-cell:not(.large):not(.tiny) .sector-pct { font-size: 1.3rem; }
+      #products .treemap .sector-cell:not(.large):not(.tiny) .company-logo-area,
+      .ai2-row .sector-cell .company-logo-area { position: static; flex: 1 1 auto; min-height: 46px; margin: 0.35rem 0; justify-content: center; align-items: center; padding: 0; }
+      #products .treemap .col-right > .sector-cell:nth-child(3) { grid-column: span 6; min-height: 0; }
+      #products .treemap .sector-cell:not(.large):not(.tiny) .company-logo { max-width: 72% !important; max-height: 30px !important; }
+      #products .treemap .sector-cell:not(.large):not(.tiny) .sector-name { font-size: 0.72rem; }
+      #products .treemap .sector-cell:not(.large):not(.tiny) .holding-name { font-size: 0.72rem; }
+
+      /* AI²: tiers two across under each region's lead tier */
+      .ai2-row { grid-template-columns: 1fr 1fr !important; }
+      .ai2-row .sector-cell:last-child { grid-column: span 2; }
+      .ai2-row .company-logo-area { justify-content: center; padding-right: 0; }
+      .ai2-row .company-logo { max-width: 72% !important; max-height: 30px !important; }
+      .ai2-map .sector-cell .company-logo[src$="DAVE.png"] { max-height: 24px !important; }
+      .ai2-map .sector-cell .company-logo[src$="TCEHY.png"] { max-width: 88% !important; }
+    }
+
   </style>
 </head>
 <body>
@@ -692,7 +747,7 @@
             <g class="doc-read" fill="#2c6cb0"><rect x="14" y="21" width="24" height="2.6" rx="1.3"/><rect x="14" y="28" width="28" height="2.6" rx="1.3"/><rect x="14" y="35" width="20" height="2.6" rx="1.3"/><rect x="14" y="42" width="27" height="2.6" rx="1.3"/><rect x="14" y="49" width="16" height="2.6" rx="1.3"/></g>
             <rect class="doc-scan" x="11" y="17" width="33" height="2" rx="1" fill="#5aaee8"/>
           </svg>
-          <div class="stage-title">Company<br>Filings</div>
+          <div class="stage-title">Company<br> Filings</div>
           <div class="stage-content">
             <div class="filing-lines">
               <div class="filing-line"></div>
@@ -725,7 +780,7 @@
             <line x1="32" y1="32" x2="17" y2="42" stroke="#17406f" stroke-width="1.2" opacity="0.6"/>
             <line x1="32" y1="32" x2="47" y2="42" stroke="#17406f" stroke-width="1.2" opacity="0.6"/>
           </svg>
-          <div class="stage-title">Proprietary<br>Model</div>
+          <div class="stage-title">Proprietary<br> Model</div>
           <div class="stage-content">
             <div class="model-nodes">
               <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -810,7 +865,7 @@
             <circle cx="32" cy="32" r="15" pathLength="100" fill="none" stroke="#7fa3c9" stroke-width="9" stroke-dasharray="8.6 91.4" stroke-dashoffset="-51.70" transform="rotate(-90 32 32)" data-len="8.6"/>
             <circle cx="32" cy="32" r="15" pathLength="100" fill="none" stroke="#c9d9ea" stroke-width="9" stroke-dasharray="37.6 62.4" stroke-dashoffset="-61.70" transform="rotate(-90 32 32)" data-len="37.6"/>
           </svg>
-          <div class="stage-title">Portfolio<br>Construction</div>
+          <div class="stage-title">Portfolio<br> Construction</div>
           <div class="stage-content">
             <div class="pie-wrap">
               <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
@@ -1753,6 +1808,37 @@ document.querySelectorAll('.team-leader, .team-card').forEach(c => revealObserve
 /* Init */
 goTo(0);
 setTimeout(() => { if (autoPlay) resetTimer(); }, 1200);
+
+/* Mobile: keep the swipeable process row and the auto-advance in step */
+(function () {
+  var pipe = document.querySelector('#process .pipeline');
+  var mq = window.matchMedia('(max-width: 700px)');
+  if (!pipe) return;
+  var baseGoTo = goTo, programmatic = false, settle, pause;
+  function centre(n) {
+    if (!mq.matches) return;
+    var st = document.getElementById('stage-' + n);
+    programmatic = true;
+    pipe.scrollTo({ left: st.offsetLeft - (pipe.clientWidth - st.offsetWidth) / 2, behavior: 'smooth' });
+    clearTimeout(settle); settle = setTimeout(function () { programmatic = false; }, 700);
+  }
+  goTo = function (n) { baseGoTo(n); centre(n); };
+  var t;
+  pipe.addEventListener('scroll', function () {
+    if (programmatic || !mq.matches) return;
+    clearTimeout(t);
+    t = setTimeout(function () {
+      var mid = pipe.scrollLeft + pipe.clientWidth / 2, best = 0, d = Infinity;
+      for (var i = 0; i < 4; i++) {
+        var st = document.getElementById('stage-' + i), c = st.offsetLeft + st.offsetWidth / 2;
+        if (Math.abs(c - mid) < d) { d = Math.abs(c - mid); best = i; }
+      }
+      autoPlay = false; clearInterval(timer);
+      if (best !== current) baseGoTo(best);
+      clearTimeout(pause); pause = setTimeout(function () { autoPlay = true; resetTimer(); }, 10000);
+    }, 120);
+  }, { passive: true });
+}());
 </script>
 </body>
 </html>
